@@ -4,7 +4,7 @@ const cors = require("cors");
 require("dotenv").config({ path: "./config.env" });
 const port = process.env.PORT || 8000;
 
-const User = require('./models/user');
+const User = require('./models/User');
 app.use(cors());
 app.use(express.json());
 // app.use(require("./routes/record"));
@@ -39,7 +39,13 @@ app.get('/', (req,res)=>{
   }
 });
 
-app.get('/a',(req,res)=>{
+app.get('/a',async (req,res)=>{
   
-  console.log(User.find());
+  try{
+    const TAs =  await User.find();
+    console.log(TAs);
+  }
+    catch(err){
+        res.send(err)
+    }
 });
