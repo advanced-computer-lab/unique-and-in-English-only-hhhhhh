@@ -19,7 +19,7 @@ app.listen(port, () => {
   });
   console.log(`Server is running on port: ${port}`);
 });
-app.get('/',(req,res)=>{
+app.get('/', (req,res)=>{
   const user =new User({
     firstName:'aa',
     lastName:'about my new blog',
@@ -27,13 +27,16 @@ app.get('/',(req,res)=>{
     countryCode:'more about my new blog',
     telephoneNumber:'more about my new blog',
     email:'more about my new blog',
-    passportNumber:'more about my new blog',
+    passportNumber:'more about my new blog'
   });
-  user.save().then((result)=>{
-      res.send(result);
-  }).catch((err)=>{
-     console.log(err);
-  });
+  try{
+      user.save();
+      
+      console.log("success");
+  }
+  catch(err){
+      res.send (err);
+  }
 });
 
 app.get('/a',(req,res)=>{
