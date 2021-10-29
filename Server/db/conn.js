@@ -7,17 +7,19 @@ const client = new MongoClient(Db, {
  
 var _db;
  
+// {
+  // // Verify we got a good "db" object
+  // if (db)
+  // {
+  //   _db = db.db("ACL_DB");
+  //   console.log("Successfully connected to MongoDB."); 
+  // }
+  // return callback(err);
+  //    }
 module.exports = {
   connectToServer: function (callback) {
-    client.connect(function (err, db) {
-      // Verify we got a good "db" object
-      if (db)
-      {
-        _db = db.db("ACL_DB");
-        console.log("Successfully connected to MongoDB."); 
-      }
-      return callback(err);
-         });
+    client.connect().then(result =>console.log("MongoDB is now connected") )
+    .catch(err => console.log(err));;
   },
  
   getDb: function () {

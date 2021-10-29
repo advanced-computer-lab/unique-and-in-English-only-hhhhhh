@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config({ path: "./config.env" });
+const router = express.Router();
 const port = process.env.PORT || 8000;
 
 const User = require('./models/User');
@@ -19,7 +20,7 @@ app.listen(port, () => {
   });
   console.log(`Server is running on port: ${port}`);
 });
-app.get('/', (req,res)=>{
+app.get('/', async (req,res)=>{
   const user =new User({
     firstName:'aa',
     lastName:'about my new blog',
@@ -29,14 +30,14 @@ app.get('/', (req,res)=>{
     email:'more about my new blog',
     passportNumber:'more about my new blog'
   });
-  try{
-      user.save();
-      
-      console.log("success");
-  }
-  catch(err){
-      res.send (err);
-  }
+  await user.save()
+  .then(item => {
+    res.send("item saved to database");
+  })
+  .catch(err => {
+    res.status(400).send("unable to save to database");
+    console.log(err);
+  });
 });
 
 app.get('/a',async (req,res)=>{
