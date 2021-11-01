@@ -1,4 +1,5 @@
 const { MongoClient } = require("mongodb");
+const Flight = require("../models/flight");
 const Db = process.env.ATLAS_URI;
 console.log(Db);
 const client = new MongoClient(Db, {
@@ -40,7 +41,20 @@ module.exports = {
     }
 },
  
-  getDb: function () {
-    return _db;
+  createFlight: async function (flight) {
+    try{
+      await client.connect();
+        console.log("Connected correctly to server2");
+        const db = client.db("test");
+        // Use the collection "people"
+        const col = db.collection("flights");
+        const p = await col.insertOne(flight);
+    }
+    catch(err){
+      console.log(err);
+    }
+    finally {
+      await client.close();
+  }
   },
 };

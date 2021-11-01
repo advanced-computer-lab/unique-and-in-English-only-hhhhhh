@@ -7,14 +7,13 @@ const port = process.env.PORT || 8000;
 const User = require('./models/User');
 app.use(cors());
 app.use(express.json());
-// app.use(require("./routes/record"));
 // get driver connection
 const dbo = require("./db/conn.js");
-const router = require("./routes/mainRouter");
+const adminRouter = require("./routes/adminRoutes");
 
 
 
-app.use('/',router);
+app.use('/admin',adminRouter);
  
 app.listen(port, () => {
   // perform a database connection when server starts
