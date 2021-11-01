@@ -101,10 +101,28 @@ body {
   background-color: transparent;
 }
 
+/* searchBox */
+
+.searchBox {
+  padding-top: 100px;
+  margin:  20px 0;
+  display: grid;
+  justify-content: center;
+}
+
+.searchBox .searchPro {
+  padding:  20px;
+}
+
+.searchBox .searchPro div {
+padding: 3px;
+max-width: 305px;
+}
+
 /* Grid Styles*/ 
 
 .grid {
-  padding:  50px;
+  padding:  100px;
   height: max-content;
 }
 

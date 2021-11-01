@@ -14,11 +14,11 @@ import SearchBox from './components/SearchBox';
 import CreateFlight from './components/CreateFlight';
 
 
-function App() {
+function App(props) {
   return (
 
    <Router>
-   {  <Header  isLogged={true}/> } 
+   {  <Header  isLogged={props.isLogged}/> } 
      <Switch>
 <Route exact path="/">
 <Showcase isReloaded={true}/>
@@ -35,7 +35,7 @@ function App() {
 </Route>
 
 
-<Route path="/admin">
+<Route path="/createFlight">
   <CreateFlight />
 </Route>
 

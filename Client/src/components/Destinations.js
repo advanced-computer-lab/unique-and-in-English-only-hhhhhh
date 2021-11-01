@@ -29,7 +29,7 @@ import VizSensor from 'react-visibility-sensor';
             <h3>
                 We are currently in 6 cuntries!
             </h3>
-            <Fade in={active}  mountOnEnter unmountOnExit timeout={5000}>
+            <Fade in={active}  mountOnEnter unmountOnExit timeout={100}>
 
             <div className="grid-items">
                

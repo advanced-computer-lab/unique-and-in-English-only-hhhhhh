@@ -15,9 +15,22 @@ import MobileDatePicker from '@mui/lab/MobileDatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DateRangePicker from '@mui/lab/DateRangePicker';
 import Box from '@mui/material/Box';
+import SearchIcon from '@mui/icons-material/Search';
+import { Avatar } from '@mui/material';
+import { Container   } from '@material-ui/core';
+import { ThemeProvider } from '@mui/material';
+import { CssBaseline } from '@material-ui/core';
+import { createTheme } from '@mui/material';
+import { Grid } from '@material-ui/core';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import { FlightTakeoffOutlined } from '@material-ui/icons';
+import Typography from '@mui/material/Typography';
+import { blue } from '@mui/material/colors';
 
 
-
+const theme = createTheme();
 
 const SearchBox = () => {
 
@@ -35,11 +48,36 @@ const SearchBox = () => {
     };
   });
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    // eslint-disable-next-line no-console
+    console.log({
+      email: data.get('email'),
+      password: data.get('password'),
+    });
+  };
+
 
     return (
-        <div>
-            <div>
-            <FormControl component="fieldset">
+      <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+            <SearchIcon  />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Search Now!!!
+          </Typography>
+          <FormControl component="fieldset">
       <FormLabel component="legend">Ticket Type</FormLabel>
       <RadioGroup row aria-label="ticket" name="row-radio-buttons-group">
         <FormControlLabel value="return" control={<Radio />} label="Return" />
@@ -47,34 +85,29 @@ const SearchBox = () => {
         <FormControlLabel value="multi-city" control={<Radio />} label="Multi-city" />
       </RadioGroup>
     </FormControl>
-            </div>
-
-            <div>
-                <div>
-                    <h5>From</h5>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+            <h5>From</h5>
                     <Autocomplete
                         disablePortal
                         id="depaturePlace"
                         options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
                         groupBy={(option) => option.firstLetter}
                         getOptionLabel={(option) => option.label}
-                        sx={{ width: 300 }}
+                        sx={{ width: 190 }}
                         renderInput={(params) => <TextField {...params} placeholder="Country, City or Airport"/>}/>
-                </div>
-
-                <div>
-                <br />
-                    <h5>To</h5>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+              <h5>To</h5>
                     <Autocomplete
                         disablePortal
                         id="arrivalPlace"
                         options={top100Films}
-                        sx={{ width: 300 }}
+                        sx={{ width: 190 }}
                         renderInput={(params) => <TextField {...params} placeholder="Country, City or Airport"/>}/>
-                </div>
-
-                <div>
-                    <br />
+              </Grid>
+              <Grid item xs={12}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateRangePicker
                 startText="Depart Date"
@@ -93,41 +126,42 @@ const SearchBox = () => {
         )}
       />
     </LocalizationProvider>
-                </div>
-
-
-                <div>
-                    <br />
-                <h5>Adults</h5>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+              <h5>Adults</h5>
                 <p>16+ years*</p>
                     <Autocomplete
                         disablePortal
                         id="numberOfAdults"
                         options={numbers.slice(1,15)}
-                        sx={{ width: 300 }}
+                        sx={{ width: 190 }}
                         renderInput={(params) => <TextField {...params} placeholder="Traveller Adults Number"/>}/>
-                </div>
-
-
-
-                <div>
-                    <br />
-                <h5>Children</h5>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+              <h5>Children</h5>
                 <p>0-15 years*</p>
                     <Autocomplete
                         disablePortal
                         id="numberOfChildren"
                         options={numbers}
-                        sx={{ width: 300 }}
+                        sx={{ width: 190 }}
                         renderInput={(params) => <TextField {...params} placeholder="Traveller Children Number"/>}/>
-                </div>
-
-                
-
-
-            </div>
-            
-        </div>
+              </Grid>
+              
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Search
+            </Button>
+          </Box>
+        </Box>
+        
+      </Container>
+    </ThemeProvider>
     )
 }
 
