@@ -39,4 +39,18 @@ const flightschema=new schema({
     },
 },{timestamps:true})
 const Flight=mongoose.model('Flight',flightschema);
-module.exports=Flight;
+//module.exports=Flight;
+module.exports={
+    createFlight: async function(){
+        
+    },
+    readFlight: async function(){
+
+    },
+    updateFlight: async function(){
+
+    },
+    deleteFlight: async function(){
+
+    }
+};

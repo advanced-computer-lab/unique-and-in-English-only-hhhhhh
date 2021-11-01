@@ -4,7 +4,7 @@ const Admin = require("../models/Admin");
 const Flight = require('../models/flight');
 
 const DB = require('../db/conn');
-
+const adminController = require('../con');
 
 
 router.route('/login')
