@@ -12,6 +12,8 @@ app.use(express.json());
 const dbo = require("./db/conn.js");
 const router = require("./routes/mainRouter");
 
+
+
 app.use('/',router);
  
 app.listen(port, () => {
@@ -22,25 +24,25 @@ app.listen(port, () => {
   });
   console.log(`Server is running on port: ${port}`);
 });
-app.get('/', async (req,res)=>{
-  const user =new User({
-    firstName:'aa',
-    lastName:'about my new blog',
-    homeAddress:'more about my new blog',
-    countryCode:'more about my new blog',
-    telephoneNumber:'more about my new blog',
-    email:'more about my new blog',
-    passportNumber:'more about my new blog'
-  });
-  await user.save()
-  .then(item => {
-    res.send("item saved to database");
-  })
-  .catch(err => {
-    res.status(400).send("unable to save to database");
-    console.log(err);
-  });
-});
+// app.get('/', async (req,res)=>{
+//   const user =new User({
+//     firstName:'aa',
+//     lastName:'about my new blog',
+//     homeAddress:'more about my new blog',
+//     countryCode:'more about my new blog',
+//     telephoneNumber:'more about my new blog',
+//     email:'more about my new blog',
+//     passportNumber:'more about my new blog'
+//   });
+//   await user.save()
+//   .then(item => {
+//     res.send("item saved to database");
+//   })
+//   .catch(err => {
+//     res.status(400).send("unable to save to database");
+//     console.log(err);
+//   });
+// });
 
 app.get('/a',async (req,res)=>{
   
