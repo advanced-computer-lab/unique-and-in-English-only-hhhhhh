@@ -99,7 +99,7 @@ else{
 
     <Tooltip title="Account settings">
           <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
-          <Avatar {...stringAvatar('Zeyad ElSaeed')} />
+          <Avatar {...stringAvatar('Mahmoud Abd')} />
           </IconButton>
         </Tooltip>
 
