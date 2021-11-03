@@ -5,7 +5,7 @@ import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App isLogged={true}/>
+    <App isLogged={false}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

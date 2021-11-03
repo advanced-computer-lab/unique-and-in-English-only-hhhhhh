@@ -136,6 +136,7 @@ max-width: 305px;
 
 .grid .grid-items div{
  /* background-color: #f1f1f1 ;*/
+ display: table-row;
   height: 250px;
   margin:  20px 0;
   padding:  20px;

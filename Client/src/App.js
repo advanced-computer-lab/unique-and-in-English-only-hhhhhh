@@ -13,12 +13,10 @@ import Advertisement from './components/Advertisement';
 import SearchBox from './components/SearchBox';
 import CreateFlight from './components/CreateFlight';
 
-
 function App(props) {
   return (
-
    <Router>
-   {  <Header  isLogged={props.isLogged}/> } 
+     <Header  isLogged={props.isLogged}/> 
      <Switch>
 <Route exact path="/">
 <Showcase isReloaded={true}/>
@@ -42,6 +40,7 @@ function App(props) {
 <Route path="/search">
   <SearchBox />
 </Route>
+
 
 <Route path="/*">
   <Error />
