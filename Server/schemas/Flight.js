@@ -14,14 +14,6 @@ const flightschema=new schema({
         type:Number,
         required:true
     },
-    departureTime:{
-        type:String,
-        required:true
-    },
-    arrivalTime:{
-        type:String,
-        required:true
-    },
     departureDate:{
         type:Date,
         required:true
@@ -38,6 +30,6 @@ const flightschema=new schema({
         type:String,
         required:true
     },
-},{timestamps:true});
+},{timestamps:true}); 
 
 module.exports = mongoose.model('Flight',flightschema);
