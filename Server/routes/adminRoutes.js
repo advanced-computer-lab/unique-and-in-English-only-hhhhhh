@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Admin = require("../schemas/Admin");
-const Flight = require('../schemas/flight');
+//const Admin = require("../schemas/Admin");
+//const Flight = require('../schemas/flight');
 
 const adminController = require('../controllers/adminController');
 const guestController = require('../controllers/guestController');
@@ -16,8 +16,8 @@ router.route('/login')
     res.send("login, bitch");
 })
 .post((req,res)=>{
-    //verify admin's data and move to home page
-    
+    const result = adminController.authenticate(req);
+    res.status(200).send(result);
 
     
 });
@@ -30,7 +30,14 @@ router.route('/flights')
 .post((req,res)=>{
 
     //assuming we have the parameterss for create and they're correct
-    adminController.createFlight(req);
+    console.log(1);
+    const a = adminController.readFlight(req);
+    a.then(function(result) {
+        console.log(result) // "Some User token"
+    })
+    //res.json(a);
+    res.send(a);
+
 //     const flight = new Flight({flightNumber:'sad',
 //     ecoSeatsCount:15,
 //     businessSeatsCount:16,
@@ -42,7 +49,7 @@ router.route('/flights')
 //     arrivalAirportTerminal:'sad'
 // });
    
-    res.send("post ya admin");
+    //res.send("post ya admin");
 })
 
 

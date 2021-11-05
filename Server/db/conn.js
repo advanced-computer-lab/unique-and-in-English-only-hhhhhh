@@ -1,5 +1,6 @@
 const { MongoClient } = require("mongodb");
-const Flight = require("../schemas/flight");
+const Flight = require("../schemas/Flight");
+const Admin = require("../schemas/Admin");
 const Db = process.env.ATLAS_URI;
 console.log(Db);
 const client = new MongoClient(Db, {
@@ -40,6 +41,19 @@ module.exports = {
         await client.close();
     }
 },
+
+  authenticate: async function(username,password){
+    const valid = await Admin.exists({username:username,password:password},(err,res)=>{
+      if(res==null){
+        console.log(false);
+        return false;
+      }
+      else{
+        console.log(true);
+        return true;
+      }
+    });
+  },
  
   createFlight: async function (flight) {
     try{
@@ -56,6 +70,18 @@ module.exports = {
     }
     finally {
       await client.close();
-  }
+  } 
   },
+  readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate){
+    //const sd = Flight.find();
+    // search with parameters
+     const requestedFlights = await Flight.find({flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
+     .where('arrivalDate').lte(arrivalDate)
+     .where('departureDate').gte(departureDate)
+     .where('ecoSeatsCount').gte(ecoSeatsCount)
+     .where('businessSeatsCount').gte(businessSeatsCount);
+
+    return requestedFlights;
+    //return await Flight.find();
+  }
 };

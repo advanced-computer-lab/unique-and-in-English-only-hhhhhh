@@ -5,6 +5,9 @@ require("dotenv").config({ path: "./config.env" });
 const port = process.env.PORT || 8000;
 
 const User = require('./schemas/User');
+
+const myDB = require("./conn5o5o");
+
 app.use(cors());
 app.use(express.json());
 // get driver 
