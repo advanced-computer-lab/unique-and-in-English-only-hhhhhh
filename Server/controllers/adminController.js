@@ -1,12 +1,13 @@
-const adminModel = require('../models/Admin');
-const flightModel = require('../models/Flight');
+const mongoose=require('mongoose');
+const adminModel = require('../models/AdminModel');
+let users;
 
 module.exports = {
     authenticate: async function(){
     
     },
     createFlight: async function(req){
-        flightModel.createFlight(req);
+        await adminModel.createFlight(req);
     },
     readFlight: async function(){
 

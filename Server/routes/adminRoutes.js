@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Admin = require("../models/Admin");
-const Flight = require('../models/flight');
+const Admin = require("../schemas/Admin");
+const Flight = require('../schemas/flight');
 
 const adminController = require('../controllers/adminController');
 const guestController = require('../controllers/guestController');

@@ -15,8 +15,4 @@ const adminschema=new schema({
     },
 },{timestamps:true})
 const Admin=mongoose.model('Admin',adminschema);
-module.exports={
-    authenticate: async function(){
-
-    }
-};
+module.exports= Admin;

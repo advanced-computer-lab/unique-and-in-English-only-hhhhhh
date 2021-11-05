@@ -1,5 +1,5 @@
 const { MongoClient } = require("mongodb");
-const Flight = require("../models/flight");
+const Flight = require("../schemas/flight");
 const Db = process.env.ATLAS_URI;
 console.log(Db);
 const client = new MongoClient(Db, {
@@ -45,7 +45,7 @@ module.exports = {
     try{
       //we need to return a message with a status code here
       await client.connect();
-        console.log("Connected correctly to server2");
+        console.log("flight has been added");
         const db = client.db("test");
         // Use the collection "people"
         const col = db.collection("flights");
