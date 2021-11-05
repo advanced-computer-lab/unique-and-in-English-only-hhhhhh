@@ -13,19 +13,55 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
+import { useState } from 'react';
 
 
 const CreateFlight = () => {
     const [departureDate, setDepartureDate] = React.useState(new Date());
     const [returnDate, setReturnDate] = React.useState(new Date());
 
+    const [state, setState] = useState({
+      flightNumber:'',
+      ecoSeatsCount:'',
+      businessSeatsCount:'',
+      departureDate:'',
+      arrivalDate:'',
+      departureAirportTerminal:'',
+      arrivalAirportTerminal:''
+      });
+    
+
+    const onChangeData = (e)=> {
+      if (e.target.id == "departureDate") {
+        this.setState({ [e.target.id]: Date.parse(e.target.value) });
+      }
+      else if (e.target.id == "arrivalDate") {
+        this.setState({ [e.target.id]: Date.parse(e.target.value) });
+      }
+      else {
+        this.setState({ [e.target.name]: e.target.value });
+      }
+      
+    };
+
 
     const handleChangeOfDeparture = (newValue) => {
+      if (Date.parse(newValue) > Date.parse(returnDate)) {
+        setDepartureDate(departureDate);
+      }
+      else{
         setDepartureDate(newValue);
+      }
     };
 
     const handleChangeOfReturn = (newValue) => {
+      if (Date.parse(newValue) < Date.parse(departureDate)) {
+        setReturnDate(returnDate);
+      }
+      else{
         setReturnDate(newValue);
+      }
+        
     };
 
     const handleSubmit = (event) => {
@@ -59,7 +95,10 @@ const CreateFlight = () => {
                   id="flightNumber"
                   label="Flight Number"
                   name="flightNumber"
-                  placeholder="EX. PI150"
+                  helperText="Max 7 Charchters"
+                  placeholder="EX. PI 150"
+                  inputProps={{ maxLength: 7 }}
+                  onChange = {onChangeData}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -67,7 +106,7 @@ const CreateFlight = () => {
                   name="fromAirport"
                   required
                   fullWidth
-                  id="fromAirport"
+                  id="departureAirportTerminal"
                   label="From"
                   placeholder="The Airport Name"
                   autoFocus
@@ -77,7 +116,7 @@ const CreateFlight = () => {
                 <TextField
                   required
                   fullWidth
-                  id="toAirport"
+                  id="arrivalAirportTerminal"
                   label="To"
                   name="toAirport"
                   placeholder="The Airport Name"
@@ -89,26 +128,46 @@ const CreateFlight = () => {
                   name="businessSeats"
                   required
                   fullWidth
-                  id="businessSeats"
+                  type="number"
+                  id="businessSeatsCount"
                   label="Business Seats"
                   placeholder="Number of Seats"
-                  autoFocus
+                  onChange={(event) =>{
+                    if (event.target.value < 0){
+                      event.target.value = 0
+                    }
+                    else if (event.target.value > 100){
+                      event.target.value = 100
+                    }
+                }
+              }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   fullWidth
-                  id="economicSeats"
+                  type="number"
+                  id="ecoSeatsCount"
                   label="Economic Seats"
                   name="economicSeats"
                   placeholder="Number of Seats"
+                  onChange={(event) =>{
+                    if (event.target.value < 0){
+                      event.target.value = 0
+                    }
+                    else if (event.target.value > 500){
+                      event.target.value = 500
+                    }
+                }
+              }
                 />
               </Grid>
 
               <Grid item xs={12}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
+                     id = "departureDate"
                      label="Date&Time of Depature"
                      disablePast
                      value={departureDate}
@@ -120,6 +179,7 @@ const CreateFlight = () => {
               <Grid item xs={12 }>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
+                     id = "arrivalDate"
                      label="Date&Time of Arrival"
                      disablePast
                      value={returnDate}
