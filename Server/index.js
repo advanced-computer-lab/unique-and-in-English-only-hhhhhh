@@ -4,17 +4,18 @@ const cors = require("cors");
 require("dotenv").config({ path: "./config.env" });
 const port = process.env.PORT || 8000;
 
-const User = require('./models/User');
-app.use(cors());
+const User = require('./schemas/User');
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 app.use(express.json());
-// app.use(require("./routes/record"));
-// get driver connection
+// get driver 
 const dbo = require("./db/conn.js");
-const router = require("./routes/mainRouter");
+const adminRouter = require("./routes/adminRoutes");
 
 
 
-app.use('/',router);
+app.use('/admin',adminRouter);
  
 app.listen(port, () => {
   // perform a database connection when server starts
@@ -24,25 +25,6 @@ app.listen(port, () => {
   });
   console.log(`Server is running on port: ${port}`);
 });
-// app.get('/', async (req,res)=>{
-//   const user =new User({
-//     firstName:'aa',
-//     lastName:'about my new blog',
-//     homeAddress:'more about my new blog',
-//     countryCode:'more about my new blog',
-//     telephoneNumber:'more about my new blog',
-//     email:'more about my new blog',
-//     passportNumber:'more about my new blog'
-//   });
-//   await user.save()
-//   .then(item => {
-//     res.send("item saved to database");
-//   })
-//   .catch(err => {
-//     res.status(400).send("unable to save to database");
-//     console.log(err);
-//   });
-// });
 
 app.get('/a',async (req,res)=>{
   
