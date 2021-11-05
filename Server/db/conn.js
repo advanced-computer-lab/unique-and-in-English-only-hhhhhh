@@ -43,6 +43,7 @@ module.exports = {
  
   createFlight: async function (flight) {
     try{
+      //we need to return a message with a status code here
       await client.connect();
         console.log("Connected correctly to server2");
         const db = client.db("test");

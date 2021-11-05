@@ -1,5 +1,6 @@
 const mongoose=require('mongoose');
 const schema=mongoose.Schema;
+const DB = require('../db/conn');
 const flightschema=new schema({
     flightNumber:{
         type:String,
@@ -37,12 +38,25 @@ const flightschema=new schema({
         type:String,
         required:true
     },
-},{timestamps:true})
+},{timestamps:true});
+
 const Flight=mongoose.model('Flight',flightschema);
 //module.exports=Flight;
 module.exports={
-    createFlight: async function(){
-        
+    createFlight: async function(req){
+        const flight = new Flight({
+            flightNumber:req.body.flightNumber,
+            ecoSeatsCount: req.body.ecoSeatsCount,
+            businessSeatsCount: req.bodybusinessSeatsCount,
+            departureTime: req.body.departureTime,
+            arrivalTime: req.body.arrivalTime,
+            departureDate: req.body.departureDate,
+            arrivalDate: req.body.arrivalDate,
+            departureAirportTerminal: req.body.departureAirportTerminal,
+            arrivalAirportTerminal: req.body.arrivalAirportTerminal
+          });
+        DB.createFlight(flight);
+
     },
     readFlight: async function(){
 
