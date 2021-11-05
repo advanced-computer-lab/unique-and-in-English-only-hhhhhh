@@ -1,3 +1,17 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+img{
+  max-width:  100%;
+}
+
+ul{
+  list-style-type: none;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -7,7 +21,225 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.header{
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #1e427c;
+}
+
+.header .links {
+  margin: 0px 10px;
+  text-decoration: none;
+  color: #fff;
+}
+
+
+.showcase {
+  background: url('./assets/image1.jpg') no-repeat center/
+  cover;
+  height: 600px;
+}
+
+.showcase .overlay {
+  display: flex;
+  flex-direction: column;
+  align-items:  center;
+  justify-content: center;
+  height: 600px;
+  color: #fff;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.showcase .overlay .h1 {
+  font-size: 36px;
+  padding-bottom: 20px;
+}
+
+/* login styles */ 
+
+.login .form{
+  display: flex;
+  flex-direction: column;
+}
+
+.login .form input{
+  margin: 5px 0;
+  width: 80vw;
+  padding: 12px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.login .form input::placeholder{
+  font-weight: 500;
+  color: #000;
+}
+
+.login .form button{
+  background-color: #1e427c;
+  color: #fff;
+  padding: 8px;
+  border: 2px solid #1e427c;
+  font-family: inherit;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+  margin-top: 5px;
+}
+
+.login .form button:hover{
+  cursor: pointer;
+  background-color: transparent;
+}
+
+/* searchBox */
+
+.searchBox {
+  padding-top: 100px;
+  margin:  20px 0;
+  display: grid;
+  justify-content: center;
+}
+
+.searchBox .searchPro {
+  padding:  20px;
+}
+
+.searchBox .searchPro div {
+padding: 3px;
+max-width: 305px;
+}
+
+/* Grid Styles*/ 
+
+.grid {
+  padding:  100px;
+  height: max-content;
+}
+
+.grid h3 {
+  text-align:  center;
+  font-size:  30px;
+  color: #333;
+  padding-bottom: 20px;
+}
+
+
+.grid .grid-items div{
+ /* background-color: #f1f1f1 ;*/
+ display: table-row;
+  height: 250px;
+  margin:  20px 0;
+  padding:  20px;
+  border-radius: 10px ;
+}
+
+.grid .grid-items div img{
+border-radius: 100px;
+align-items: center;
+}
+
+.grid .grid-items div h4{
+text-align: center;
+padding: 10px 0;
+font-size: 22px;
+}
+
+.grid .grid-items div p{
+  text-align: center;
+  line-height: 1.8;
+  }
+     
+.footer{
+  background-color: #333;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer ul li{
+  margin: 10px 0;
+}
+
+.footer ul li button{
+  background-color: transparent;
+  color: #fff;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.1s ease-in-out 0.1s;
+  cursor: pointer;
+}
+
+.footer ul li button:hover{
+  cursor:  pointer;
+  background-color: rgb(45, 55, 182);
+}
+
+@media (min-width: 768px) {
+  .showcase {
+    background-position: top;
+  }
+
+  .showcase .overlay h1 {
+    font-size: 64px;
+  }
+
+  .showcase .overlay p {
+    font-size: 18px;
+  }
+
+  .grid .grid-items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .grid .grid-items div img {
+    height: 150px;
+    width: 420px;
+  }
+
+  .footer ul {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .login .form-control input {
+    width: 50vw;
+  }
+}
+
+@media (min-width: 992px){
+  .showcase{
+    background-position: top;
+  }
+
+  .login .form input {
+    width: 40vw;
+  }
+
+  .grid .grid-items{
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
