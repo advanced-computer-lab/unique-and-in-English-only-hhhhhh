@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -12,57 +10,95 @@ import Container from '@mui/material/Container';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DateTimePicker from '@mui/lab/DateTimePicker';
-import { useState } from 'react';
+import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
+import { IconButton } from '@mui/material';
+import Collapse from "@mui/material/Collapse";
 
 
 const CreateFlight = () => {
+  const [checked, setChecked] = React.useState(true);
     const [departureDate, setDepartureDate] = React.useState(new Date());
     const [returnDate, setReturnDate] = React.useState(new Date());
 
-    const [state, setState] = useState({
+    const [state, setState] = React.useState({
       flightNumber:'',
       ecoSeatsCount:'',
       businessSeatsCount:'',
       departureDate:'',
       arrivalDate:'',
       departureAirportTerminal:'',
-      arrivalAirportTerminal:''
+      arrivalAirportTerminal:'',
       });
     
-
-    const onChangeData = (e)=> {
-      if (e.target.id == "departureDate") {
-        this.setState({ [e.target.id]: Date.parse(e.target.value) });
-      }
-      else if (e.target.id == "arrivalDate") {
-        this.setState({ [e.target.id]: Date.parse(e.target.value) });
-      }
-      else {
-        this.setState({ [e.target.name]: e.target.value });
-      }
       
+    const onChangeData = (e)=> {
+      const { name, value } = e.target;
+      setState(prevState => ({
+          ...prevState,
+          [name]: value
+      }));
+      console.log(state)
     };
 
+    const clickOnTheIcon = () => {
+      setChecked((prev) => !prev);
+    };
 
     const handleChangeOfDeparture = (newValue) => {
-      if (Date.parse(newValue) > Date.parse(returnDate)) {
-        setDepartureDate(departureDate);
+      setDepartureDate(newValue);
+      if ( newValue.getTime() > returnDate.getTime() ) {
+        setReturnDate(newValue);
       }
-      else{
-        setDepartureDate(newValue);
-      }
+      setState(prevState => ({
+        ...prevState,
+        ["departureDate"]: departureDate
+    }));
     };
 
     const handleChangeOfReturn = (newValue) => {
-      if (Date.parse(newValue) < Date.parse(departureDate)) {
+     if (newValue.getTime() <= departureDate.getTime()) {
         setReturnDate(returnDate);
       }
       else{
         setReturnDate(newValue);
       }
+      setState(prevState => ({
+        ...prevState,
+        ["arrivalDate"]: returnDate
+    }));
         
     };
+
+    
+      
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      useEffect(() => {
+        const flight = {
+          flightNumber: state["flightNumber"],
+        ecoSeatsCount:state["ecoSeatsCount"],
+        businessSeatsCount:state["businessSeatsCount"],
+        departureDate:state["departureDate"],
+        arrivalDate:state["arrivalDate"],
+        departureAirportTerminal:state["departureAirportTerminal"],
+        arrivalAirportTerminal:state["arrivalAirportTerminal"],
+        } 
+  
+  
+  
+        axios.post('http://localhost:8000/admin/createFlight' , flight )
+        .then(res => {
+          console.log(res);
+          console.log(res.data);
+        }).catch(err => {
+          console.log(err)
+      });
+
+    },[]);
+    };
+  
+  
+   
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -80,12 +116,16 @@ const CreateFlight = () => {
             alignItems: 'center',
           }}
         >
+          <IconButton onClick={clickOnTheIcon}>
           <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
             <NoteAddIcon  />
           </Avatar>
+          </IconButton>
           <Typography component="h1" variant="h5">
             Create New Flight Ya Basha
           </Typography>
+
+          <Collapse in={checked}>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -103,13 +143,14 @@ const CreateFlight = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  name="fromAirport"
+                  name="departureAirportTerminal"
                   required
                   fullWidth
                   id="departureAirportTerminal"
                   label="From"
                   placeholder="The Airport Name"
                   autoFocus
+                  onChange = {onChangeData}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -118,8 +159,9 @@ const CreateFlight = () => {
                   fullWidth
                   id="arrivalAirportTerminal"
                   label="To"
-                  name="toAirport"
+                  name="arrivalAirportTerminal"
                   placeholder="The Airport Name"
+                  onChange = {onChangeData}
                 />
               </Grid>
               
@@ -129,7 +171,7 @@ const CreateFlight = () => {
                   required
                   fullWidth
                   type="number"
-                  id="businessSeatsCount"
+                  id="businessSeats"
                   label="Business Seats"
                   placeholder="Number of Seats"
                   onChange={(event) =>{
@@ -141,6 +183,7 @@ const CreateFlight = () => {
                     }
                 }
               }
+              onChange = {onChangeData}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -150,7 +193,7 @@ const CreateFlight = () => {
                   type="number"
                   id="ecoSeatsCount"
                   label="Economic Seats"
-                  name="economicSeats"
+                  name="ecoSeatsCount"
                   placeholder="Number of Seats"
                   onChange={(event) =>{
                     if (event.target.value < 0){
@@ -161,25 +204,29 @@ const CreateFlight = () => {
                     }
                 }
               }
+              onChange = {onChangeData}
                 />
               </Grid>
 
               <Grid item xs={12}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                     id = "departureDate"
+                <MobileDateTimePicker
+                     id = 'departureDate'
+                     name = "departureDate"
                      label="Date&Time of Depature"
                      disablePast
                      value={departureDate}
-                     onChange={handleChangeOfDeparture}
+                     onChange={handleChangeOfDeparture  }
                      renderInput={(params) => <TextField {...params} />}
+                     
         />
         </LocalizationProvider>
               </Grid>
               <Grid item xs={12 }>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
+                <MobileDateTimePicker
                      id = "arrivalDate"
+                     name = "arrivalDate"
                      label="Date&Time of Arrival"
                      disablePast
                      value={returnDate}
@@ -199,6 +246,7 @@ const CreateFlight = () => {
               Create
             </Button>
             </Box>
+            </Collapse>
             </Box>
             </Container>
 
