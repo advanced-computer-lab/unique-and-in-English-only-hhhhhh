@@ -3,21 +3,20 @@ const adminModel = require('../models/AdminModel');
 let users;
 
 module.exports = {
-    authenticate: async function(req){
-        return adminModel.authenticate(req);
+    authenticate: async function(req,res){
+        return adminModel.authenticate(req,res);
     },
-    createFlight: async function(req){
-        await adminModel.createFlight(req);
+    createFlight: async function(req,res){
+        await adminModel.createFlight(req,res);
     },
-    readFlight: async function(req){
-        console.log(2);
-        return adminModel.readFlight(req)
+    readFlight: async function(req,res){
+        return adminModel.readFlight(req,res);
     },
-    updateFlight: async function(req){
-        await adminModel.updateFlight(req);
+    updateFlight: async function(req,res){
+        await adminModel.updateFlight(req,res);
     },
-    deleteFlight: async function(req){
-        await adminModel.deleteFlight(req);
+    deleteFlight: async function(req,res){
+        return await adminModel.deleteFlight(req,res);
     },
     
 }

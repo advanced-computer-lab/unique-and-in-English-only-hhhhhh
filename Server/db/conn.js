@@ -25,64 +25,38 @@ module.exports = {
      }
 },
 
-  authenticate: async function(username,password){
-    const valid = await Admin.exists({username:username,password:password},(err,res)=>{
-      if(res==null){
+  authenticate: async function(username,password,res){
+    const valid = await Admin.exists({username:username,password:password},(err,result)=>{
+      if(err) res.status(500).send(false);
+      if(result==null){
         console.log(false);
-        return false;
+        res.status(200).send(false);
       }
       else{
         console.log(true);
-        return true;
+        res.status(200).send(true);
       }
     });
   },
  
-  createFlight: async function (flight) {
-    try{
-        const db = client.db("test");
-        const col = db.collection("flights");
-        await col.insertOne(flight,(err,res)=>{
-          if(err){
-            throw err;
-          }else{
-            console.log("flight has been added");
-          }
-        });
-    }
-    catch(err){
-      console.log(err);
-    }
-    finally {
-      await client.close();
-  } 
-  },
-  readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate){
-    //const sd = Flight.find();
+  readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
     // search with parameters
-     const requestedFlights = await Flight.find({flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
+    const requestedFlights = await Flight.find({flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
      .where('arrivalDate').lte(arrivalDate)
      .where('departureDate').gte(departureDate)
      .where('ecoSeatsCount').gte(ecoSeatsCount)
-     .where('businessSeatsCount').gte(businessSeatsCount).then(res =>{
-      console.log(res);
-  });;
-      // requestedFlights.then((err,res)=>{
-      //   console.log(res);
-      // });
-    return requestedFlights;
-    //return await Flight.find();
+     .where('businessSeatsCount').gte(businessSeatsCount);
+    res.status(200).send(requestedFlights);
   },
-  createFlight: async function (flight) {
+  createFlight: async function (flight,res) {
     try{
-        const db = client.db("test");
+        const db = client.db("AirlineDB");
         const col = db.collection("flights");
-        await col.insertOne(flight,(err,res)=>{
-          if(err){
-            throw err;
-          }else{
-            console.log(res);
-          }
+        await col.insertOne(flight,(err,result)=>{
+          if (err) if (err.keyPattern.flightNumber==1) return res.status(500).send("duplicates");
+          else res.status(500).send("connection error");
+          console.log(result)
+          res.status(200).send("Flight created");
         });
     }
     catch(err){
@@ -90,30 +64,30 @@ module.exports = {
     }
   
   },
-  deleteFlight: async function (flightNumber){
+  deleteFlight: async function (flightNumber,res){
     try{
-        console.log("flight has been deleted");
-        const db = client.db("test");
+        const db = client.db("AirlineDB");
         const col = db.collection("flights");
-        await col.deleteOne({flightNumber:flightNumber},(err,res)=>{
-          if (err) throw err;
-          console.log(res);
+        await col.deleteOne({flightNumber:flightNumber},(err,result)=>{
+          console.log(result);
+          if (err) return res.status(500).send("an error occured");
+            (result.deletedCount>0) ?  res.status(200).send("Flight deleted") : res.status(200).send("no such entry in the Database");
         });
-        
     }
     catch(err){
       console.log(err);
     }
   
   },
- updateFlight: async function (search, update){
+ updateFlight: async function (search, update,res){
     try{
-        const db = client.db("test");
+        const db = client.db("AirlineDB");
         const col = db.collection("flights");
-        const p = await col.updateOne(search,update,(err,res)=>{
-          if (err) throw err;
-          console.log(res);
-          // console.log(p);
+        const p = await col.updateOne(search,update,(err,result)=>{
+          if (err) if (err.keyPattern.flightNumber==1) return res.status(500).send("duplicates");
+          else res.status(500).send("connection error");
+          console.log(result);
+          res.status(200).send("Flight updated");
         });
     }
     catch(err){

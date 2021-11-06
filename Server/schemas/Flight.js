@@ -2,8 +2,10 @@ const mongoose=require('mongoose');
 const schema=mongoose.Schema;
 const DB = require('../db/conn');
 const flightschema=new schema({
+    _id: false,
     flightNumber:{
         type:String,
+        unique:true,
         required:true
     },
     ecoSeatsCount:{

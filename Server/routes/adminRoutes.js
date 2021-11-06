@@ -15,35 +15,34 @@ router.route('/login')
     res.send("login, bitch");
 })
 .post((req,res)=>{
-    const result = adminController.authenticate(req);
-    res.status(200).send(result);
-
-    
+    const result = adminController.authenticate(req,res);
+    // res.status(200).send(result);
 });
 
 router.route('/createFlight')
 .post((req,res)=>{
-    adminController.createFlight(req);
-    res.send("post ya admin");
+    adminController.createFlight(req,res);
 })
 
 router.route('/readFlight')
 .post((req,res)=>{
-    adminController.readFlight(req);
-    res.send("post ya admin");
+    adminController.readFlight(req,res).then(result =>{
+        console.log(result);
+        //res.send(result);
+    });
+    
 });
 
 router.route('/deleteFlight')
-.delete((req,res)=>{
-    adminController.deleteFlight(req);
-    res.send("post ya admin");
+.delete(async (req,res)=>{
 
-})
+    await adminController.deleteFlight(req,res);
+
+});
 
 router.route('/updateFlight')
 .put((req,res)=>{
-    adminController.updateFlight(req);
-    res.send("post ya admin");
+    adminController.updateFlight(req,res);
 });
 
 module.exports = router;
