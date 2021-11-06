@@ -192,6 +192,7 @@ const SearchBox = () => {
             <Button
               type="submit"
               fullWidth
+              endIcon={<SearchIcon  />}
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >

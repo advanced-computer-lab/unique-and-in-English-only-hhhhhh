@@ -15,21 +15,43 @@ import { IconButton } from '@mui/material';
 import Collapse from "@mui/material/Collapse";
 import { useEffect } from 'react';
 import axios from 'axios';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { Backdrop } from '@mui/material';
+import { Modal } from '@mui/material';
+import { Fade } from '@mui/material';
 
-const CreateFlight = () => {
-  const [checked, setChecked] = React.useState(true);
-    const [departureDate, setDepartureDate] = React.useState(new Date());
-    const [returnDate, setReturnDate] = React.useState(new Date());
+const style = {
+    display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
-    const [state, setState] = React.useState({
-      flightNumber:'',
-      ecoSeatsCount:'',
-      businessSeatsCount:'',
+const EditFlight = (props) => {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const [checked, setChecked] = React.useState(true);
+    const [departureDate, setDepartureDate] = React.useState();
+    const [returnDate, setReturnDate] = React.useState();
+
+    const [state, setState] = React.useState(/*{     props.departureDate         props.arrivalDate
+      flightNumber: props.flightNumber,
+      ecoSeatsCount: props.ecoSeatsCount,
+      businessSeatsCount: props.businessSeatsCount,
       departureDate: departureDate,
       arrivalDate: returnDate,
-      departureAirportTerminal:'',
-      arrivalAirportTerminal:'',
-      });
+      departureAirportTerminal: props.departureAirportTerminal,
+      arrivalAirportTerminal: props.arrivalAirportTerminal,
+      }*/);
     
       
     const onChangeData = (e)=> {
@@ -95,26 +117,29 @@ const CreateFlight = () => {
     };
    
     return (
-        <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <IconButton onClick={clickOnTheIcon}>
+        <>
+        
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className="modal"
+        {...props}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 1000,
+        }}
+      >
+         <Fade in={props.open}>
+          <Box sx={style}>
+          <IconButton sx={{alignItems:"center"}}>
           <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-            <NoteAddIcon  />
+            <ModeEditIcon  />
           </Avatar>
           </IconButton>
           <Typography component="h1" variant="h5">
-            Create New Flight Ya Basha
+            Edit The Flight ya kbeer
           </Typography>
-
-          <Collapse in={checked}>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -225,24 +250,23 @@ const CreateFlight = () => {
                     />
                     </LocalizationProvider>
               </Grid>
-
               </Grid>
+            
             <Button
               type="submit"
               fullWidth
-              endIcon= {<NoteAddIcon  />}
+            endIcon={<ModeEditIcon  />}
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Create
+              Edit
             </Button>
             </Box>
-            </Collapse>
             </Box>
-            </Container>
-
-            
+            </Fade>
+            </Modal> 
+            </>
     )
 }
 
-export default CreateFlight
+export default EditFlight
