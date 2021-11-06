@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,33 +11,33 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
-import { IconButton } from '@mui/material';
+import { IconButton, Modal } from '@mui/material';
 import Collapse from "@mui/material/Collapse";
 import { useEffect } from 'react';
 import axios from 'axios';
+import { Alert } from '@mui/material';
+ 
 
 const CreateFlight = () => {
-  const [checked, setChecked] = React.useState(true);
+    const [checked, setChecked] = React.useState(true);
     const [departureDate, setDepartureDate] = React.useState(new Date());
     const [returnDate, setReturnDate] = React.useState(new Date());
+    const [flag , setFlag] = React.useState(true);
+  
 
     const [state, setState] = React.useState({
-      flightNumber:'',
-      ecoSeatsCount:'',
-      businessSeatsCount:'',
+      flightNumber:"",
+      ecoSeatsCount:"",
+      businessSeatsCount:"",
       departureDate: departureDate,
       arrivalDate: returnDate,
-      departureAirportTerminal:'',
-      arrivalAirportTerminal:'',
+      departureAirportTerminal:"",
+      arrivalAirportTerminal:"",
       });
     
-      
+
     const onChangeData = (e)=> {
-      const { name, value } = e.target;
-      setState(prevState => ({
-          ...prevState,
-          [name]: value
-      }));
+      setState( {...state , [e.target.name]: e.target.value} );
       console.log(state)
     };
 
@@ -50,10 +50,7 @@ const CreateFlight = () => {
       if ( newValue.getTime() > returnDate.getTime() ) {
         setReturnDate(newValue);
       }
-      setState(prevState => ({
-        ...prevState,
-        ["departureDate"]: departureDate
-    }));
+      setState( {...state , ["departureDate"]: departureDate} );
     };
 
     const handleChangeOfReturn = (newValue) => {
@@ -63,10 +60,7 @@ const CreateFlight = () => {
       else{
         setReturnDate(newValue);
       }
-      setState(prevState => ({
-        ...prevState,
-        ["arrivalDate"]: returnDate
-    }));
+      setState( {...state , ["arrivalDate"]:returnDate} );
         
     };
 
@@ -82,8 +76,14 @@ const CreateFlight = () => {
       arrivalDate:state["arrivalDate"],
       departureAirportTerminal:state["departureAirportTerminal"],
       arrivalAirportTerminal:state["arrivalAirportTerminal"],
-      } 
+      }
 
+      Object.keys(flight).forEach(key => {
+        if (flight[key] == "" ){
+          setFlag(false);
+        }
+    })
+     if(flag){
       axios.post('http://localhost:8000/admin/createFlight' , flight )
       .then(res => {
         console.log(res);
@@ -91,11 +91,14 @@ const CreateFlight = () => {
       }).catch(err => {
         console.log(err)
     });
-
+  }
+  else{
+    alert("Some Fields Are Empty");
+  }
     };
    
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component="main" maxWidth="xs" >
         <CssBaseline />
         <Box
           sx={{
@@ -103,6 +106,7 @@ const CreateFlight = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            marginBottom: 15
           }}
         >
           <IconButton onClick={clickOnTheIcon}>
@@ -119,21 +123,22 @@ const CreateFlight = () => {
             <Grid container spacing={2}>
             <Grid item xs={12}>
                 <TextField
+                 
                   required
                   fullWidth
                   id="flightNumber"
                   label="Flight Number"
                   name="flightNumber"
-                  helperText="Max 7 Charchters"
                   placeholder="EX. PI 150"
                   inputProps={{ maxLength: 7 }}
-                  onChange = {onChangeData}
+                  onChange = { (event) =>  setState( {...state , [event.target.name] : event.target.value })   }
                   autoFocus
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   name="departureAirportTerminal"
+                  
                   required
                   fullWidth
                   id="departureAirportTerminal"
@@ -147,6 +152,7 @@ const CreateFlight = () => {
                 <TextField
                   required
                   fullWidth
+                  
                   id="arrivalAirportTerminal"
                   label="To"
                   name="arrivalAirportTerminal"
@@ -158,13 +164,14 @@ const CreateFlight = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   name="businessSeatsCount"
+                  
                   required
                   fullWidth
                   type="number"
                   id="businessSeatsCount"
                   label="Business Seats"
                   placeholder="Number of Seats"
-                  onChange={(event) =>{
+                  onInput={(event) =>{
                     if (event.target.value < 0){
                       event.target.value = 0
                     }
@@ -182,6 +189,7 @@ const CreateFlight = () => {
                   fullWidth
                   type="number"
                   id="ecoSeatsCount"
+                 
                   label="Economic Seats"
                   name="ecoSeatsCount"
                   placeholder="Number of Seats"
@@ -236,10 +244,13 @@ const CreateFlight = () => {
             >
               Create
             </Button>
+         
             </Box>
             </Collapse>
             </Box>
             </Container>
+
+            
 
             
     )

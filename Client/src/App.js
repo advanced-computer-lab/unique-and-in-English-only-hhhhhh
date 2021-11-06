@@ -20,7 +20,7 @@ import EditFlight from './components/EditFlight';
 function App(props) {
   return (
    <Router>
-   { /* <Header  isLogged={props.isLogged}/>   */ }
+   {  <Header  isLogged={props.isLogged}/>    }
      <Switch>
 <Route exact path="/">
 <Showcase isReloaded={true}/>

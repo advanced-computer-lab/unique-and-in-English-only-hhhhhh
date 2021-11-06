@@ -14,11 +14,15 @@ import Typography from '@mui/material/Typography';
 import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
 import { IconButton } from '@mui/material';
 import Collapse from "@mui/material/Collapse";
+import FlightCard from './FlightCard';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const SearchBox = () => {
     const [checked, setChecked] = React.useState(true);
-    const [departureDate, setDepartureDate] = React.useState(new Date());
-    const [returnDate, setReturnDate] = React.useState(new Date());
+    const [departureDate, setDepartureDate] = React.useState();
+    const [returnDate, setReturnDate] = React.useState();
+    const [allState , setAllState] = React.useState([]);
     const [state, setState] = React.useState({
       flightNumber:'',
       ecoSeatsCount:'',
@@ -28,7 +32,15 @@ const SearchBox = () => {
       departureAirportTerminal:'',
       arrivalAirportTerminal:'',
       });
-    
+
+
+      useEffect(() => {
+        axios.get('http://localhost:8000/admin/readFlight')
+      .then((result) => {
+        setAllState(result.data);
+      });
+
+      },[]);
       
     const onChangeData = (e)=> {
       const { name, value } = e.target;
@@ -159,6 +171,51 @@ const SearchBox = () => {
                         renderInput={(params) => <TextField {...params} placeholder="Country, City or Airport"/>}/>
               </Grid>
               
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="businessSeatsCount"
+                  
+                  required
+                  fullWidth
+                  type="number"
+                  id="businessSeatsCount"
+                  label="Business Seats"
+                  placeholder="Number of Seats"
+                  onInput={(event) =>{
+                    if (event.target.value < 0){
+                      event.target.value = 0
+                    }
+                    else if (event.target.value > 100){
+                      event.target.value = 100
+                    }
+                    onChangeData(event);
+                } 
+              }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  type="number"
+                  id="ecoSeatsCount"
+                 
+                  label="Economic Seats"
+                  name="ecoSeatsCount"
+                  placeholder="Number of Seats"
+                  onChange={(event) =>{
+                    if (event.target.value < 0){
+                      event.target.value = 0
+                    }
+                    else if (event.target.value > 500){
+                      event.target.value = 500
+                    }
+                    onChangeData(event);
+                }
+              }
+                />
+              </Grid>
+
               
               <Grid item xs={12} sm={6}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -201,6 +258,36 @@ const SearchBox = () => {
           </Box>
           </Collapse>
         </Box>
+
+        <Grid   container
+        display="flex"
+        alignContent="center"
+        alignItems="center"
+        justifyContent = "center"
+        wrap="wrap"
+        padding= "120px"
+        spacing={15}
+        gridtemplatecolumns= "repeat(3, 300px)"
+>
+{ allState.map((oneElement) =>
+
+
+    <Grid item xs={4} sx={{minWidth: "450px"}}>
+    <FlightCard  flightNumber={oneElement.flightNumber}
+   departureDate ={oneElement.departureDate}
+   arrivalDate ={oneElement.arrivalDate}
+   departureAirportTerminal ={oneElement.departureAirportTerminal}
+   arrivalAirportTerminal = {oneElement.arrivalAirportTerminal}
+   />
+    </Grid>
+
+
+ )}
+
+
+
+
+</Grid>
         
         
       </Container>
