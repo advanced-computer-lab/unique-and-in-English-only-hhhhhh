@@ -26,16 +26,24 @@ router.route('/createFlight')
 
 router.route('/readFlight')
 .get((req,res)=>{
-    adminController.readFlight(req,res).then(result =>{
+    
+    const dummyFlight = {
+        "flightNumber":"",
+        "ecoSeatsCount":0,
+        "businessSeatsCount":0,
+        "departureDate":"",
+        "arrivalDate":"",
+        "departureAirportTerminal":"",
+        "arrivalAirportTerminal":""
+    };
+    adminController.readAllFlights(dummyFlight,res).then(result =>{
         console.log(result);
-        
     });
     
 })
 .post((req,res)=>{
     adminController.readFlight(req,res).then(result =>{
         console.log(result);
-        //res.send(result);
     });
     
 });

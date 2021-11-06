@@ -27,6 +27,19 @@ module.exports={
         //console.log(flights);
         // return flights;
     },
+    readAllFlights: async function(flight,res){
+        const flightNumber = (flight.flightNumber != "") ? flight.flightNumber : "";
+        const departureAirportTerminal = (flight.departureAirportTerminal != "") ? flight.departureAirportTerminal : "";
+        const arrivalAirportTerminal = (flight.arrivalAirport != "") ? flight.arrivalAirportTerminal: "";
+        const arrivalDate = (flight.arrivalDate != "") ? flight.arrivalDate :new Date(2028,12,31,01,01,01);
+        const departureDate = (flight.departureDate != "") ? flight.departureDate :new Date(2018,12,31,01,01,01);
+        const ecoSeatsCount = (flight.ecoSeatsCount != "") ? flight.ecoSeatsCount :0;
+        const businessSeatsCount = (flight.businessSeatsCount != "") ? flight.businessSeatsCount :0;
+        const flights = DB.readFlight(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res);
+
+        //console.log(flights);
+        // return flights;
+    },
     updateFlight: async function(req,res){
         
         await DB.updateFlight(req.body.search,{ $set: req.body.update},res);
