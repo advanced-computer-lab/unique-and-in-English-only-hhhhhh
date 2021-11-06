@@ -13,11 +13,11 @@ module.exports = {
         console.log(2);
         return adminModel.readFlight(req)
     },
-    updateFlight: async function(){
-
+    updateFlight: async function(req){
+        await adminModel.updateFlight(req);
     },
-    deleteFlight: async function(){
-
+    deleteFlight: async function(req){
+        await adminModel.deleteFlight(req);
     },
     
 }

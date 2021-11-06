@@ -4,8 +4,7 @@ const router = express.Router();
 //const Flight = require('../schemas/flight');
 
 const adminController = require('../controllers/adminController');
-const guestController = require('../controllers/guestController');
-const userController = require('../controllers/userController');
+
 
 
 
@@ -22,37 +21,30 @@ router.route('/login')
     
 });
 
-
-router.route('/flights')
-.get((req,res)=>{
-    res.send("flkoags[dkpf'aadmin");
-})
+router.route('/createFlight')
 .post((req,res)=>{
-
-    //assuming we have the parameterss for create and they're correct
-    console.log(1);
-    const a = adminController.readFlight(req);
-    a.then(function(result) {
-        console.log(result) // "Some User token"
-    })
-    //res.json(a);
-    res.send(a);
-
-//     const flight = new Flight({flightNumber:'sad',
-//     ecoSeatsCount:15,
-//     businessSeatsCount:16,
-//     departureTime:"sanld",
-//     arrivalTime:'sad',
-//     departureDate:new Date(2000,8,8),
-//     arrivalDate:new Date(2000,1,22),
-//     departureAirportTerminal:'sad',
-//     arrivalAirportTerminal:'sad'
-// });
-   
-    //res.send("post ya admin");
+    adminController.createFlight(req);
+    res.send("post ya admin");
 })
 
+router.route('/readFlight')
+.post((req,res)=>{
+    adminController.readFlight(req);
+    res.send("post ya admin");
+});
 
+router.route('/deleteFlight')
+.delete((req,res)=>{
+    adminController.deleteFlight(req);
+    res.send("post ya admin");
+
+})
+
+router.route('/updateFlight')
+.put((req,res)=>{
+    adminController.updateFlight(req);
+    res.send("post ya admin");
+});
 
 module.exports = router;
 
