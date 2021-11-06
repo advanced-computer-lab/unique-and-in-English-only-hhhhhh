@@ -8,7 +8,7 @@ import SearchBox from './SearchBox'
 const Combine = () => {
     const [allState , setAllState] = React.useState([]);
     useEffect(() => {
-        axios.get('https://jsonplaceholder.typicode.com/users')
+        axios.get('http://localhost:8000/admin/readFlight')
       .then((result) => {
         setAllState(result.data);
         console.log(allState);
@@ -34,11 +34,11 @@ const Combine = () => {
 
 
     <Grid item xs={4} sx={{minWidth: "450px"}}>
-    <FlightCard  flightNumber={oneElement.name}
+    <FlightCard  flightNumber={oneElement.flightNumber}
    departureDate ={new Date()}
    arrivalDate ={new Date()}
-   departureAirportTerminal ={oneElement.username}
-   arrivalAirportTerminal = {oneElement.email}
+   departureAirportTerminal ={oneElement.departureAirportTerminal}
+   arrivalAirportTerminal = {oneElement.arrivalAirportTerminal}
    />
     </Grid>
 
