@@ -15,6 +15,7 @@ import CreateFlight from './components/CreateFlight';
 import FlightCard from './components/FlightCard';
 import { Grid } from '@mui/material';
 import EditFlight from './components/EditFlight';
+import Combine from './components/Combine';
 
 
 function App(props) {
@@ -45,6 +46,10 @@ function App(props) {
   <SearchBox />
 </Route>
 
+<Route path="/test2">
+  <Combine />
+</Route>
+
 <Route path="/test">
 <Grid   container
         display="flex"
@@ -54,7 +59,7 @@ function App(props) {
         wrap="wrap"
         padding= "120px"
         spacing={15}
-        gridtemplatecolumns= "repeat(3, 300px)"
+       
 >
     <Grid item xs={4} sx={{minWidth: "450px"}}>
     <FlightCard  flightNumber={"AB 200"}

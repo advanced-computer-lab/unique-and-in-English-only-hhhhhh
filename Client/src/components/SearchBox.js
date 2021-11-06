@@ -35,9 +35,10 @@ const SearchBox = () => {
 
 
       useEffect(() => {
-        axios.get('http://localhost:8000/admin/readFlight')
+        axios.get('https://jsonplaceholder.typicode.com/users')
       .then((result) => {
         setAllState(result.data);
+        console.log(allState);
       });
 
       },[]);
@@ -100,7 +101,8 @@ const SearchBox = () => {
 
 
     return (
-      <Container component="main" maxWidth="xs">
+
+        <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
@@ -128,7 +130,6 @@ const SearchBox = () => {
                   id="flightNumber"
                   label="Flight Number"
                   name="flightNumber"
-                  helperText="Max 7 Charchters"
                   placeholder="EX. AB 1500"
                   inputProps={{ maxLength: 7 }}
                   onChange = {onChangeData}
@@ -258,39 +259,8 @@ const SearchBox = () => {
           </Box>
           </Collapse>
         </Box>
+        </Container>
 
-        <Grid   container
-        display="flex"
-        alignContent="center"
-        alignItems="center"
-        justifyContent = "center"
-        wrap="wrap"
-        padding= "120px"
-        spacing={15}
-        gridtemplatecolumns= "repeat(3, 300px)"
->
-{ allState.map((oneElement) =>
-
-
-    <Grid item xs={4} sx={{minWidth: "450px"}}>
-    <FlightCard  flightNumber={oneElement.flightNumber}
-   departureDate ={oneElement.departureDate}
-   arrivalDate ={oneElement.arrivalDate}
-   departureAirportTerminal ={oneElement.departureAirportTerminal}
-   arrivalAirportTerminal = {oneElement.arrivalAirportTerminal}
-   />
-    </Grid>
-
-
- )}
-
-
-
-
-</Grid>
-        
-        
-      </Container>
     )
 }
 

@@ -20,8 +20,8 @@ import { Fade } from '@mui/material';
 import { useState } from 'react';
 
 
-const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
-const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
+const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 40
+const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 40
 
 
 const FlightCard = (props) => {
@@ -100,13 +100,13 @@ const FlightCard = (props) => {
             <Typography gutterBottom variant="h4" component="div">
             { props.flightNumber }
             </Typography>
-            <Typography inline variant="h6">
+            <Typography inline variant="body2">
             {props.departureAirportTerminal}  ------------{'>'}  {props.arrivalAirportTerminal}
             </Typography>
-            <Typography inline variant="h6">
+            <Typography inline variant="body2">
             {props.departureDate.getDate() + "/" + props.departureDate.getMonth()+'/'+props.departureDate.getFullYear()} -------{'>'} {props.arrivalDate.getDate() + "/" + props.arrivalDate.getMonth()+'/'+props.arrivalDate.getFullYear()}
             </Typography>
-            <Typography inline variant="h6">
+            <Typography inline variant="body2">
             {props.departureDate.getHours() + ":" + props.departureDate.getMinutes()} -------{'>'} {props.arrivalDate.getHours() + ":" + props.arrivalDate.getMinutes()}
             </Typography>
             
