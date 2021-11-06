@@ -25,6 +25,13 @@ router.route('/createFlight')
 })
 
 router.route('/readFlight')
+.get((req,res)=>{
+    adminController.readFlight(req,res).then(result =>{
+        console.log(result);
+        
+    });
+    
+})
 .post((req,res)=>{
     adminController.readFlight(req,res).then(result =>{
         console.log(result);
