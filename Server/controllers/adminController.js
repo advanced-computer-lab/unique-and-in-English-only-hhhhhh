@@ -12,6 +12,9 @@ module.exports = {
     readFlight: async function(req,res){
         return adminModel.readFlight(req,res);
     },
+    readAllFlights: async function(flight,res){
+        return adminModel.readAllFlights(flight,res);
+    },
     updateFlight: async function(req,res){
         await adminModel.updateFlight(req,res);
     },
