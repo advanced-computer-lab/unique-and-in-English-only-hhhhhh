@@ -5,9 +5,10 @@ require("dotenv").config({ path: "./config.env" });
 const port = process.env.PORT || 8000;
 
 const User = require('./schemas/User');
-app.use(cors({
-  origin: 'http://localhost:3000'
-}));
+
+const myDB = require("./conn5o5o");
+
+app.use(cors());
 app.use(express.json());
 // get driver 
 const dbo = require("./db/conn.js");
