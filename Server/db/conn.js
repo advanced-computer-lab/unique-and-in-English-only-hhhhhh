@@ -53,7 +53,7 @@ module.exports = {
   },
   readAllFlights:async function(res){
     // search with parameters
-    const requestedFlights = await Flight.find()
+    const requestedFlights = await Flight.find();
      
     res.status(200).send(requestedFlights);
   },
@@ -79,8 +79,8 @@ module.exports = {
         const col = db.collection("flights");
         await col.deleteOne({flightNumber:flightNumber},(err,result)=>{
           console.log(result);
-          if (err) return res.status(500).send("an error occured");
-            (result.deletedCount>0) ?  res.status(200).send("Flight deleted") : res.status(200).send("no such entry in the Database");
+          if (err) return res.status(500).send(false);
+            res.status(200).send(true);
         });
     }
     catch(err){
