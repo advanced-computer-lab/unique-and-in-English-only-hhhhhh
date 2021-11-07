@@ -66,7 +66,7 @@ const CreateFlight = () => {
 
     
       
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       event.preventDefault();
       const flight = {
       flightNumber: state["flightNumber"],
@@ -84,7 +84,7 @@ const CreateFlight = () => {
         }
     })
      if(flag){
-      axios.post('http://localhost:8000/admin/createFlight' , flight )
+      await axios.post('http://localhost:8000/admin/createFlight' , flight )
       .then(res => {
         console.log(res);
         console.log(res.data);

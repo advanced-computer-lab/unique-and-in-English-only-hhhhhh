@@ -34,6 +34,10 @@ const FlightCard = (props) => {
     setOpen(false);
   };
 
+  const handleDelete = (event) => {
+    props.DeleteData(props.flightNumber);
+  };
+
     useEffect(() => {
         const preventDefault = (e: Event) => e.preventDefault()
         document.addEventListener('gesturestart', preventDefault)
@@ -104,10 +108,10 @@ const FlightCard = (props) => {
             {props.departureAirportTerminal}  ------------{'>'}  {props.arrivalAirportTerminal}
             </Typography>
             <Typography inline variant="body2">
-            {props.departureDate.getDate() + "/" + props.departureDate.getMonth()+'/'+props.departureDate.getFullYear()} -------{'>'} {props.arrivalDate.getDate() + "/" + props.arrivalDate.getMonth()+'/'+props.arrivalDate.getFullYear()}
+            {props.departureDate} -------{'>'} {props.arrivalDate}
             </Typography>
             <Typography inline variant="body2">
-            {props.departureDate.getHours() + ":" + props.departureDate.getMinutes()} -------{'>'} {props.arrivalDate.getHours() + ":" + props.arrivalDate.getMinutes()}
+            {props.departureDate} -------{'>'} {props.arrivalDate}
             </Typography>
             
             
@@ -115,7 +119,7 @@ const FlightCard = (props) => {
           <CardActions sx={{ justifyContent: "space-between"  }}>
             <Button onClick={handleOpen} endIcon={<EditIcon />} size="small">Edit</Button>
                 <EditFlight open={open} onClose={handleClose} />
-            <Button endIcon={<DeleteIcon />} size="small">Delete</Button>
+            <Button onClick={handleDelete} endIcon={<DeleteIcon />} size="small">Delete</Button>
           </CardActions>
         </Card>
 

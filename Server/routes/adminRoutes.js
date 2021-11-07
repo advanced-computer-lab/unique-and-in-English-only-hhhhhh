@@ -41,7 +41,7 @@ router.route('/readFlight')
 });
 
 router.route('/deleteFlight')
-.delete(async (req,res)=>{
+.post(async (req,res)=>{
 
     await adminController.deleteFlight(req,res);
 

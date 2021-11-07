@@ -41,7 +41,7 @@ const adminUser = {
   password:"123" 
 };
 
-const handleSubmit = (event) => {
+const handleSubmit = async (event) => {
   var message = "";
   event.preventDefault();
     const user = {
@@ -49,7 +49,7 @@ const handleSubmit = (event) => {
       password:   details.password 
     }
     console.log( user);
-    axios.post('http://localhost:8000/admin/login' , user)
+    await axios.post('http://localhost:8000/admin/login' , user)
     .then(res => {
       message = res.data ;
       console.log(res);
