@@ -34,14 +34,14 @@ const SearchBox = () => {
       });
 
 
-      useEffect(() => {
+  /*    useEffect(() => {
         axios.get('https://jsonplaceholder.typicode.com/users')
       .then((result) => {
         setAllState(result.data);
         console.log(allState);
       });
 
-      },[]);
+      },[]);*/
       
     const onChangeData = (e)=> {
       const { name, value } = e.target;
@@ -58,7 +58,7 @@ const SearchBox = () => {
 
     const handleChangeOfDeparture = (newValue) => {
       setDepartureDate(newValue);
-      if ( newValue.getTime() > returnDate.getTime() ) {
+      if ( newValue > returnDate ) {
         setReturnDate(newValue);
       }
       setState(prevState => ({
@@ -68,7 +68,7 @@ const SearchBox = () => {
     };
 
     const handleChangeOfReturn = (newValue) => {
-     if (newValue.getTime() <= departureDate.getTime()) {
+     if (newValue <= departureDate) {
         setReturnDate(returnDate);
       }
       else{
