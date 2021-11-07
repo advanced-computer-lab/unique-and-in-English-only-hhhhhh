@@ -5,7 +5,23 @@ module.exports={
     authenticate: async function(req,res){
         const email = req.body.email;
         const password = req.body.password;
+        var message ="";
+        console.log(email);
+        console.log(password);
+        console.log(email);
+        if(email == "" || email ==null){
+            message = "email missing,\n";
+        }
+        if(password ==""|| password == null){
+            message+= "password is missing";
+        }
+        if(message.length>0){
+            console.log(10);
+            res.status(200).send(message);
+            return;
+        }
         DB.authenticate(email,password,res);
+
     },
     createFlight: async function(req,res){
         console.log(req.body);
@@ -32,7 +48,7 @@ module.exports={
         const departureAirportTerminal = (flight.departureAirportTerminal != "") ? flight.departureAirportTerminal : "";
         const arrivalAirportTerminal = (flight.arrivalAirport != "") ? flight.arrivalAirportTerminal: "";
         const arrivalDate = (flight.arrivalDate != "") ? flight.arrivalDate :new Date(2028,12,31,01,01,01);
-        const departureDate = (flight.departureDate != "") ? flight.departureDate :new Date(2018,12,31,01,01,01);
+        const departureDate = (flight.departureDate != "") ? flight.departureDate :new Date();
         const ecoSeatsCount = (flight.ecoSeatsCount != "") ? flight.ecoSeatsCount :0;
         const businessSeatsCount = (flight.businessSeatsCount != "") ? flight.businessSeatsCount :0;
         const flights = DB.readFlight(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res);
