@@ -18,6 +18,7 @@ import axios from 'axios';
 import { Alert } from '@mui/material';
 import App from '../App';
 import { Redirect } from 'react-router';
+import { render } from 'react-dom';
 
 
 
@@ -65,15 +66,30 @@ const handleSubmit = async (event) => {
   });
 
   if (message.message.valueOf() == "success".valueOf()  ){
+    setMessage( {isVisible: true , message: "success"} );
     setLogged(true);
-   
+    return(
+      <>
+      <App  isLogged={true} userName={ details.email.toString() }/>
+      <Link href="/login" variant="body2">
+                  Go Back To Home Page
+      </Link>
+</>
+
+    )
+    
   }
 
 };
 if ( logged == true ) {
 
   return (
+    <div>
     <App isLogged={true} userName={ details.email.toString() }/>
+    <Link href="/" variant="body2">
+                  Go Back To Home Page
+      </Link>
+      </div>
 )
 }
 else {
