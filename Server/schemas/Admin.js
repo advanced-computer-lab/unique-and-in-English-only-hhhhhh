@@ -11,7 +11,8 @@ const adminschema=new schema({
     },
     email:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
 },{timestamps:true})
 const Admin=mongoose.model('Admin',adminschema);
