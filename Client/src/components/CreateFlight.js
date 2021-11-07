@@ -29,8 +29,8 @@ const CreateFlight = () => {
       flightNumber:"",
       ecoSeatsCount:"",
       businessSeatsCount:"",
-      departureDate: '',
-      arrivalDate: '',
+      departureDate: departureDate,
+      arrivalDate:returnDate,
       departureAirportTerminal:"",
       arrivalAirportTerminal:"",
       });
@@ -79,7 +79,9 @@ const CreateFlight = () => {
       }
 
       Object.keys(flight).forEach(key => {
-        if (flight[key] == "" ){
+        console.log(flight[key]);
+        if (  flight[key] == "" ){
+          console.log(flag);
           setFlag(false);
         }
     })
@@ -89,11 +91,13 @@ const CreateFlight = () => {
         console.log(res);
         console.log(res.data);
       }).catch(err => {
+        alert("Connection Error with the server");
         console.log(err)
     });
   }
   else{
-    alert("Some Fields Are Empty");
+    alert("Some Empty Fields");
+    setFlag(true);
   }
     };
    

@@ -8,11 +8,11 @@ import Notification from './Notification'
 
 
 const Combine = () => {
-    const [deleteFlag , setDeleteFlag] = React.useState(false);
+    var [deleteFlag , setDeleteFlag] = React.useState(false);
     const [flag , setFlag] = React.useState(true);
     const [allState , setAllState] = React.useState([]);
     const [temp , setTemp] = React.useState([]);
-    const [deleted , setDelted] = React.useState("");
+    const [deleted , setDeleted] = React.useState("");
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [state , setState] = React.useState({
@@ -29,57 +29,67 @@ const Combine = () => {
       useEffect( async () => {
       if (flag) {
         await axios.get('http://localhost:8000/admin/readFlight')
-        .then((result) => {
+        .then(result => {
           setAllState(result.data);
           console.log(allState);
-        });
+        }).catch(err => {
+          alert("Connection Error with the server");
+          console.log(err)
+      });
+
+
        setFlag(false);
        console.log(1);
+       return;
 
       }
     } );
      
-    
-      const handleEdit = async (newValue) => {
+      const handleSerach = async (newValue) => {
         setState(newValue);
          await axios.post('http://localhost:8000/admin/readFlight' , state)
         .then((result) => {
           setAllState(result.data);
           console.log(allState);
-        });
+        }).catch(err => {
+          alert("Connection Error with the server");
+          console.log(err)
+      });
       } ;
 
+
+
+
       const handleDeleted = async ( newValue )=>{
-        console.log(2);
-          setDelted( newValue );
-          console.log(deleted);
+         // setDeleted( newValue );
           setConfirmDialog({
             isOpen: true,
             title: 'Are you sure to delete this record?',
             subTitle: "You can't undo this operation",
-            onConfirm: () => { onDelete(deleted) }
+            onConfirm: () => { onDelete(newValue) }
         })
       };
 
       const onDelete = async deleted => {
-        console.log(3);
 
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
         })
+
         const deleteFlight = {
           flightNumber:deleted
         };
-        console.log(deleteFlight)
+
+
         await axios.post( 'http://localhost:8000/admin/deleteFlight' ,  deleteFlight )
         .then((result) => {
-          console.log(4);
           setDeleteFlag(result.data);
-          console.log(deleteFlag);
-        });
+          deleteFlag = result.data ;
+        }).catch(err => {
+          alert("Connection Error with the server" + err);
+      });
         if ( deleteFlag ){
-          console.log(5);
           setTemp(allState);
           setTemp(  temp.filter( key => key.flightNumber != deleted )  );
           setAllState( temp );
@@ -97,17 +107,12 @@ const Combine = () => {
             message: 'Deleted Failed',
             type: 'error'
         })
-        }
-        
-
-
+        }        
     }
-
-    
 
     return (
         <div>
-            <SearchBox Changedata={ (state) => handleEdit(state) }/>
+            <SearchBox Changedata={ (state) => handleSerach(state) }/>
             <Button onClick={e => {console.log(state)}} > click me</Button>
 
             <Grid 
@@ -130,6 +135,8 @@ const Combine = () => {
    arrivalDate ={oneElement.arrivalDate}
    departureAirportTerminal ={oneElement.departureAirportTerminal}
    arrivalAirportTerminal = {oneElement.arrivalAirportTerminal}
+   ecoSeatsCount = {oneElement.ecoSeatsCount}
+   businessSeatsCount=  {oneElement.ecoSeatsCount}
    DeleteData={ (deleted) => handleDeleted(deleted) }
    />
     </Grid>

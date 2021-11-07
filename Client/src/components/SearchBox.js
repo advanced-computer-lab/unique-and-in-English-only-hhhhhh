@@ -21,7 +21,7 @@ import axios from 'axios';
 const SearchBox = (props) => {
     const [checked, setChecked] = React.useState(true);
     const [departureDate, setDepartureDate] = React.useState( new Date() );
-    const [returnDate, setReturnDate] = React.useState( new Date() );
+    const [returnDate, setReturnDate] = React.useState( new Date('2029-08-18T21:11:54') );
     const [state, setState] = React.useState({
       flightNumber:'',
       ecoSeatsCount:'',

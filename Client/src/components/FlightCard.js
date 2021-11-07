@@ -117,9 +117,20 @@ const FlightCard = (props) => {
             
           </CardContent>
           <CardActions sx={{ justifyContent: "space-between"  }}>
+            
             <Button onClick={handleOpen} endIcon={<EditIcon />} size="small">Edit</Button>
-                <EditFlight open={open} onClose={handleClose} />
+                <EditFlight open={open} onClose={handleClose}
+                flightNumber={props.flightNumber}
+                departureDate ={props.departureDate}
+                arrivalDate ={props.arrivalDate}
+                departureAirportTerminal ={props.departureAirportTerminal}
+                arrivalAirportTerminal = {props.arrivalAirportTerminal}
+                ecoSeatsCount = {props.ecoSeatsCount}
+                businessSeatsCount=  {props.ecoSeatsCount}
+                />
             <Button onClick={handleDelete} endIcon={<DeleteIcon />} size="small">Delete</Button>
+
+
           </CardActions>
         </Card>
 

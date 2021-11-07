@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { blue } from '@mui/material/colors';
 import axios from 'axios';
+import { Alert } from '@mui/material';
 
 
 function Copyright(props) {
@@ -35,6 +36,7 @@ const theme = createTheme();
 
  const Login = () => {
 const [details , setDetails] = React.useState({email:"" ,password:"" });
+const [message , setMessage] = React.useState({isVisible: false , message: "I am here"});
 
 const adminUser = {
   email:"hello@me" ,
@@ -51,9 +53,10 @@ const handleSubmit = async (event) => {
     console.log( user);
     await axios.post('http://localhost:8000/admin/login' , user)
     .then(res => {
-      message = res.data ;
-      console.log(res);
+      setMessage( {isVisible: true , message: res.data} );
+      console.log(res.data);
     }).catch(err => {
+      alert("Connection Error with the server");
       console.log(err)
   });
 
@@ -78,6 +81,7 @@ return (
         <Typography component="h1" variant="h5">
           Login
         </Typography>
+        
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -89,7 +93,7 @@ return (
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                onChange={ e => { setDetails({...details , email: e.target.value}); console.log(details);}}
+                onChange={ e => { setDetails({...details , email: e.target.value}); console.log(details); setMessage({isVisible:false, message:""});}}
               />
             </Grid>
             <Grid item xs={12}>
@@ -101,10 +105,14 @@ return (
                 type="password"
                 id="password"
                 autoComplete="new-password"
-                onChange={ e => { setDetails({...details , password: e.target.value}); console.log(details);}}
+                onChange={ e => { setDetails({...details , password: e.target.value}); console.log(details);setMessage({isVisible:false, message:""});}}
               />
             </Grid>
           </Grid>
+          <br />
+          {
+          message.isVisible && <Alert severity="warning"> {message.message} </Alert>
+        }
           <Button
             type="submit"
             fullWidth

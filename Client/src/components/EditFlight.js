@@ -11,7 +11,7 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
-import { IconButton } from '@mui/material';
+import { Alert, IconButton } from '@mui/material';
 import Collapse from "@mui/material/Collapse";
 import { useEffect } from 'react';
 import axios from 'axios';
@@ -19,6 +19,7 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { Backdrop } from '@mui/material';
 import { Modal } from '@mui/material';
 import { Fade } from '@mui/material';
+
 
 const style = {
     display: 'flex',
@@ -40,18 +41,20 @@ const EditFlight = (props) => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [checked, setChecked] = React.useState(true);
-    const [departureDate, setDepartureDate] = React.useState();
-    const [returnDate, setReturnDate] = React.useState();
+    const [departureDate, setDepartureDate] = React.useState(props.departureDate);
+    const [returnDate, setReturnDate] = React.useState(props.arrivalDate);
+    const [edit, setEdit] = React.useState(false);
 
-    const [state, setState] = React.useState(/*{     props.departureDate         props.arrivalDate
+
+    const [state, setState] = React.useState({    
       flightNumber: props.flightNumber,
       ecoSeatsCount: props.ecoSeatsCount,
       businessSeatsCount: props.businessSeatsCount,
-      departureDate: departureDate,
-      arrivalDate: returnDate,
+      departureDate: props.departureDate,
+      arrivalDate: props.arrivalDate,
       departureAirportTerminal: props.departureAirportTerminal,
       arrivalAirportTerminal: props.arrivalAirportTerminal,
-      }*/);
+      });
     
       
     const onChangeData = (e)=> {
@@ -60,15 +63,18 @@ const EditFlight = (props) => {
           ...prevState,
           [name]: value
       }));
+      setEdit(false);
       console.log(state)
     };
 
     const clickOnTheIcon = () => {
       setChecked((prev) => !prev);
+      setEdit(false);
     };
 
     const handleChangeOfDeparture = (newValue) => {
       setDepartureDate(newValue);
+      setEdit(false);
       if ( newValue.getTime() > returnDate.getTime() ) {
         setReturnDate(newValue);
       }
@@ -79,6 +85,7 @@ const EditFlight = (props) => {
     };
 
     const handleChangeOfReturn = (newValue) => {
+      setEdit(false);
      if (newValue.getTime() <= departureDate.getTime()) {
         setReturnDate(returnDate);
       }
@@ -96,23 +103,33 @@ const EditFlight = (props) => {
       
     const handleSubmit = (event) => {
       event.preventDefault();
+    
       const flight = {
-      flightNumber: state["flightNumber"],
-      ecoSeatsCount:state["ecoSeatsCount"],
-      businessSeatsCount:state["businessSeatsCount"],
-      departureDate:state["departureDate"],
-      arrivalDate:state["arrivalDate"],
-      departureAirportTerminal:state["departureAirportTerminal"],
-      arrivalAirportTerminal:state["arrivalAirportTerminal"],
-      } 
+        search: {
+          flightNumber: props.flightNumber,
+          } , 
+          update: {
+            flightNumber: state["flightNumber"],
+            ecoSeatsCount:state["ecoSeatsCount"],
+            businessSeatsCount:state["businessSeatsCount"],
+            departureDate:state["departureDate"],
+            arrivalDate:state["arrivalDate"],
+            departureAirportTerminal:state["departureAirportTerminal"],
+            arrivalAirportTerminal:state["arrivalAirportTerminal"],
+          }
+      }
 
-      axios.post('http://localhost:8000/admin/createFlight' , flight )
+      console.log(flight);
+
+      axios.put('http://localhost:8000/admin/updateFlight' , flight )
       .then(res => {
         console.log(res);
         console.log(res.data);
       }).catch(err => {
+        alert("Connection Error with the server");
         console.log(err)
     });
+    setEdit(true);
 
     };
    
@@ -140,6 +157,7 @@ const EditFlight = (props) => {
           <Typography component="h1" variant="h5">
             Edit The Flight ya kbeer
           </Typography>
+          { edit ?  <Alert severity="success">Edited Successfully!</Alert>  : <> </> }
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -151,13 +169,14 @@ const EditFlight = (props) => {
                   name="flightNumber"
                   helperText="Max 7 Charchters"
                   placeholder="EX. PI 150"
-                  inputProps={{ maxLength: 7 }}
+                  inputProps={{ maxLength: 7 , defaultValue: props.flightNumber }}
                   onChange = {onChangeData}
                   autoFocus
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                inputProps= { {defaultValue: props.departureAirportTerminal   } }
                   name="departureAirportTerminal"
                   required
                   fullWidth
@@ -170,6 +189,7 @@ const EditFlight = (props) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                inputProps= { {defaultValue: props.arrivalAirportTerminal   } }
                   required
                   fullWidth
                   id="arrivalAirportTerminal"
@@ -182,6 +202,7 @@ const EditFlight = (props) => {
               
               <Grid item xs={12} sm={6}>
                 <TextField
+                inputProps= { {defaultValue: props.businessSeatsCount   } }
                   name="businessSeatsCount"
                   required
                   fullWidth
@@ -203,6 +224,7 @@ const EditFlight = (props) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                inputProps= { {defaultValue: props.ecoSeatsCount   } }
                   required
                   fullWidth
                   type="number"
