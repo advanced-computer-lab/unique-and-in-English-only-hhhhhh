@@ -29,8 +29,8 @@ const CreateFlight = () => {
       flightNumber:"",
       ecoSeatsCount:"",
       businessSeatsCount:"",
-      departureDate: departureDate,
-      arrivalDate: returnDate,
+      departureDate: '',
+      arrivalDate: '',
       departureAirportTerminal:"",
       arrivalAirportTerminal:"",
       });

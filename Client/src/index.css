@@ -69,15 +69,7 @@ body {
   flex-direction: column;
 }
 
-.login .form input{
-  margin: 5px 0;
-  width: 80vw;
-  padding: 12px;
-  border-radius: 10px;
-  font-family: inherit;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
+
 
 .login .form input::placeholder{
   font-weight: 500;

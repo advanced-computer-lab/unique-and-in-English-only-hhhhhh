@@ -48,7 +48,7 @@ const handleSubmit = (event) => {
       email:   details.email ,
       password:   details.password 
     }
-    console.log( user)
+    console.log( user);
     axios.post('http://localhost:8000/admin/login' , user)
     .then(res => {
       message = res.data ;

@@ -18,30 +18,20 @@ import FlightCard from './FlightCard';
 import { useEffect } from 'react';
 import axios from 'axios';
 
-const SearchBox = () => {
+const SearchBox = (props) => {
     const [checked, setChecked] = React.useState(true);
-    const [departureDate, setDepartureDate] = React.useState();
-    const [returnDate, setReturnDate] = React.useState();
-    const [allState , setAllState] = React.useState([]);
+    const [departureDate, setDepartureDate] = React.useState( new Date() );
+    const [returnDate, setReturnDate] = React.useState( new Date() );
     const [state, setState] = React.useState({
       flightNumber:'',
       ecoSeatsCount:'',
       businessSeatsCount:'',
-      departureDate:'',
-      arrivalDate:'',
+      departureDate:   departureDate,
+      arrivalDate:   returnDate,
       departureAirportTerminal:'',
       arrivalAirportTerminal:'',
       });
 
-
-  /*    useEffect(() => {
-        axios.get('https://jsonplaceholder.typicode.com/users')
-      .then((result) => {
-        setAllState(result.data);
-        console.log(allState);
-      });
-
-      },[]);*/
       
     const onChangeData = (e)=> {
       const { name, value } = e.target;
@@ -91,12 +81,17 @@ const SearchBox = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const flight = {
+      flightNumber: state["flightNumber"],
+      ecoSeatsCount:state["ecoSeatsCount"],
+      businessSeatsCount:state["businessSeatsCount"],
+      departureDate:state["departureDate"],
+      arrivalDate:state["arrivalDate"],
+      departureAirportTerminal:state["departureAirportTerminal"],
+      arrivalAirportTerminal:state["arrivalAirportTerminal"],
+      }
+
+      props.Changedata(flight);
   };
 
 
@@ -126,6 +121,7 @@ const SearchBox = () => {
             <Grid container spacing={2}>
             <Grid item xs={12}>
                 <TextField
+                  required
                   fullWidth
                   id="flightNumber"
                   label="Flight Number"
@@ -135,89 +131,32 @@ const SearchBox = () => {
                   onChange = {onChangeData}
                 />
               </Grid>
-            <Grid item xs={12} sm={6}>
-            <h5>From</h5>
-                    <Autocomplete
-                        disablePortal
-                        id="depaturePlace"
-                        name="departureAirportTerminal"
-                        onChange={ (event, value) => setState(prevState => ({
-                          ...prevState,
-                          ["departureAirportTerminal"]: value.label
-                      }))
-                    
-                    }
-                        options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
-                        groupBy={(option) => option.firstLetter}
-                        getOptionLabel={(option) => option.label}
-                        sx={{ width: 190 }}
-                        renderInput={(params) => <TextField {...params} placeholder="Country, City or Airport"/>}/>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-              <h5>To</h5>
-                    <Autocomplete
-                        disablePortal
-                        id="arrivalPlace"
-                        name="arrivalAirportTerminal"
-                        onChange={ (event, value) => setState(prevState => ({
-                          ...prevState,
-                          ["departureAirportTerminal"]: value.label
-                      }))
-                    
-                    }
-                    options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
-                    groupBy={(option) => option.firstLetter}
-                    getOptionLabel={(option) => option.label}
-                        sx={{ width: 190 }}
-                        renderInput={(params) => <TextField {...params} placeholder="Country, City or Airport"/>}/>
-              </Grid>
-              
               <Grid item xs={12} sm={6}>
                 <TextField
-                  name="businessSeatsCount"
+                  required
+                  fullWidth
                   
-                  required
-                  fullWidth
-                  type="number"
-                  id="businessSeatsCount"
-                  label="Business Seats"
-                  placeholder="Number of Seats"
-                  onInput={(event) =>{
-                    if (event.target.value < 0){
-                      event.target.value = 0
-                    }
-                    else if (event.target.value > 100){
-                      event.target.value = 100
-                    }
-                    onChangeData(event);
-                } 
-              }
+                  id="departureAirportTerminal"
+                  name="departureAirportTerminal"
+                  label="from"
+                  placeholder="Country, City or Airport"
+                  onChange = {onChangeData}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  name="arrivalAirportTerminal"
                   required
                   fullWidth
-                  type="number"
-                  id="ecoSeatsCount"
-                 
-                  label="Economic Seats"
-                  name="ecoSeatsCount"
-                  placeholder="Number of Seats"
-                  onChange={(event) =>{
-                    if (event.target.value < 0){
-                      event.target.value = 0
-                    }
-                    else if (event.target.value > 500){
-                      event.target.value = 500
-                    }
-                    onChangeData(event);
-                }
-              }
+                  
+                  id="arrivalAirportTerminal"
+                  label="To"
+                  placeholder="Country, City or Airport"
+                  onChange = {onChangeData}
                 />
-              </Grid>
-
+              </Grid>                             
               
+             
               <Grid item xs={12} sm={6}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <MobileDateTimePicker
