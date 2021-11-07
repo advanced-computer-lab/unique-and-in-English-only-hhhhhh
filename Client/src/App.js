@@ -21,8 +21,14 @@ import Combine from './components/Combine';
 function App(props) {
   return (
    <Router>
-   {  <Header  isLogged={props.isLogged}/>    }
+   {  <Header  isLogged={props.isLogged}  userName={props.userName}/>    }
      <Switch>
+<Route exact path="/user/*">
+<Showcase isReloaded={true}/>
+<Destinations />
+<Advertisement />
+</Route>
+
 <Route exact path="/">
 <Showcase isReloaded={true}/>
 <Destinations />

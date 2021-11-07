@@ -34,6 +34,7 @@ const CreateFlight = () => {
       departureAirportTerminal:"",
       arrivalAirportTerminal:"",
       });
+      
     
 
     const onChangeData = (e)=> {

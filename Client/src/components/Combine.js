@@ -33,17 +33,13 @@ const Combine = () => {
           setAllState(result.data);
           console.log(allState);
         }).catch(err => {
-          alert("Connection Error with the server");
-          console.log(err)
+          alert("Connection Error with the server  " + err);
       });
-
-
        setFlag(false);
-       console.log(1);
-       return;
-
       }
     } );
+
+    
      
       const handleSerach = async (newValue) => {
         setState(newValue);
@@ -52,8 +48,8 @@ const Combine = () => {
           setAllState(result.data);
           console.log(allState);
         }).catch(err => {
-          alert("Connection Error with the server");
-          console.log(err)
+          alert("Connection Error with the server  " + err);
+
       });
       } ;
 
@@ -87,7 +83,7 @@ const Combine = () => {
           setDeleteFlag(result.data);
           deleteFlag = result.data ;
         }).catch(err => {
-          alert("Connection Error with the server" + err);
+          alert("Connection Error with the server  " + err);
       });
         if ( deleteFlag ){
           setTemp(allState);

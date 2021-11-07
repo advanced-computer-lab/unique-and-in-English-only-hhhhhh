@@ -71,14 +71,6 @@ const SearchBox = (props) => {
     };
 
 
-  const options = top100Films.map((option) => {
-    const firstLetter = option.label[0].toUpperCase();
-    return {
-      firstLetter: /[0-9]/.test(firstLetter) ? '0-9' : firstLetter,
-      ...option,
-    };
-  });
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const flight = {

@@ -49,11 +49,12 @@ function stringToColor(string) {
 }
 
 function stringAvatar(name) {
+  console.log(name.toString());
   return {
     sx: {
       bgcolor: stringToColor(name),
     },
-    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    children: `${name.split(' ')[0][0]}`,
   };
 }
 
@@ -100,7 +101,7 @@ else{
 
     <Tooltip title="Account settings">
           <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
-          <Avatar {...stringAvatar('Mahmoud Abd')} />
+          <Avatar {...stringAvatar(  props.userName  )} />
           </IconButton>
         </Tooltip>
 
