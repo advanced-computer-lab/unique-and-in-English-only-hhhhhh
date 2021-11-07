@@ -51,6 +51,12 @@ module.exports = {
      .where('businessSeatsCount').gte(businessSeatsCount);
     res.status(200).send(requestedFlights);
   },
+  readAllFlights:async function(res){
+    // search with parameters
+    const requestedFlights = await Flight.find()
+     
+    res.status(200).send(requestedFlights);
+  },
   createFlight: async function (flight,res) {
     try{
         const db = client.db("AirlineDB");

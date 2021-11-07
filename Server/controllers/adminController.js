@@ -12,8 +12,8 @@ module.exports = {
     readFlight: async function(req,res){
         return adminModel.readFlight(req,res);
     },
-    readAllFlights: async function(flight,res){
-        return adminModel.readAllFlights(flight,res);
+    readAllFlights: async function(res){
+        return adminModel.readAllFlights(res);
     },
     updateFlight: async function(req,res){
         await adminModel.updateFlight(req,res);
