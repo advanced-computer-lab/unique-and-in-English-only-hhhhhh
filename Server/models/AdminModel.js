@@ -2,10 +2,10 @@ const DB = require('../db/conn');
 const Flight = require('../schemas/Flight');
 
 module.exports={
-    authenticate: async function(re,res){
-        const username = req.body.username;
+    authenticate: async function(req,res){
+        const email = req.body.email;
         const password = req.body.password;
-        DB.authenticate(username,password,res);
+        DB.authenticate(email,password,res);
     },
     createFlight: async function(req,res){
         console.log(req.body);

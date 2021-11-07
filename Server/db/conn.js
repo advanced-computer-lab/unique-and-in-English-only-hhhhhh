@@ -25,16 +25,19 @@ module.exports = {
      }
 },
 
-  authenticate: async function(username,password,res){
-    const valid = await Admin.exists({username:username,password:password},(err,result)=>{
-      if(err) res.status(500).send(false);
+  authenticate: async function(email,password,res){
+    const valid = await Admin.exists({email:email,password:password},async(err,result)=>{
+      if(err) res.status(500).send("Connection error");
       if(result==null){
         console.log(false);
-        res.status(200).send(false);
+        await Admin.exists({email:email},(err1,result1)=>{
+          if(result1 == null) res.status(200).send("email is not signed in");
+          else res.status(200).send("wrong password");
+        });
       }
       else{
         console.log(true);
-        res.status(200).send(true);
+        res.status(200).send("success");
       }
     });
   },
