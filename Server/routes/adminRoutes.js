@@ -9,11 +9,6 @@ const adminController = require('../controllers/adminController');
 
 
 router.route('/login')
-.get((req,res)=>{
-    //return admin login page
-    console.log(1);
-    res.send("login, bitch");
-})
 .post((req,res)=>{
     const result = adminController.authenticate(req,res);
     // res.status(200).send(result);
@@ -34,15 +29,11 @@ router.route('/readFlight')
     
 })
 .post((req,res)=>{
-    adminController.readFlight(req,res).then(result =>{
-        console.log(result);
-    });
-    
+    adminController.readFlight(req,res);
 });
 
 router.route('/deleteFlight')
 .post(async (req,res)=>{
-
     await adminController.deleteFlight(req,res);
 
 });

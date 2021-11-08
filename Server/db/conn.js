@@ -29,14 +29,12 @@ module.exports = {
     const valid = await Admin.exists({email:email,password:password},async(err,result)=>{
       if(err) res.status(500).send("Connection error");
       if(result==null){
-        console.log(false);
         await Admin.exists({email:email},(err1,result1)=>{
-          if(result1 == null) res.status(200).send("email is not signed in");
+          if(result1 == null) res.status(200).send("email doesn't exist");
           else res.status(200).send("wrong password");
         });
       }
       else{
-        console.log(true);
         res.status(200).send("success");
       }
     });
@@ -45,10 +43,10 @@ module.exports = {
   readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
     // search with parameters
     const requestedFlights = await Flight.find({flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
-     .where('arrivalDate').lte(arrivalDate)
-     .where('departureDate').gte(departureDate)
-     .where('ecoSeatsCount').gte(ecoSeatsCount)
-     .where('businessSeatsCount').gte(businessSeatsCount);
+    .where('departureDate').gte(departureDate) 
+    .where('arrivalDate').lte(arrivalDate)
+    .where('ecoSeatsCount').gte(ecoSeatsCount)
+    .where('businessSeatsCount').gte(businessSeatsCount);
     res.status(200).send(requestedFlights);
   },
   readAllFlights:async function(res){

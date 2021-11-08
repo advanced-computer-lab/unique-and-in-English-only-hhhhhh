@@ -9,14 +9,8 @@ const adminController = require('../controllers/adminController');
 
 
 router.route('/login')
-.get((req,res)=>{
-    //return admin login page
-    console.log(1);
-    res.send("login, bitch");
-})
 .post((req,res)=>{
     const result = adminController.authenticate(req,res);
-    // res.status(200).send(result);
 });
 
 router.route('/createFlight')
@@ -29,15 +23,13 @@ router.route('/readFlight')
     
    
     adminController.readAllFlights(res).then(result =>{
-        console.log(result);
     });
     
 })
 .post((req,res)=>{
     adminController.readFlight(req,res).then(result =>{
-        console.log(result);
     });
-    
+
 });
 
 router.route('/deleteFlight')

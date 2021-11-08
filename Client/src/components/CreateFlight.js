@@ -86,8 +86,8 @@ const CreateFlight = () => {
       setCreatedFailed(false);
       const flight = {
       flightNumber: state["flightNumber"],
-      ecoSeatsCount:state["ecoSeatsCount"],
-      businessSeatsCount:state["businessSeatsCount"],
+      ecoSeatsCount:(state["ecoSeatsCount"]!="") ?state["ecoSeatsCount"] : 0,
+      businessSeatsCount:(state["businessSeatsCount"]!="") ?state["businessSeatsCount"] : 0,
       departureDate:state["departureDate"],
       arrivalDate:state["arrivalDate"],
       departureAirportTerminal:state["departureAirportTerminal"],
