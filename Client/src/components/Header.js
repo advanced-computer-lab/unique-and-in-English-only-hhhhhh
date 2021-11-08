@@ -20,14 +20,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 
 
-/*function logOut (){
-  index.
-  console.log("U have used logOut");
-
-
-}*/
-
-
 function stringToColor(string) {
   let hash = 0;
   let i;
@@ -49,7 +41,6 @@ function stringToColor(string) {
 }
 
 function stringAvatar(name) {
-  console.log(name.toString());
   return {
     sx: {
       bgcolor: stringToColor(name),
@@ -159,12 +150,6 @@ else{
           Create Flight
         </MenuItem>
         
-        <MenuItem onClick={event =>  window.location.href='/edit'} >
-          <ListItemIcon>
-            <EditIcon fontSize="small" />
-          </ListItemIcon>
-          Edit Flight
-        </MenuItem>
         <MenuItem onClick={event =>  window.location.href='/signup'}>
           <ListItemIcon>
             <PersonAdd fontSize="small" />

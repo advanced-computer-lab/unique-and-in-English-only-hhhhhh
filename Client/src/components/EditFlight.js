@@ -19,6 +19,12 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { Backdrop } from '@mui/material';
 import { Modal } from '@mui/material';
 import { Fade } from '@mui/material';
+import { useHistory } from 'react-router';
+import Notification from './Notification'
+import { AlertTitle } from '@mui/material';
+
+
+
 
 
 const style = {
@@ -37,6 +43,7 @@ const style = {
   };
 
 const EditFlight = (props) => {
+    const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -44,6 +51,7 @@ const EditFlight = (props) => {
     const [departureDate, setDepartureDate] = React.useState(props.departureDate);
     const [returnDate, setReturnDate] = React.useState(props.arrivalDate);
     const [edit, setEdit] = React.useState(false);
+    const history = useHistory() ;
 
 
     const [state, setState] = React.useState({    
@@ -64,7 +72,6 @@ const EditFlight = (props) => {
           [name]: value
       }));
       setEdit(false);
-      console.log(state)
     };
 
     const clickOnTheIcon = () => {
@@ -75,7 +82,7 @@ const EditFlight = (props) => {
     const handleChangeOfDeparture = (newValue) => {
       setDepartureDate(newValue);
       setEdit(false);
-      if ( newValue.getTime() > returnDate.getTime() ) {
+      if ( newValue > returnDate ) {
         setReturnDate(newValue);
       }
       setState(prevState => ({
@@ -86,7 +93,7 @@ const EditFlight = (props) => {
 
     const handleChangeOfReturn = (newValue) => {
       setEdit(false);
-     if (newValue.getTime() <= departureDate.getTime()) {
+     if (newValue <= departureDate) {
         setReturnDate(returnDate);
       }
       else{
@@ -110,27 +117,26 @@ const EditFlight = (props) => {
           } , 
           update: {
             flightNumber: state["flightNumber"],
-            ecoSeatsCount:state["ecoSeatsCount"],
-            businessSeatsCount:state["businessSeatsCount"],
-            departureDate:state["departureDate"],
-            arrivalDate:state["arrivalDate"],
-            departureAirportTerminal:state["departureAirportTerminal"],
-            arrivalAirportTerminal:state["arrivalAirportTerminal"],
+            ecoSeatsCount:   state["ecoSeatsCount"],
+            businessSeatsCount:   state["businessSeatsCount"],
+            departureDate:  new Date( state["departureDate"] ),
+            arrivalDate:   new Date(state["arrivalDate"])  ,
+            departureAirportTerminal:  state["departureAirportTerminal"] ,
+            arrivalAirportTerminal:   state["arrivalAirportTerminal"],
           }
       }
 
-      console.log(flight);
 
       axios.put('http://localhost:8000/admin/updateFlight' , flight )
       .then(res => {
-        console.log(res);
-        console.log(res.data);
-      }).catch(err => {
-        alert("Connection Error with the server");
-        console.log(err)
-    });
-    setEdit(true);
+        setEdit(true);
 
+      }).catch(err => {
+        alert("Connection Error with the server" );
+        
+    });
+    
+    
     };
    
     return (
@@ -155,9 +161,12 @@ const EditFlight = (props) => {
           </Avatar>
           </IconButton>
           <Typography component="h1" variant="h5">
-            Edit The Flight ya kbeer
+            Edit The Flight, Admin !
           </Typography>
-          { edit ?  <Alert severity="success">Edited Successfully!</Alert>  : <> </> }
+          { edit ?  <Alert severity="success">
+          <AlertTitle>Edited Successfully</AlertTitle>
+            Please Reload The Page To See The Effect!
+            </Alert>  : <> </> }
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -251,7 +260,7 @@ const EditFlight = (props) => {
                      id = 'departureDate'
                      name = "departureDate"
                      label="Date&Time of Depature"
-                     disablePast
+                     
                      value={departureDate}
                      onChange={handleChangeOfDeparture  }
                      renderInput={(params) => <TextField {...params} />}
@@ -265,7 +274,7 @@ const EditFlight = (props) => {
                      id = "arrivalDate"
                      name = "arrivalDate"
                      label="Date&Time of Arrival"
-                     disablePast
+                     
                      value={returnDate}
                      onChange={handleChangeOfReturn}
                      renderInput={(params) => <TextField {...params} />}
@@ -287,6 +296,10 @@ const EditFlight = (props) => {
             </Box>
             </Fade>
             </Modal> 
+            <Notification
+                notify={notify}
+                setNotify={setNotify}
+            />
             </>
     )
 }

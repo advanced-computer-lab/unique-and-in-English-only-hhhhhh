@@ -5,7 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Grid } from '@mui/material';
+import { Divider, Grid } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSpring, animated, to } from '@react-spring/web'
@@ -18,7 +18,6 @@ import EditFlight from './EditFlight';
 import { Backdrop } from '@mui/material';
 import { Fade } from '@mui/material';
 import { useState } from 'react';
-
 
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 40
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 40
@@ -104,15 +103,27 @@ const FlightCard = (props) => {
             <Typography gutterBottom variant="h4" component="div">
             { props.flightNumber }
             </Typography>
-            <Typography inline variant="body2">
+            <Typography inline variant="body1">
             {props.departureAirportTerminal}  ------------{'>'}  {props.arrivalAirportTerminal}
             </Typography>
-            <Typography inline variant="body2">
-            {props.departureDate} -------{'>'} {props.arrivalDate}
+            <Divider />
+            <br />
+            <Typography inline variant="body1">
+            {(props.departureDate).substring(0, 10)} -------{'>'} {(props.arrivalDate).substring(0, 10)}
             </Typography>
-            <Typography inline variant="body2">
-            {props.departureDate} -------{'>'} {props.arrivalDate}
+            <Typography inline variant="body1">
+            {(props.departureDate).substring(11, 16)} -------{'>'} {(props.arrivalDate).substring(11, 16)}
             </Typography>
+            <Divider />
+            <br />
+            <div sx={{ justifyContent: "space-between"  }} >
+            <Typography inline variant="body1">
+            Economic Seats: {props.ecoSeatsCount}
+            </Typography>
+            <Typography inline variant="body1">
+            Business Seats: {props.businessSeatsCount}
+            </Typography>
+            </div>
             
             
           </CardContent>
@@ -126,7 +137,7 @@ const FlightCard = (props) => {
                 departureAirportTerminal ={props.departureAirportTerminal}
                 arrivalAirportTerminal = {props.arrivalAirportTerminal}
                 ecoSeatsCount = {props.ecoSeatsCount}
-                businessSeatsCount=  {props.ecoSeatsCount}
+                businessSeatsCount=  {props.businessSeatsCount}
                 />
             <Button onClick={handleDelete} endIcon={<DeleteIcon />} size="small">Delete</Button>
 

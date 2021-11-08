@@ -16,13 +16,19 @@ import Collapse from "@mui/material/Collapse";
 import { useEffect } from 'react';
 import axios from 'axios';
 import { Alert } from '@mui/material';
+import Notification from './Notification'
+import { AlertTitle } from '@mui/material';
+
  
 
 const CreateFlight = () => {
+    const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [checked, setChecked] = React.useState(true);
     const [departureDate, setDepartureDate] = React.useState(new Date());
     const [returnDate, setReturnDate] = React.useState(new Date());
     const [flag , setFlag] = React.useState(true);
+    const [ createdFlag , setCreatedFlag ]= React.useState(false);
+    const [ createdFailed , setCreatedFailed ]= React.useState(false);
   
 
     const [state, setState] = React.useState({
@@ -39,11 +45,14 @@ const CreateFlight = () => {
 
     const onChangeData = (e)=> {
       setState( {...state , [e.target.name]: e.target.value} );
-      console.log(state)
+      setCreatedFlag(false);
+      setCreatedFailed(false);
     };
 
     const clickOnTheIcon = () => {
       setChecked((prev) => !prev);
+      setCreatedFlag(false);
+      setCreatedFailed(false);
     };
 
     const handleChangeOfDeparture = (newValue) => {
@@ -52,9 +61,13 @@ const CreateFlight = () => {
         setReturnDate(newValue);
       }
       setState( {...state , ["departureDate"]: departureDate} );
+      setCreatedFlag(false);
+      setCreatedFailed(false);
     };
 
     const handleChangeOfReturn = (newValue) => {
+      setCreatedFlag(false);
+      setCreatedFailed(false);
      if (newValue.getTime() <= departureDate.getTime()) {
         setReturnDate(returnDate);
       }
@@ -69,6 +82,8 @@ const CreateFlight = () => {
       
     const handleSubmit = async (event) => {
       event.preventDefault();
+      setCreatedFlag(false);
+      setCreatedFailed(false);
       const flight = {
       flightNumber: state["flightNumber"],
       ecoSeatsCount:state["ecoSeatsCount"],
@@ -80,20 +95,26 @@ const CreateFlight = () => {
       }
 
       Object.keys(flight).forEach(key => {
-        console.log(flight[key]);
         if (  flight[key] == "" ){
-          console.log(flag);
           setFlag(false);
         }
     })
      if(flag){
       await axios.post('http://localhost:8000/admin/createFlight' , flight )
       .then(res => {
-        console.log(res);
-        console.log(res.data);
+        setCreatedFlag(true);
+        setNotify({
+          isOpen: true,
+          message: 'Flight Created Successfully',
+          type: 'success'
+      })
       }).catch(err => {
-        alert("Connection Error with the server");
-        console.log(err)
+        setNotify({
+          isOpen: true,
+          message: 'Error with The SERVER',
+          type: 'error'
+      });
+      setCreatedFailed(true);
     });
   }
   else{
@@ -103,6 +124,11 @@ const CreateFlight = () => {
     };
    
     return (
+      <div>
+                    <Notification
+            notify={notify}
+            setNotify={setNotify}
+                      />
         <Container component="main" maxWidth="xs" >
         <CssBaseline />
         <Box
@@ -120,7 +146,7 @@ const CreateFlight = () => {
           </Avatar>
           </IconButton>
           <Typography component="h1" variant="h5">
-            Create New Flight Ya Basha
+            Create New Flight!
           </Typography>
 
           <Collapse in={checked}>
@@ -136,7 +162,7 @@ const CreateFlight = () => {
                   name="flightNumber"
                   placeholder="EX. PI 150"
                   inputProps={{ maxLength: 7 }}
-                  onChange = { (event) =>  setState( {...state , [event.target.name] : event.target.value })   }
+                  onChange = { onChangeData   }
                   autoFocus
                 />
               </Grid>
@@ -239,7 +265,17 @@ const CreateFlight = () => {
                     </LocalizationProvider>
               </Grid>
 
+              <Grid item xs={12} sm={6} />
               </Grid>
+
+              { createdFlag ?  <Alert severity="success">
+          <AlertTitle>Created Successfully</AlertTitle>
+            
+            </Alert>  : <> </> }
+            { createdFailed?  <Alert severity="error">
+          <AlertTitle>Created Failed</AlertTitle>
+            Try Change The FlightNumer
+            </Alert>  : <> </> }
             <Button
               type="submit"
               fullWidth
@@ -249,13 +285,17 @@ const CreateFlight = () => {
             >
               Create
             </Button>
+
          
             </Box>
             </Collapse>
             </Box>
+            
             </Container>
 
-            
+
+
+            </div>
 
             
     )

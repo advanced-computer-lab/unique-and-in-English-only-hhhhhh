@@ -31,7 +31,6 @@ const Combine = () => {
         await axios.get('http://localhost:8000/admin/readFlight')
         .then(result => {
           setAllState(result.data);
-          console.log(allState);
         }).catch(err => {
           alert("Connection Error with the server  " + err);
       });
@@ -46,9 +45,18 @@ const Combine = () => {
          await axios.post('http://localhost:8000/admin/readFlight' , state)
         .then((result) => {
           setAllState(result.data);
-          console.log(allState);
+          setNotify({
+            isOpen: true,
+            message: 'Search Successfully',
+            type: 'success'
+        });
         }).catch(err => {
-          alert("Connection Error with the server  " + err);
+          setNotify({
+            isOpen: true,
+            message: 'Search Failed',
+            type: 'error'
+        })
+          
 
       });
       } ;
@@ -83,18 +91,21 @@ const Combine = () => {
           setDeleteFlag(result.data);
           deleteFlag = result.data ;
         }).catch(err => {
-          alert("Connection Error with the server  " + err);
+          setNotify({
+            isOpen: true,
+            message: 'Deleted Failed',
+            type: 'error'
+        });
       });
         if ( deleteFlag ){
           setTemp(allState);
           setTemp(  temp.filter( key => key.flightNumber != deleted )  );
           setAllState( temp );
-          console.log(allState);
           setFlag(true);
           setNotify({
             isOpen: true,
             message: 'Deleted Successfully',
-            type: 'error'
+            type: 'success'
         })
         }
         else {
@@ -109,8 +120,6 @@ const Combine = () => {
     return (
         <div>
             <SearchBox Changedata={ (state) => handleSerach(state) }/>
-            <Button onClick={e => {console.log(state)}} > click me</Button>
-
             <Grid 
        container
        display="flex"
@@ -132,7 +141,7 @@ const Combine = () => {
    departureAirportTerminal ={oneElement.departureAirportTerminal}
    arrivalAirportTerminal = {oneElement.arrivalAirportTerminal}
    ecoSeatsCount = {oneElement.ecoSeatsCount}
-   businessSeatsCount=  {oneElement.ecoSeatsCount}
+   businessSeatsCount=  {oneElement.businessSeatsCount}
    DeleteData={ (deleted) => handleDeleted(deleted) }
    />
     </Grid>

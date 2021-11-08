@@ -54,15 +54,11 @@ const handleSubmit = async (event) => {
       email:   details.email ,
       password:   details.password 
     }
-    console.log( details.email);
-    console.log(typeof(details.email));
     await axios.post('http://localhost:8000/admin/login' , user)
     .then(res => {
       setMessage( {isVisible: true , message: res.data+ ""} );
-      console.log(message.message);
     }).catch(err => {
       alert("Connection Error with the server");
-      console.log(err)
   });
 
   if (message.message.valueOf() == "success".valueOf()  ){

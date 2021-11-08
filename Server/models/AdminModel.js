@@ -34,8 +34,15 @@ module.exports={
         const flightNumber = (req.body.flightNumber != "") ? req.body.flightNumber : "";
         const departureAirportTerminal = (req.body.departureAirportTerminal != "") ? req.body.departureAirportTerminal : "";
         const arrivalAirportTerminal = (req.body.arrivalAirport != "") ? req.body.arrivalAirportTerminal: "";
-        const arrivalDate = (req.body.arrivalDate != "") ? req.body.arrivalDate :new Date(2028,12,31,01,01,01);
-        const departureDate = (req.body.departureDate != "") ? req.body.departureDate :new Date(2018,12,31,01,01,01);
+        var arrivalDate = (req.body.arrivalDate != "") ? req.body.arrivalDate :new Date(2028,12,31,01,01,01);
+        var departureDate = (req.body.departureDate != "") ? req.body.departureDate :new Date(2018,12,31,01,01,01);
+        if ( departureDate == arrivalDate ){
+            
+              departureDate = new Date('1000-08-18T21:11:54') ;
+               arrivalDate = new Date('3000-08-18T21:11:54') ;
+        }
+
+
         const ecoSeatsCount = (req.body.ecoSeatsCount != "") ? req.body.ecoSeatsCount :0;
         const businessSeatsCount = (req.body.businessSeatsCount != "") ? req.body.businessSeatsCount :0;
         const flights = DB.readFlight(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res);

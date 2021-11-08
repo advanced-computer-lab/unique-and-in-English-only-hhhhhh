@@ -49,112 +49,13 @@ function App(props) {
 </Route>
 
 <Route path="/search">
-  <SearchBox />
+  <Combine />
 </Route>
 
 <Route path="/test2">
   <Combine />
 </Route>
 
-<Route path="/test">
-<Grid   container
-        display="flex"
-        alignContent="center"
-        alignItems="center"
-        justifyContent = "center"
-        wrap="wrap"
-        padding= "120px"
-        spacing={15}
-       
->
-    <Grid item xs={4} sx={{minWidth: "450px"}}>
-    <FlightCard  flightNumber={"AB 200"}
-   departureDate= {new Date()}
-   arrivalDate= {new Date()}
-   departureAirportTerminal="Cairo"
-   arrivalAirportTerminal="Turkey"
-   />
-    </Grid>
-
-    <Grid item xs={4} sx={{minWidth: "450px"}} >
-    <FlightCard  flightNumber={"AB 200"}
-   departureDate= {new Date()}
-   arrivalDate= {new Date()}
-   departureAirportTerminal="Cairo"
-   arrivalAirportTerminal="Turkey"
-   />
-    </Grid>
-
-    <Grid item xs={4} sx={{minWidth: "450px"}} >
-    <FlightCard  flightNumber={"AB 200"}
-   departureDate= {new Date()}
-   arrivalDate= {new Date()}
-   departureAirportTerminal="Cairo"
-   arrivalAirportTerminal="Turkey"
-   />
-    </Grid>
-
-    <Grid item xs={4} sx={{minWidth: "450px"}} >
-    <FlightCard  flightNumber={"AB 200"}
-   departureDate= {new Date()}
-   arrivalDate= {new Date()}
-   departureAirportTerminal="Cairo"
-   arrivalAirportTerminal="Turkey"
-   />
-    </Grid>
-
-    <Grid item xs={4} sx={{minWidth: "450px"}} >
-    <FlightCard  flightNumber={"AB 200"}
-   departureDate= {new Date()}
-   arrivalDate= {new Date()}
-   departureAirportTerminal="Cairo"
-   arrivalAirportTerminal="Turkey"
-   />
-    </Grid>
-
-
-    <Grid item xs={4} sx={{minWidth: "450px"}} >
-    <FlightCard  flightNumber={"AB 200"}
-   departureDate= {new Date()}
-   arrivalDate= {new Date()}
-   departureAirportTerminal="Cairo"
-   arrivalAirportTerminal="Turkey"
-   />
-    </Grid>
-
-
-    <Grid item xs={4} sx={{minWidth: "450px"}} >
-    <FlightCard  flightNumber={"AB 200"}
-   departureDate= {new Date()}
-   arrivalDate= {new Date()}
-   departureAirportTerminal="Cairo"
-   arrivalAirportTerminal="Turkey"
-   />
-    </Grid>
-
-
-    <Grid item xs={4} sx={{minWidth: "450px"}} >
-    <FlightCard  flightNumber={"AB 200"}
-   departureDate= {new Date()}
-   arrivalDate= {new Date()}
-   departureAirportTerminal="Cairo"
-   arrivalAirportTerminal="Turkey"
-   />
-    </Grid>
-
-
-    <Grid item xs={4} sx={{minWidth: "450px"}} >
-    <FlightCard  flightNumber={"AB 200"}
-   departureDate= {new Date()}
-   arrivalDate= {new Date()}
-   departureAirportTerminal="Cairo"
-   arrivalAirportTerminal="Turkey"
-   />
-    </Grid>
-
-    
-</Grid>
-</Route>
 
 <Route path="/edit">
   <EditFlight />

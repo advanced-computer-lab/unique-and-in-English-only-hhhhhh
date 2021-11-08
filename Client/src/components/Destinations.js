@@ -27,7 +27,7 @@ import VizSensor from 'react-visibility-sensor';
         
         <section className="grid">
             <h3>
-                We are currently in 6 cuntries!
+                We are currently in 5 Countries!
             </h3>
             <Fade in={active}  mountOnEnter unmountOnExit timeout={5000}>
 

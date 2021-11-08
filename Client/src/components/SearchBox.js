@@ -21,7 +21,7 @@ import axios from 'axios';
 const SearchBox = (props) => {
     const [checked, setChecked] = React.useState(true);
     const [departureDate, setDepartureDate] = React.useState( new Date() );
-    const [returnDate, setReturnDate] = React.useState( new Date('2029-08-18T21:11:54') );
+    const [returnDate, setReturnDate] = React.useState( new Date() );
     const [state, setState] = React.useState({
       flightNumber:'',
       ecoSeatsCount:'',
@@ -39,7 +39,6 @@ const SearchBox = (props) => {
           ...prevState,
           [name]: value
       }));
-      console.log(state)
     };
     
   const clickOnTheIcon = () => {
@@ -73,6 +72,12 @@ const SearchBox = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+  /*  if ( state["departureDate"].toDateString() === state["arrivalDate"].toDateString() ){
+      setState(prevState => ({
+        ...prevState,
+        ["departureDate"]: new Date('1000-08-18T21:11:54') , ["arrivalDate"]: new Date('3000-08-18T21:11:54')
+    }));
+    }*/
     const flight = {
       flightNumber: state["flightNumber"],
       ecoSeatsCount:state["ecoSeatsCount"],
@@ -82,7 +87,6 @@ const SearchBox = (props) => {
       departureAirportTerminal:state["departureAirportTerminal"],
       arrivalAirportTerminal:state["arrivalAirportTerminal"],
       }
-
       props.Changedata(flight);
   };
 
@@ -105,7 +109,7 @@ const SearchBox = (props) => {
           </Avatar>
           </IconButton>
           <Typography component="h1" variant="h5">
-            Search Now Ya ADMIN xD!!!
+            Search Flights, ADMIN !
           </Typography>
 
           <Collapse in={checked}>
@@ -197,11 +201,4 @@ const SearchBox = (props) => {
 
 export default SearchBox
 
-const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },
-    { label: '12 Angry Men', year: 1957 },
-    { label: "Schindler's List", year: 1993 }
-  ];
+
