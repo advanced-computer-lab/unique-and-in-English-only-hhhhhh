@@ -15,3 +15,15 @@ Motivation:
 The project was created as instructed in the Advanced Computer Lap course. We, frankly speaking, did it for the grades :D, but also to have fun and test our self-learning and programming skills as future computer engineers. 
 
 Build Status:
+Code Style:
+Screenshots:
+Tech/Framework used:
+Features:
+Code Examples:
+Installation:
+API reference:
+Tests:
+How to Use:
+Contribute:
+Credits:
+License:
