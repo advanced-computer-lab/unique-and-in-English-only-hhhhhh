@@ -19,6 +19,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
 }
 
 .header{
@@ -29,7 +30,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding: 5px;
   background-color: #1e427c;
 }
 
@@ -43,7 +44,7 @@ body {
 .showcase {
   background: url('./assets/image1.jpg') no-repeat center/
   cover;
-  height: 600px;
+  height: 635px;
 }
 
 .showcase .overlay {
@@ -51,7 +52,7 @@ body {
   flex-direction: column;
   align-items:  center;
   justify-content: center;
-  height: 600px;
+  height: 635px;
   color: #fff;
   background-color: rgba(0,0,0,0.4);
 }
@@ -68,15 +69,7 @@ body {
   flex-direction: column;
 }
 
-.login .form input{
-  margin: 5px 0;
-  width: 80vw;
-  padding: 12px;
-  border-radius: 10px;
-  font-family: inherit;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
+
 
 .login .form input::placeholder{
   font-weight: 500;
@@ -133,18 +126,21 @@ max-width: 305px;
   padding-bottom: 20px;
 }
 
+.grid .grid-items{
+  
+}
 
 .grid .grid-items div{
  /* background-color: #f1f1f1 ;*/
- display: table-row;
-  height: 250px;
+ display: table;
+  height: 300px;
   margin:  20px 0;
   padding:  20px;
   border-radius: 10px ;
 }
 
 .grid .grid-items div img{
-border-radius: 100px;
+border-radius: 50px;
 align-items: center;
 }
 
@@ -156,19 +152,23 @@ font-size: 22px;
 
 .grid .grid-items div p{
   text-align: center;
-  line-height: 1.8;
+  line-height: 1.5;
   }
      
 .footer{
+  position: fixed;
+  left:0;
+  bottom:0;
+  right:0;
   background-color: #333;
-  padding: 30px;
+  padding: 2px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .footer ul li{
-  margin: 10px 0;
+  margin: 5px 0;
 }
 
 .footer ul li button{

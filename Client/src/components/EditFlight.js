@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,165 +11,182 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
-import { IconButton, Modal } from '@mui/material';
+import { Alert, IconButton } from '@mui/material';
 import Collapse from "@mui/material/Collapse";
 import { useEffect } from 'react';
 import axios from 'axios';
-import { Alert } from '@mui/material';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { Backdrop } from '@mui/material';
+import { Modal } from '@mui/material';
+import { Fade } from '@mui/material';
+import { useHistory } from 'react-router';
 import Notification from './Notification'
 import { AlertTitle } from '@mui/material';
 
- 
 
-const CreateFlight = () => {
+
+
+
+const style = {
+    display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+const EditFlight = (props) => {
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     const [checked, setChecked] = React.useState(true);
-    const [departureDate, setDepartureDate] = React.useState(new Date());
-    const [returnDate, setReturnDate] = React.useState(new Date());
-    const [flag , setFlag] = React.useState(true);
-    const [ createdFlag , setCreatedFlag ]= React.useState(false);
-    const [ createdFailed , setCreatedFailed ]= React.useState(false);
-  
+    const [departureDate, setDepartureDate] = React.useState(props.departureDate);
+    const [returnDate, setReturnDate] = React.useState(props.arrivalDate);
+    const [edit, setEdit] = React.useState(false);
+    const history = useHistory() ;
 
-    const [state, setState] = React.useState({
-      flightNumber:"",
-      ecoSeatsCount:"",
-      businessSeatsCount:"",
-      departureDate: departureDate,
-      arrivalDate:returnDate,
-      departureAirportTerminal:"",
-      arrivalAirportTerminal:"",
+
+    const [state, setState] = React.useState({    
+      flightNumber: props.flightNumber,
+      ecoSeatsCount: props.ecoSeatsCount,
+      businessSeatsCount: props.businessSeatsCount,
+      departureDate: props.departureDate,
+      arrivalDate: props.arrivalDate,
+      departureAirportTerminal: props.departureAirportTerminal,
+      arrivalAirportTerminal: props.arrivalAirportTerminal,
       });
-      
     
-
+      
     const onChangeData = (e)=> {
-      setState( {...state , [e.target.name]: e.target.value} );
-      setCreatedFlag(false);
-      setCreatedFailed(false);
+      const { name, value } = e.target;
+      setState(prevState => ({
+          ...prevState,
+          [name]: value
+      }));
+      setEdit(false);
     };
 
     const clickOnTheIcon = () => {
       setChecked((prev) => !prev);
-      setCreatedFlag(false);
-      setCreatedFailed(false);
+      setEdit(false);
     };
 
     const handleChangeOfDeparture = (newValue) => {
       setDepartureDate(newValue);
-      if ( newValue.getTime() > returnDate.getTime() ) {
+      setEdit(false);
+      if ( newValue > returnDate ) {
         setReturnDate(newValue);
       }
-      setState( {...state , ["departureDate"]: departureDate} );
-      setCreatedFlag(false);
-      setCreatedFailed(false);
+      setState(prevState => ({
+        ...prevState,
+        ["departureDate"]: departureDate
+    }));
     };
 
     const handleChangeOfReturn = (newValue) => {
-      setCreatedFlag(false);
-      setCreatedFailed(false);
-     if (newValue.getTime() <= departureDate.getTime()) {
+      setEdit(false);
+     if (newValue <= departureDate) {
         setReturnDate(returnDate);
       }
       else{
         setReturnDate(newValue);
       }
-      setState( {...state , ["arrivalDate"]:returnDate} );
+      setState(prevState => ({
+        ...prevState,
+        ["arrivalDate"]: returnDate
+    }));
         
     };
 
     
       
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
       event.preventDefault();
-      setCreatedFlag(false);
-      setCreatedFailed(false);
+    
       const flight = {
-      flightNumber: state["flightNumber"],
-      ecoSeatsCount:(state["ecoSeatsCount"]!="") ?state["ecoSeatsCount"] : 0,
-      businessSeatsCount:(state["businessSeatsCount"]!="") ?state["businessSeatsCount"] : 0,
-      departureDate:state["departureDate"],
-      arrivalDate:state["arrivalDate"],
-      departureAirportTerminal:state["departureAirportTerminal"],
-      arrivalAirportTerminal:state["arrivalAirportTerminal"],
+        search: {
+          flightNumber: props.flightNumber,
+          } , 
+          update: {
+            flightNumber: state["flightNumber"],
+            ecoSeatsCount:   state["ecoSeatsCount"],
+            businessSeatsCount:   state["businessSeatsCount"],
+            departureDate:  new Date( state["departureDate"] ),
+            arrivalDate:   new Date(state["arrivalDate"])  ,
+            departureAirportTerminal:  state["departureAirportTerminal"] ,
+            arrivalAirportTerminal:   state["arrivalAirportTerminal"],
+          }
       }
 
-      Object.keys(flight).forEach(key => {
-        if (  flight[key] == "" ){
-          setFlag(false);
-        }
-    })
-     if(flag){
-      await axios.post('http://localhost:8000/admin/createFlight' , flight )
+
+      axios.put('http://localhost:8000/admin/updateFlight' , flight )
       .then(res => {
-        setCreatedFlag(true);
-        setNotify({
-          isOpen: true,
-          message: 'Flight Created Successfully',
-          type: 'success'
-      })
+        setEdit(true);
+
       }).catch(err => {
-        setNotify({
-          isOpen: true,
-          message: 'Error with The SERVER',
-          type: 'error'
-      });
-      setCreatedFailed(true);
+        alert("Connection Error with the server" );
+        
     });
-  }
-  else{
-    alert("Some Empty Fields");
-    setFlag(true);
-  }
+    
+    
     };
    
     return (
-      <div>
-                    <Notification
-            notify={notify}
-            setNotify={setNotify}
-                      />
-        <Container component="main" maxWidth="xs" >
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginBottom: 15
-          }}
-        >
-          <IconButton onClick={clickOnTheIcon}>
+        <>
+        
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className="modal"
+        {...props}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 1000,
+        }}
+      >
+         <Fade in={props.open}>
+          <Box sx={style}>
+          <IconButton sx={{alignItems:"center"}}>
           <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-            <NoteAddIcon  />
+            <ModeEditIcon  />
           </Avatar>
           </IconButton>
           <Typography component="h1" variant="h5">
-            Create New Flight!
+            Edit The Flight, Admin !
           </Typography>
-
-          <Collapse in={checked}>
+          { edit ?  <Alert severity="success">
+          <AlertTitle>Edited Successfully</AlertTitle>
+            Please Reload The Page To See The Effect!
+            </Alert>  : <> </> }
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
             <Grid item xs={12}>
                 <TextField
-                 
                   required
                   fullWidth
                   id="flightNumber"
                   label="Flight Number"
                   name="flightNumber"
+                  helperText="Max 7 Charchters"
                   placeholder="EX. PI 150"
-                  inputProps={{ maxLength: 7 }}
-                  onChange = { onChangeData   }
+                  inputProps={{ maxLength: 7 , defaultValue: props.flightNumber }}
+                  onChange = {onChangeData}
                   autoFocus
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                inputProps= { {defaultValue: props.departureAirportTerminal   } }
                   name="departureAirportTerminal"
-                  
                   required
                   fullWidth
                   id="departureAirportTerminal"
@@ -181,9 +198,9 @@ const CreateFlight = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                inputProps= { {defaultValue: props.arrivalAirportTerminal   } }
                   required
                   fullWidth
-                  
                   id="arrivalAirportTerminal"
                   label="To"
                   name="arrivalAirportTerminal"
@@ -194,15 +211,15 @@ const CreateFlight = () => {
               
               <Grid item xs={12} sm={6}>
                 <TextField
+                inputProps= { {defaultValue: props.businessSeatsCount   } }
                   name="businessSeatsCount"
-                  
                   required
                   fullWidth
                   type="number"
                   id="businessSeatsCount"
                   label="Business Seats"
                   placeholder="Number of Seats"
-                  onInput={(event) =>{
+                  onChange={(event) =>{
                     if (event.target.value < 0){
                       event.target.value = 0
                     }
@@ -216,11 +233,11 @@ const CreateFlight = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                inputProps= { {defaultValue: props.ecoSeatsCount   } }
                   required
                   fullWidth
                   type="number"
                   id="ecoSeatsCount"
-                 
                   label="Economic Seats"
                   name="ecoSeatsCount"
                   placeholder="Number of Seats"
@@ -243,7 +260,7 @@ const CreateFlight = () => {
                      id = 'departureDate'
                      name = "departureDate"
                      label="Date&Time of Depature"
-                     disablePast
+                     
                      value={departureDate}
                      onChange={handleChangeOfDeparture  }
                      renderInput={(params) => <TextField {...params} />}
@@ -257,48 +274,34 @@ const CreateFlight = () => {
                      id = "arrivalDate"
                      name = "arrivalDate"
                      label="Date&Time of Arrival"
-                     disablePast
+                     
                      value={returnDate}
                      onChange={handleChangeOfReturn}
                      renderInput={(params) => <TextField {...params} />}
                     />
                     </LocalizationProvider>
               </Grid>
-
-              <Grid item xs={12} sm={6} />
               </Grid>
-
-              { createdFlag ?  <Alert severity="success">
-          <AlertTitle>Created Successfully</AlertTitle>
             
-            </Alert>  : <> </> }
-            { createdFailed?  <Alert severity="error">
-          <AlertTitle>Created Failed</AlertTitle>
-            Try Change The FlightNumer
-            </Alert>  : <> </> }
             <Button
               type="submit"
               fullWidth
-              endIcon= {<NoteAddIcon  />}
+            endIcon={<ModeEditIcon  />}
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Create
+              Edit
             </Button>
-
-         
             </Box>
-            </Collapse>
             </Box>
-            
-            </Container>
-
-
-
-            </div>
-
-            
+            </Fade>
+            </Modal> 
+            <Notification
+                notify={notify}
+                setNotify={setNotify}
+            />
+            </>
     )
 }
 
-export default CreateFlight
+export default EditFlight

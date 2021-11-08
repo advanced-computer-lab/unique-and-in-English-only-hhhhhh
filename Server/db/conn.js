@@ -1,4 +1,6 @@
 const { MongoClient } = require("mongodb");
+const Flight = require("../schemas/Flight");
+const Admin = require("../schemas/Admin");
 const Db = process.env.ATLAS_URI;
 console.log(Db);
 const client = new MongoClient(Db, {
@@ -22,17 +24,46 @@ module.exports = {
          console.log(err.stack);
      }
 },
+
+  authenticate: async function(email,password,res){
+    const valid = await Admin.exists({email:email,password:password},async(err,result)=>{
+      if(err) res.status(500).send("Connection error");
+      if(result==null){
+        await Admin.exists({email:email},(err1,result1)=>{
+          if(result1 == null) res.status(200).send("email doesn't exist");
+          else res.status(200).send("wrong password");
+        });
+      }
+      else{
+        res.status(200).send("success");
+      }
+    });
+  },
  
-  createFlight: async function (flight) {
+  readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
+    // search with parameters
+    const requestedFlights = await Flight.find({flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
+    .where('departureDate').gte(departureDate) 
+    .where('arrivalDate').lte(arrivalDate)
+    .where('ecoSeatsCount').gte(ecoSeatsCount)
+    .where('businessSeatsCount').gte(businessSeatsCount);
+    res.status(200).send(requestedFlights);
+  },
+  readAllFlights:async function(res){
+    // search with parameters
+    const requestedFlights = await Flight.find();
+     
+    res.status(200).send(requestedFlights);
+  },
+  createFlight: async function (flight,res) {
     try{
-        const db = client.db("test");
+        const db = client.db("AirlineDB");
         const col = db.collection("flights");
-        await col.insertOne(flight,(err,res)=>{
-          if(err){
-            throw err;
-          }else{
-            console.log("flight has been added");
-          }
+        await col.insertOne(flight,(err,result)=>{
+          if (err) if (err.keyPattern.flightNumber==1) return res.status(500).send("duplicates");
+          else res.status(500).send("connection error");
+          console.log(result)
+          res.status(200).send("Flight created");
         });
     }
     catch(err){
@@ -40,30 +71,30 @@ module.exports = {
     }
   
   },
-  deleteFlight: async function (flightNumber){
+  deleteFlight: async function (flightNumber,res){
     try{
-        console.log("flight has been deleted");
-        const db = client.db("test");
+        const db = client.db("AirlineDB");
         const col = db.collection("flights");
-        await col.deleteOne({flightNumber:flightNumber},(err,res)=>{
-          if (err) throw err;
-          console.log(res);
+        await col.deleteOne({flightNumber:flightNumber},(err,result)=>{
+          console.log(result);
+          if (err) return res.status(500).send(false);
+            res.status(200).send(true);
         });
-        
     }
     catch(err){
       console.log(err);
     }
   
   },
- updateFlight: async function (search, update){
+ updateFlight: async function (search, update,res){
     try{
-        const db = client.db("test");
+        const db = client.db("AirlineDB");
         const col = db.collection("flights");
-        const p = await col.updateOne(search,update,(err,res)=>{
-          if (err) throw err;
-          console.log(res);
-          // console.log(p);
+        const p = await col.updateOne(search,update,(err,result)=>{
+          if (err) if (err.keyPattern.flightNumber==1) return res.status(500).send("duplicates");
+          else res.status(500).send("connection error");
+          console.log(result);
+          res.status(200).send("Flight updated");
         });
     }
     catch(err){

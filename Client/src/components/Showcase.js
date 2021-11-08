@@ -9,7 +9,7 @@ const Showcase = (props) => {
        <section className="showcase">
        
            <div className="overlay">
-               <h1> LOL Agency</h1>
+               <h1> Zeyad Tayara Travel Agency</h1>
                 <p>
                     Travel the World Now!!
                 </p>
