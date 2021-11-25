@@ -1,7 +1,29 @@
 const DB = require('../db/conn');
 const Flight = require('../schemas/Flight');
+const { MongoClient } = require("mongodb");
 
+const Admin = require("../schemas/Admin");
+const Db = process.env.ATLAS_URI;
+console.log(Db);
+const client = new MongoClient(Db, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+ 
 module.exports={
+    connectToServer: async function(callback) {
+        try {
+             await client.connect((err,res)=>{
+              if(err){
+                throw err;
+              }else{
+                console.log("DB connected successfully");
+              }
+             });
+            } catch (err) {
+             console.log(err.stack);
+         }
+    },
     authenticate: async function(req,res){
         const email = req.body.email;
         const password = req.body.password;
@@ -16,14 +38,44 @@ module.exports={
             res.status(200).send(message);
             return;
         }
-        DB.authenticate(email,password,res);
+       auth(email,password,res);
 
     },
+    auth: async function(email,password,res){
+        const valid = await Admin.exists({email:email,password:password},async(err,result)=>{
+          if(err) res.status(500).send("Connection error");
+          if(result==null){
+            await Admin.exists({email:email},(err1,result1)=>{
+              if(result1 == null) res.status(200).send("email doesn't exist");
+              else res.status(200).send("wrong password");
+            });
+          }
+          else{
+            res.status(200).send("success");
+          }
+        });
+      },
     createFlight: async function(req,res){
   
           let flight = new Flight(req.body);
           
-          await DB.createFlight(flight,res);
+          await crfli(flight,res);
+      },
+      crfli: async function (flight,res) {
+        try{
+            const db = client.db("AirlineDB");
+            const col = db.collection("flights");
+            await col.insertOne(flight,(err,result)=>{
+              if (err) if (err.keyPattern.flightNumber==1) return res.status(500).send("duplicates");
+              else res.status(500).send("connection error");
+              console.log(result)
+              res.status(200).send("Flight created");
+            });
+        }
+        catch(err){
+          console.log(err);
+        }
+      
       },
     readFlight: async function(req,res){
         const flightNumber = (req.body.flightNumber != "") ? req.body.flightNumber : "";
