@@ -95,11 +95,11 @@ const FlightCard = (props) => {
         <Card >
           <CardMedia
             component="img"
-            
+            className="rounded-br-full"
             image="https://c.ndtvimg.com/2019-05/tk4tpt5g_plane-generic_625x300_29_May_19.jpg"
             alt="green iguana"
           />
-          <CardContent sx={{textAlign:"center"}}>
+          <CardContent sx={{textAlign:"center" , justifyContent:"center"}}>
             <Typography gutterBottom variant="h4" component="div">
             { props.flightNumber }
             </Typography>

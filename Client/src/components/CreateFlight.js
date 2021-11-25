@@ -13,7 +13,6 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
 import { IconButton, Modal } from '@mui/material';
 import Collapse from "@mui/material/Collapse";
-import { useEffect } from 'react';
 import axios from 'axios';
 import { Alert } from '@mui/material';
 import Notification from './Notification'
@@ -25,7 +24,7 @@ const CreateFlight = () => {
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [checked, setChecked] = React.useState(true);
     const [departureDate, setDepartureDate] = React.useState(new Date());
-    const [returnDate, setReturnDate] = React.useState(new Date());
+    const [arrivalDate, setarrivalDate] = React.useState(new Date());
     const [flag , setFlag] = React.useState(true);
     const [ createdFlag , setCreatedFlag ]= React.useState(false);
     const [ createdFailed , setCreatedFailed ]= React.useState(false);
@@ -36,7 +35,7 @@ const CreateFlight = () => {
       ecoSeatsCount:"",
       businessSeatsCount:"",
       departureDate: departureDate,
-      arrivalDate:returnDate,
+      arrivalDate:arrivalDate,
       departureAirportTerminal:"",
       arrivalAirportTerminal:"",
       });
@@ -57,24 +56,24 @@ const CreateFlight = () => {
 
     const handleChangeOfDeparture = (newValue) => {
       setDepartureDate(newValue);
-      if ( newValue.getTime() > returnDate.getTime() ) {
-        setReturnDate(newValue);
+      if ( newValue.getTime() > arrivalDate.getTime() ) {
+        setarrivalDate(newValue);
       }
       setState( {...state , ["departureDate"]: departureDate} );
       setCreatedFlag(false);
       setCreatedFailed(false);
     };
 
-    const handleChangeOfReturn = (newValue) => {
+    const handleChangeOfArrival = (newValue) => {
       setCreatedFlag(false);
       setCreatedFailed(false);
      if (newValue.getTime() <= departureDate.getTime()) {
-        setReturnDate(returnDate);
+        setarrivalDate(arrivalDate);
       }
       else{
-        setReturnDate(newValue);
+        setarrivalDate(newValue);
       }
-      setState( {...state , ["arrivalDate"]:returnDate} );
+      setState( {...state , ["arrivalDate"]:arrivalDate} );
         
     };
 
@@ -258,8 +257,8 @@ const CreateFlight = () => {
                      name = "arrivalDate"
                      label="Date&Time of Arrival"
                      disablePast
-                     value={returnDate}
-                     onChange={handleChangeOfReturn}
+                     value={arrivalDate}
+                     onChange={handleChangeOfArrival}
                      renderInput={(params) => <TextField {...params} />}
                     />
                     </LocalizationProvider>
