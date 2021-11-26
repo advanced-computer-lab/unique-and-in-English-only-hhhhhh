@@ -1,6 +1,15 @@
 const mongoose=require('mongoose');
 const schema=mongoose.Schema;
 const userschema=new schema({
+    userName:{
+        type:String,
+        unique:true,
+        required:true
+    },
+    password:{
+        type:String,
+        required:true
+    },
     firstName:{
         type:String,
         required:true
@@ -13,6 +22,7 @@ const userschema=new schema({
         type:String,
         required:true
     },
+    //check if required 
     telephoneNumber:{
         type:String,
         required:true

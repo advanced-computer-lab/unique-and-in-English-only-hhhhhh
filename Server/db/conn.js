@@ -1,6 +1,7 @@
 const { MongoClient } = require("mongodb");
 const Flight = require("../schemas/Flight");
 const Admin = require("../schemas/Admin");
+const User = require("../schemas/USer");
 const Db = process.env.ATLAS_URI;
 console.log(Db);
 const client = new MongoClient(Db, {
@@ -95,6 +96,21 @@ module.exports = {
           else res.status(500).send("connection error");
           console.log(result);
           res.status(200).send("Flight updated");
+        });
+    }
+    catch(err){
+      console.log(err);
+    }
+  },
+  editProfile: async function (search, update,res){
+    try{
+        const db = client.db("AirlineDB");
+        const col = db.collection("users");
+        const p = await col.updateOne(search,update,(err,result)=>{
+          if (err) if (err.keyPattern.username==1) return res.status(500).send("duplicates");
+          else res.status(500).send("connection error");
+          console.log(result);
+          res.status(200).send("Profile updated");
         });
     }
     catch(err){
