@@ -1,18 +1,18 @@
 const mongoose=require('mongoose');
 const schema=mongoose.Schema;
 const DB = require('../db/conn');
-const flightschema=new schema({
-    //_id: false,
-    flightNumber:{
+const reservationschema=new schema({
+   // _id: false,
+    userId:{
         type:String,
-        //unique:true,
+        unique:true,
         required:true
     },
-    ecoSeatsCount:{
-        type:Number,
+    flightId:{
+        type:String,
         required:true
     },
-    businessSeatsCount:{
+    seats:{
         type:Number,
         required:true
     },
@@ -34,4 +34,4 @@ const flightschema=new schema({
     },
 },{timestamps:true}); 
 
-module.exports = mongoose.model('Flight',flightschema);
+module.exports = mongoose.model('Reservation',reservationschema);

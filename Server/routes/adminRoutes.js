@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-//const Admin = require("../schemas/Admin");
-//const Flight = require('../schemas/flight');
 
 const adminController = require('../controllers/adminController');
 
@@ -21,8 +19,6 @@ router.route('/createFlight')
 
 router.route('/readFlight')
 .get((req,res)=>{
-    
-    
     adminController.readAllFlights(res).then(result =>{
         console.log(result);
     });
