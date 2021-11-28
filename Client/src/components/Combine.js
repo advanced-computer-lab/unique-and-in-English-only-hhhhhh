@@ -15,16 +15,6 @@ const Combine = () => {
     const [deleted , setDeleted] = React.useState("");
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
-    const [state , setState] = React.useState({
-      flightNumber:'',
-      ecoSeatsCount:'',
-      businessSeatsCount:'',
-      departureDate:  '',
-      arrivalDate:  '',
-      departureAirportTerminal:'',
-      arrivalAirportTerminal:'',
-      });
-
 
       useEffect( async () => {
       if (flag) {

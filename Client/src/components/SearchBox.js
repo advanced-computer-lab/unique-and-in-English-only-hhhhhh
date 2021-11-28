@@ -22,15 +22,9 @@ const SearchBox = (props) => {
     const [checked, setChecked] = React.useState(true);
     const [departureDate, setDepartureDate] = React.useState( new Date() );
     const [returnDate, setReturnDate] = React.useState( new Date() );
-    const [state, setState] = React.useState({
-      flightNumber:'',
-      ecoSeatsCount:'',
-      businessSeatsCount:'',
-      departureDate:   departureDate,
-      arrivalDate:   returnDate,
-      departureAirportTerminal:'',
-      arrivalAirportTerminal:'',
-      });
+    const [ flightNumber , setFlightNumber ]= React.useState("");
+    const [ departureAirportTerminal , setDepartureAirportTerminal ]= React.useState("");
+    const [ arrivalAirportTerminal , setArrivalAirportTerminal ]= React.useState("");
 
       
     const onChangeData = (e)=> {
@@ -79,13 +73,13 @@ const SearchBox = (props) => {
     }));
     }*/
     const flight = {
-      flightNumber: state["flightNumber"],
-      ecoSeatsCount:state["ecoSeatsCount"],
-      businessSeatsCount:state["businessSeatsCount"],
-      departureDate:state["departureDate"],
-      arrivalDate:state["arrivalDate"],
-      departureAirportTerminal:state["departureAirportTerminal"],
-      arrivalAirportTerminal:state["arrivalAirportTerminal"],
+      flightNumber: flightNumber,
+      ecoSeatsCount:ecoSeatsCount,
+      businessSeatsCount:businessSeatsCount,
+      departureDate:departureDate,
+      arrivalDate:arrivalDate,
+      departureAirportTerminal:departureAirportTerminal,
+      arrivalAirportTerminal:arrivalAirportTerminal,
       }
       props.Changedata(flight);
   };
@@ -124,7 +118,7 @@ const SearchBox = (props) => {
                   name="flightNumber"
                   placeholder="EX. AB 1500"
                   inputProps={{ maxLength: 7 }}
-                  onChange = {onChangeData}
+                  onChange = { (e) => {setFlightNumber(e.target.value)}   }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -136,7 +130,7 @@ const SearchBox = (props) => {
                   name="departureAirportTerminal"
                   label="from"
                   placeholder="Country, City or Airport"
-                  onChange = {onChangeData}
+                  onChange = {(e) => {setDepartureAirportTerminal(e.target.value)}}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -148,7 +142,7 @@ const SearchBox = (props) => {
                   id="arrivalAirportTerminal"
                   label="To"
                   placeholder="Country, City or Airport"
-                  onChange = {onChangeData}
+                  onChange = {(e) => {setArrivalAirportTerminal(e.target.value)}}
                 />
               </Grid>                             
               
