@@ -32,7 +32,11 @@ const flightschema=new schema({
         type:String,
         required:true
     },
-    price:{
+    economicSeatPrice:{
+        type: Number,
+        required: true
+    },
+    businessSeatPrice:{
         type: Number,
         required: true
     },
