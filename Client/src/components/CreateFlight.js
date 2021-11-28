@@ -13,7 +13,6 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
 import { IconButton, Modal } from '@mui/material';
 import Collapse from "@mui/material/Collapse";
-import { useEffect } from 'react';
 import axios from 'axios';
 import { Alert } from '@mui/material';
 import Notification from './Notification'
@@ -24,82 +23,70 @@ import { AlertTitle } from '@mui/material';
 const CreateFlight = () => {
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [checked, setChecked] = React.useState(true);
-    const [departureDate, setDepartureDate] = React.useState(new Date());
-    const [returnDate, setReturnDate] = React.useState(new Date());
     const [flag , setFlag] = React.useState(true);
     const [ createdFlag , setCreatedFlag ]= React.useState(false);
     const [ createdFailed , setCreatedFailed ]= React.useState(false);
-  
 
-    const [state, setState] = React.useState({
-      flightNumber:"",
-      ecoSeatsCount:"",
-      businessSeatsCount:"",
-      departureDate: departureDate,
-      arrivalDate:returnDate,
-      departureAirportTerminal:"",
-      arrivalAirportTerminal:"",
-      });
-      
-    
+    const [ flightNumber , setFlightNumber ]= React.useState("");
+    const [ ecoSeatsCount , setEcoSeatsCount ]= React.useState("");
+    const [ businessSeatsCount , setBusinessSeatsCount ]= React.useState("");
+    const [departureDate, setDepartureDate] = React.useState(new Date());
+    const [arrivalDate, setarrivalDate] = React.useState(new Date());
+    const [ departureAirportTerminal , setDepartureAirportTerminal ]= React.useState("");
+    const [ arrivalAirportTerminal , setArrivalAirportTerminal ]= React.useState("");
+          
 
-    const onChangeData = (e)=> {
-      setState( {...state , [e.target.name]: e.target.value} );
+    const setFlags = ()=> {
       setCreatedFlag(false);
       setCreatedFailed(false);
     };
 
     const clickOnTheIcon = () => {
       setChecked((prev) => !prev);
-      setCreatedFlag(false);
-      setCreatedFailed(false);
+      setFlags();
     };
 
     const handleChangeOfDeparture = (newValue) => {
       setDepartureDate(newValue);
-      if ( newValue.getTime() > returnDate.getTime() ) {
-        setReturnDate(newValue);
+      if ( newValue.getTime() > arrivalDate.getTime() ) {
+        setarrivalDate(newValue);
       }
-      setState( {...state , ["departureDate"]: departureDate} );
-      setCreatedFlag(false);
-      setCreatedFailed(false);
+      setFlags();
     };
 
-    const handleChangeOfReturn = (newValue) => {
-      setCreatedFlag(false);
-      setCreatedFailed(false);
+    const handleChangeOfArrival = (newValue) => {
+      setFlags();
      if (newValue.getTime() <= departureDate.getTime()) {
-        setReturnDate(returnDate);
+        setarrivalDate(arrivalDate);
       }
       else{
-        setReturnDate(newValue);
-      }
-      setState( {...state , ["arrivalDate"]:returnDate} );
-        
+        setarrivalDate(newValue);
+      }        
     };
 
     
       
     const handleSubmit = async (event) => {
       event.preventDefault();
-      setCreatedFlag(false);
-      setCreatedFailed(false);
+      setFlags();
+      var empty = false ;
       const flight = {
-      flightNumber: state["flightNumber"],
-      ecoSeatsCount:(state["ecoSeatsCount"]!="") ?state["ecoSeatsCount"] : 0,
-      businessSeatsCount:(state["businessSeatsCount"]!="") ?state["businessSeatsCount"] : 0,
-      departureDate:state["departureDate"],
-      arrivalDate:state["arrivalDate"],
-      departureAirportTerminal:state["departureAirportTerminal"],
-      arrivalAirportTerminal:state["arrivalAirportTerminal"],
+      flightNumber: flightNumber,
+      ecoSeatsCount:(ecoSeatsCount!="") ?ecoSeatsCount : 0,
+      businessSeatsCount:(businessSeatsCount!="") ?businessSeatsCount : 0,
+      departureDate:departureDate,
+      arrivalDate:arrivalDate,
+      departureAirportTerminal:departureAirportTerminal,
+      arrivalAirportTerminal:arrivalAirportTerminal,
       }
 
-      Object.keys(flight).forEach(key => {
-        if (  flight[key] == "" ){
-          setFlag(false);
-        }
-    })
-     if(flag){
+      if ( flightNumber == "" || departureDate == "" || arrivalDate == "" || departureAirportTerminal == "" || arrivalAirportTerminal == ""){
+        empty = true
+      }
+
+    console.log(flight);
+    
+     if(!empty){
       await axios.post('http://localhost:8000/admin/createFlight' , flight )
       .then(res => {
         setCreatedFlag(true);
@@ -121,6 +108,7 @@ const CreateFlight = () => {
     alert("Some Empty Fields");
     setFlag(true);
   }
+  
     };
    
     return (
@@ -162,7 +150,7 @@ const CreateFlight = () => {
                   name="flightNumber"
                   placeholder="EX. PI 150"
                   inputProps={{ maxLength: 7 }}
-                  onChange = { onChangeData   }
+                  onChange = { (e) => {setFlightNumber(e.target.value)}   }
                   autoFocus
                 />
               </Grid>
@@ -176,7 +164,7 @@ const CreateFlight = () => {
                   label="From"
                   placeholder="The Airport Name"
                   autoFocus
-                  onChange = {onChangeData}
+                  onChange = {(e) => {setDepartureAirportTerminal(e.target.value)}}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -188,7 +176,7 @@ const CreateFlight = () => {
                   label="To"
                   name="arrivalAirportTerminal"
                   placeholder="The Airport Name"
-                  onChange = {onChangeData}
+                  onChange = { (e) => {setArrivalAirportTerminal(e.target.value)} }
                 />
               </Grid>
               
@@ -209,7 +197,7 @@ const CreateFlight = () => {
                     else if (event.target.value > 100){
                       event.target.value = 100
                     }
-                    onChangeData(event);
+                    setBusinessSeatsCount(event.target.value);
                 } 
               }
                 />
@@ -231,7 +219,7 @@ const CreateFlight = () => {
                     else if (event.target.value > 500){
                       event.target.value = 500
                     }
-                    onChangeData(event);
+                    setEcoSeatsCount(event.target.value);
                 }
               }
                 />
@@ -245,7 +233,7 @@ const CreateFlight = () => {
                      label="Date&Time of Depature"
                      disablePast
                      value={departureDate}
-                     onChange={handleChangeOfDeparture  }
+                     onChange={ handleChangeOfDeparture  }
                      renderInput={(params) => <TextField {...params} />}
                      
         />
@@ -258,8 +246,8 @@ const CreateFlight = () => {
                      name = "arrivalDate"
                      label="Date&Time of Arrival"
                      disablePast
-                     value={returnDate}
-                     onChange={handleChangeOfReturn}
+                     value={arrivalDate}
+                     onChange={ handleChangeOfArrival}
                      renderInput={(params) => <TextField {...params} />}
                     />
                     </LocalizationProvider>

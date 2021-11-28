@@ -2,7 +2,7 @@ import React from 'react'
 import Grow from '@mui/material/Grow';
 
 
-const Showcase = (props) => {
+const Showcase = () => {
     const isReloaded = true ;
     return (
 <><Grow in={ isReloaded } timeout={3000}> 
