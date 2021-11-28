@@ -74,7 +74,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function NavBar2() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const handleDrawerOpen = () => {
     setOpen(true);

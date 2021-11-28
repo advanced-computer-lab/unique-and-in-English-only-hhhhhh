@@ -21,13 +21,13 @@ import { AlertTitle } from '@mui/material';
 
 const CreateFlightV2 = () => {
     return (
-        <div className="inline-grid bg-red-500 mt-32 rounded-xl ">
+      <div className="bg-blue-900 rounded-full w-11/12 ">
+        <div className="flex  mt-32 rounded-xl ">
        
-            <div className="justify-items-center p-10  rounded-xl inline-grid lg:grid-cols-4 sm:grid-cols-1 gap-x-1 gap-y-3">   
+            <div className="justify-items-center p-10  rounded-xl flex">   
             <TextField
                   className="bg-white"
-                  required
-                  fullWidth
+                  required                  
                   id="flightNumber"
                   label="Flight Number"
                   name="flightNumber"
@@ -36,12 +36,11 @@ const CreateFlightV2 = () => {
                   autoFocus
                 />
       
-        <div className="flex items-stretch">
+        <div className="flex items-stretch mx-3">
                 <TextField
                 className="bg-white"
                   name="departureAirportTerminal"
-                  required
-                  fullWidth
+                  required                 
                   id="departureAirportTerminal"
                   label="From"
                   placeholder="The Airport Name"
@@ -51,8 +50,7 @@ const CreateFlightV2 = () => {
    
                 <TextField
                 className="bg-white"
-                  required
-                  fullWidth
+                  required               
                   id="arrivalAirportTerminal"
                   label="To"
                   name="arrivalAirportTerminal"
@@ -60,12 +58,11 @@ const CreateFlightV2 = () => {
                 />
       
       </div>
-      <div className="flex items-stretch">
+      <div className="flex justify-item-center justify-center item-center">
                 <TextField
                 className="bg-white"
                   name="businessSeatsCount"
-                  required
-                  fullWidth
+                  required                 
                   type="number"
                   id="businessSeatsCount"
                   label="Business Seats"
@@ -84,11 +81,9 @@ const CreateFlightV2 = () => {
           
                 <TextField
                 className="bg-white"
-                  required
-                  fullWidth
+                  required                  
                   type="number"
-                  id="ecoSeatsCount"
-                 
+                  id="ecoSeatsCount"                
                   label="Economic Seats"
                   name="ecoSeatsCount"
                   placeholder="Number of Seats"
@@ -105,7 +100,7 @@ const CreateFlightV2 = () => {
                 />
                 </div>
                  
-       <div className="flex items-stretch col-spin-3">
+       <div className="flex bg-white justify-item-center mx-3">
 
       
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -115,14 +110,11 @@ const CreateFlightV2 = () => {
                      name = "departureDate"
                      label="Date&Time of Depature"
                      disablePast
-                     
-                    
                      renderInput={(params) => <TextField {...params} />}
                      
         />
         </LocalizationProvider>
-         
-              
+  
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <MobileDateTimePicker
                      className="bg-white"
@@ -130,7 +122,6 @@ const CreateFlightV2 = () => {
                      name = "arrivalDate"
                      label="Date&Time of Arrival"
                      disablePast
-                    
                      renderInput={(params) => <TextField {...params} />}
                     />
                     </LocalizationProvider>
@@ -138,27 +129,26 @@ const CreateFlightV2 = () => {
                     </div>
 
 
-                 
-            <Button
-            className="bg-white"
-              type="submit"
-              fullWidth
-              endIcon= {<NoteAddIcon  />}
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Create
-            </Button>
-           
-         
+                
 
 
             
 
             
             </div>
+             <div className="flex mx-auto w-1/2 justify-end justify-item-center">
+             <Button
+               type="submit"
+               fullWidth
+               endIcon= {<NoteAddIcon  />}
+               variant="contained"
+               sx={{ mt: 3, mb: 2 }}
+             >
+               Create
+             </Button>
             
-           
+             </div>
+           </div>
 
 
  
