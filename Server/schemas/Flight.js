@@ -12,9 +12,17 @@ const flightschema=new schema({
         type:Number,
         required:true
     },
+    economicSeatPrice:{
+        type: Number,
+        required: true
+    },
     businessSeatsCount:{
         type:Number,
         required:true
+    },
+    businessSeatPrice:{
+        type: Number,
+        required: true
     },
     departureDate:{
         type:Date,
@@ -31,14 +39,6 @@ const flightschema=new schema({
     arrivalAirportTerminal:{
         type:String,
         required:true
-    },
-    economicSeatPrice:{
-        type: Number,
-        required: true
-    },
-    businessSeatPrice:{
-        type: Number,
-        required: true
     },
 },{timestamps:true}); 
 
