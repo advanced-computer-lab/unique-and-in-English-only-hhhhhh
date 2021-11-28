@@ -13,10 +13,13 @@ app.use(express.json());
 // get driver 
 const dbo = require("./db/conn.js");
 const adminRouter = require("./routes/adminRoutes");
+const userRouter = require("./routes/userRoutes");
 
 
 
 app.use('/admin',adminRouter);
+app.use('/user',userRouter);
+
  
 app.listen(port, () => {
   // perform a database connection when server starts

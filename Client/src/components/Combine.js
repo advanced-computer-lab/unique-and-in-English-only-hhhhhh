@@ -16,6 +16,7 @@ const Combine = () => {
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [state , setState] = React.useState({
+      _id: '',
       flightNumber:'',
       ecoSeatsCount:'',
       businessSeatsCount:'',
@@ -30,6 +31,7 @@ const Combine = () => {
       if (flag) {
         await axios.get('http://localhost:8000/admin/readFlight')
         .then(result => {
+          console.log( result);
           setAllState(result.data);
         }).catch(err => {
           alert("Connection Error with the server  " + err);
@@ -82,8 +84,9 @@ const Combine = () => {
         })
 
         const deleteFlight = {
-          flightNumber:deleted
+          _id:deleted
         };
+        console.log(deleted);
 
 
         await axios.post( 'http://localhost:8000/admin/deleteFlight' ,  deleteFlight )
@@ -135,13 +138,17 @@ const Combine = () => {
     allState.map((oneElement) =>
     <Grid key={oneElement.flightNumber}  item xs={4} sx={{minWidth: "450px"}}>
 
-    <FlightCard  flightNumber={oneElement.flightNumber}
+    <FlightCard
+   _id = {oneElement._id}
+   flightNumber={oneElement.flightNumber}
    departureDate ={oneElement.departureDate}
    arrivalDate ={oneElement.arrivalDate}
    departureAirportTerminal ={oneElement.departureAirportTerminal}
    arrivalAirportTerminal = {oneElement.arrivalAirportTerminal}
    ecoSeatsCount = {oneElement.ecoSeatsCount}
    businessSeatsCount=  {oneElement.businessSeatsCount}
+   economicSeatPrice= { oneElement.economicSeatPrice}
+   businessSeatPrice= { oneElement.businessSeatPrice}
    DeleteData={ (deleted) => handleDeleted(deleted) }
    />
     </Grid>

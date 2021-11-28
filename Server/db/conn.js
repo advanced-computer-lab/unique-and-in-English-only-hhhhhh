@@ -1,4 +1,5 @@
 const { MongoClient } = require("mongodb");
+const mongoose = require("mongoose");
 const Flight = require("../schemas/Flight");
 const Admin = require("../schemas/Admin");
 const Db = process.env.ATLAS_URI;
@@ -9,7 +10,7 @@ const client = new MongoClient(Db, {
 });
  
  
-
+// MongoClient.
 module.exports = {
   connectToServer: async function(callback) {
     try {
@@ -40,9 +41,9 @@ module.exports = {
     });
   },
  
-  readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
+  readFlight:async function(_id,flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
     // search with parameters
-    const requestedFlights = await Flight.find({flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
+    const requestedFlights = await Flight.find({_id: mongoose.Types.ObjectId(_id),flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
     .where('departureDate').gte(departureDate) 
     .where('arrivalDate').lte(arrivalDate)
     .where('ecoSeatsCount').gte(ecoSeatsCount)
@@ -60,10 +61,11 @@ module.exports = {
         const db = client.db("AirlineDB");
         const col = db.collection("flights");
         await col.insertOne(flight,(err,result)=>{
-          if (err) if (err.keyPattern.flightNumber==1) return res.status(500).send("duplicates");
-          else res.status(500).send("connection error");
-          console.log(result)
-          res.status(200).send("Flight created");
+          if (err)
+          res.status(500).send("connection error");
+          else
+          //console.log(result)
+          res.status(200).send(flight._id);
         });
     }
     catch(err){
@@ -71,11 +73,11 @@ module.exports = {
     }
   
   },
-  deleteFlight: async function (flightNumber,res){
+  deleteFlight: async function (_id,res){
     try{
         const db = client.db("AirlineDB");
         const col = db.collection("flights");
-        await col.deleteOne({flightNumber:flightNumber},(err,result)=>{
+        await col.deleteOne({_id : mongoose.Types.ObjectId(_id)},(err,result)=>{
           console.log(result);
           if (err) return res.status(500).send(false);
             res.status(200).send(true);
@@ -86,15 +88,17 @@ module.exports = {
     }
   
   },
- updateFlight: async function (search, update,res){
+ updateFlight: async function (id, update,res){
     try{
         const db = client.db("AirlineDB");
         const col = db.collection("flights");
-        const p = await col.updateOne(search,update,(err,result)=>{
-          if (err) if (err.keyPattern.flightNumber==1) return res.status(500).send("duplicates");
-          else res.status(500).send("connection error");
+        const p = await col.updateOne({"_id": mongoose.Types.ObjectId(id)}, update,(err,result)=>{
+          // if (err)
+          //   res.status(500).send(err);
           console.log(result);
-          res.status(200).send("Flight updated");
+          console.log(err);
+          // else
+            res.status(200).send("Flight updated");
         });
     }
     catch(err){

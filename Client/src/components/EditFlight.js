@@ -51,10 +51,15 @@ const EditFlight = (props) => {
     const [departureDate, setDepartureDate] = React.useState(props.departureDate);
     const [returnDate, setReturnDate] = React.useState(props.arrivalDate);
     const [edit, setEdit] = React.useState(false);
+    
+    const [ economicSeatPrice , setEconomicSeatPrice ]= React.useState("");
+    const [ businessSeatPrice , setBusinessSeatPrice ]= React.useState("");
+
     const history = useHistory() ;
 
 
-    const [state, setState] = React.useState({    
+    const [state, setState] = React.useState({
+      _id: props._id,    
       flightNumber: props.flightNumber,
       ecoSeatsCount: props.ecoSeatsCount,
       businessSeatsCount: props.businessSeatsCount,
@@ -112,9 +117,7 @@ const EditFlight = (props) => {
       event.preventDefault();
     
       const flight = {
-        search: {
-          flightNumber: props.flightNumber,
-          } , 
+        _id: props._id,  
           update: {
             flightNumber: state["flightNumber"],
             ecoSeatsCount:   state["ecoSeatsCount"],
@@ -123,6 +126,8 @@ const EditFlight = (props) => {
             arrivalDate:   new Date(state["arrivalDate"])  ,
             departureAirportTerminal:  state["departureAirportTerminal"] ,
             arrivalAirportTerminal:   state["arrivalAirportTerminal"],
+            economicSeatPrice: economicSeatPrice,
+            businessSeatPrice: businessSeatPrice
           }
       }
 
@@ -251,6 +256,34 @@ const EditFlight = (props) => {
                     onChangeData(event);
                 }
               }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                inputProps= { {defaultValue: props.businessSeatPrice   } }
+                  required
+                  fullWidth
+                  type= "number"
+                  id="businessSeatPrice"
+                  label="Business Seat Price"
+                  name="businessSeatPrice"
+                  placeholder="Business Seat Price"
+                  onChange = { (e) => {setBusinessSeatPrice(e.target.value)}   }
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  inputProps= { {defaultValue: props.economicSeatPrice   } }
+                  type= "number"
+                  id="economicSeatPrice"
+                  label="Economic Seat Price"
+                  name="economicSeatPrice"
+                  placeholder="Economic Seat Price"
+                  onChange = { (e) => {setEconomicSeatPrice(e.target.value)}   }
+                  autoFocus
                 />
               </Grid>
 

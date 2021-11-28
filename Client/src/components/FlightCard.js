@@ -34,7 +34,7 @@ const FlightCard = (props) => {
   };
 
   const handleDelete = (event) => {
-    props.DeleteData(props.flightNumber);
+    props.DeleteData(props._id);
   };
 
     useEffect(() => {
@@ -95,11 +95,11 @@ const FlightCard = (props) => {
         <Card >
           <CardMedia
             component="img"
-            
+            className="rounded-br-full"
             image="https://c.ndtvimg.com/2019-05/tk4tpt5g_plane-generic_625x300_29_May_19.jpg"
             alt="green iguana"
           />
-          <CardContent sx={{textAlign:"center"}}>
+          <CardContent sx={{textAlign:"center" , justifyContent:"center"}}>
             <Typography gutterBottom variant="h4" component="div">
             { props.flightNumber }
             </Typography>
@@ -131,6 +131,7 @@ const FlightCard = (props) => {
             
             <Button onClick={handleOpen} endIcon={<EditIcon />} size="small">Edit</Button>
                 <EditFlight open={open} onClose={handleClose}
+                _id = {props._id}
                 flightNumber={props.flightNumber}
                 departureDate ={props.departureDate}
                 arrivalDate ={props.arrivalDate}
@@ -138,6 +139,8 @@ const FlightCard = (props) => {
                 arrivalAirportTerminal = {props.arrivalAirportTerminal}
                 ecoSeatsCount = {props.ecoSeatsCount}
                 businessSeatsCount=  {props.businessSeatsCount}
+                economicSeatPrice= { props.economicSeatPrice}
+                businessSeatPrice= { props.businessSeatPrice}
                 />
             <Button onClick={handleDelete} endIcon={<DeleteIcon />} size="small">Delete</Button>
 

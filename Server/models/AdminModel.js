@@ -78,6 +78,7 @@ module.exports={
       
       },
     readFlight: async function(req,res){
+        const _id = (req.body._id != "") ? req.body._id : "";
         const flightNumber = (req.body.flightNumber != "") ? req.body.flightNumber : "";
         const departureAirportTerminal = (req.body.departureAirportTerminal != "") ? req.body.departureAirportTerminal : "";
         const arrivalAirportTerminal = (req.body.arrivalAirport != "") ? req.body.arrivalAirportTerminal: "";
@@ -89,7 +90,8 @@ module.exports={
         }
         const ecoSeatsCount = (req.body.ecoSeatsCount != "") ? req.body.ecoSeatsCount :0;
         const businessSeatsCount = (req.body.businessSeatsCount != "") ? req.body.businessSeatsCount :0;
-        const flights = DB.readFlight(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res);
+        const price = (req.body.price != "") ? req.body.price :0;
+        const flights = DB.readFlight(_id, flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res);
 
         
     },
@@ -99,20 +101,13 @@ module.exports={
       
     },
     updateFlight: async function(req,res){
+        //const flight = new Flight(req.body.update);
         
-        // const flightNumber = (req.body.search.flightNumber != "") ? req.body.update.flightNumber : null;
-        // const departureAirportTerminal = (req.body.update.departureAirportTerminal != "") ? req.body.update.departureAirportTerminal : null;
-        // const arrivalAirportTerminal = (req.body.update.arrivalAirport != "") ? req.body.update.arrivalAirportTerminal: null;
-        // const arrivalDate = (req.body.update.arrivalDate != "") ? new Date(req.body.update.arrivalDate) :null;
-        // const departureDate = (req.body.update.departureDate != "") ? new Date(req.body.update.departureDate) :null;
-        // const ecoSeatsCount = (req.body.update.ecoSeatsCount != "") ? req.body.update.ecoSeatsCount : null;
-        // const businessSeatsCount = (req.body.update.businessSeatsCount != "") ? req.body.update.businessSeatsCount : null;
-        // const search ={flightNumber,departureAirportTerminal,arrivalAirportTerminal,arrivalDate,departureDate,ecoSeatsCount,businessSeatsCount,businessSeatsCount};
-        const flight = new Flight(req.body.update);
-
-        await DB.updateFlight(req.body.search,{ $set: flight},res);
+        //console.log(req.body._id);
+        //console.log(req.body.update);
+        await DB.updateFlight(req.body._id,{ $set: req.body.update},res);
     },
     deleteFlight: async function(req,res){
-         await DB.deleteFlight(req.body.flightNumber,res);
+         await DB.deleteFlight(req.body._id,res);
     }
 };
