@@ -30,11 +30,11 @@ const TravellerSensitiveData = () => {
               <Grid item xs={12} >
                 <TextField
                 type="password"
-                  name="password"
+                  name="old password"
                   fullWidth
-                  id="password"
-                  label="Password"
-                  placeholder="Password"
+                  id="old password"
+                  label="Old Password"
+                  placeholder="Old Password"
                   autoFocus
                 />
               </Grid>
@@ -42,11 +42,23 @@ const TravellerSensitiveData = () => {
               <Grid item xs={12} >
                 <TextField
                 type="password"
-                  name="confirm password"
+                  name="new password"
                   fullWidth
-                  id="confirm password"
-                  label="Confirm Password"
-                  placeholder="Confirm Password"
+                  id="new password"
+                  label="New Password"
+                  placeholder="New Password"
+                  autoFocus
+                />
+              </Grid>
+
+              <Grid item xs={12} >
+                <TextField
+                type="password"
+                  name="confirm new password"
+                  fullWidth
+                  id="confirm new password"
+                  label="Confirm New Password"
+                  placeholder="Confirm New Password"
                   autoFocus
                 />
               </Grid>

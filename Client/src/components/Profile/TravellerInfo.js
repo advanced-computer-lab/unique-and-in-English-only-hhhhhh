@@ -109,6 +109,18 @@ const TravellerInfo = () => {
         </Stack>
     </LocalizationProvider>
 </Grid>
+<Grid item xs={12} sm={6} />
+
+<Grid item xs={12} sm={6} >
+<TextField
+                  name="passport"
+                  fullWidth
+                  id="passport"
+                  label="Passport Number"
+                  placeholder="Passport Number"
+                  autoFocus
+                />
+  </Grid>
 
             </Grid>
             <Stack  sx={{ width: 400 }} spacing={1}>

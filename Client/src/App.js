@@ -14,6 +14,7 @@ import EditFlight from './components/EditFlight';
 import Combine from './components/Combine';
 import Profile from './components/Profile/Profile';
 import UserFlightCard from './components/UserFlightCard';
+import UserSeachFlight from './components/UserSearchFlight'
 
 
 function App(props) {
@@ -44,8 +45,14 @@ function App(props) {
   <Combine />
 </Route>
 
-<Route path="/test">
+<Route path="/test1">
   <UserFlightCard />
+</Route>
+<Route path="/test2">
+  <UserSeachFlight />
+</Route>
+<Route path="/test3">
+  <Profile />
 </Route>
 
 

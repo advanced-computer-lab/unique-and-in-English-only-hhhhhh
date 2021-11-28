@@ -13,6 +13,7 @@ import EventIcon from '@mui/icons-material/Event';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
 import LuggageIcon from '@mui/icons-material/Luggage';
+import EventSeatIcon from '@mui/icons-material/EventSeat';
 
 const UserSearchFlight = () => {
     return (
@@ -76,7 +77,7 @@ const UserSearchFlight = () => {
           <LuggageIcon /> Baggage Allowance
           </Typography>
           <div className="flex justify-end">
-          <Button endIcon={<EditIcon />} size="large">Reserve</Button>
+          <Button variant="contained" startIcon={<EventSeatIcon />} size="large">Reserve</Button>
           </div>
           </div>
         </AccordionDetails>
