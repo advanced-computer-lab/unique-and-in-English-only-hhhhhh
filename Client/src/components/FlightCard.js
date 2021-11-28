@@ -34,7 +34,7 @@ const FlightCard = (props) => {
   };
 
   const handleDelete = (event) => {
-    props.DeleteData(props.flightNumber);
+    props.DeleteData(props._id);
   };
 
     useEffect(() => {
@@ -131,6 +131,7 @@ const FlightCard = (props) => {
             
             <Button onClick={handleOpen} endIcon={<EditIcon />} size="small">Edit</Button>
                 <EditFlight open={open} onClose={handleClose}
+                _id = {props._id}
                 flightNumber={props.flightNumber}
                 departureDate ={props.departureDate}
                 arrivalDate ={props.arrivalDate}
@@ -138,6 +139,8 @@ const FlightCard = (props) => {
                 arrivalAirportTerminal = {props.arrivalAirportTerminal}
                 ecoSeatsCount = {props.ecoSeatsCount}
                 businessSeatsCount=  {props.businessSeatsCount}
+                economicSeatPrice= { props.economicSeatPrice}
+                businessSeatPrice= { props.businessSeatPrice}
                 />
             <Button onClick={handleDelete} endIcon={<DeleteIcon />} size="small">Delete</Button>
 

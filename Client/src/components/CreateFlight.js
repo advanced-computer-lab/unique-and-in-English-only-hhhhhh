@@ -34,6 +34,8 @@ const CreateFlight = () => {
     const [arrivalDate, setarrivalDate] = React.useState(new Date());
     const [ departureAirportTerminal , setDepartureAirportTerminal ]= React.useState("");
     const [ arrivalAirportTerminal , setArrivalAirportTerminal ]= React.useState("");
+    const [ economicSeatPrice , setEconomicSeatPrice ]= React.useState("");
+    const [ businessSeatPrice , setBusinessSeatPrice ]= React.useState("");
           
 
     const setFlags = ()=> {
@@ -70,6 +72,7 @@ const CreateFlight = () => {
       event.preventDefault();
       setFlags();
       var empty = false ;
+
       const flight = {
       flightNumber: flightNumber,
       ecoSeatsCount:(ecoSeatsCount!="") ?ecoSeatsCount : 0,
@@ -78,17 +81,19 @@ const CreateFlight = () => {
       arrivalDate:arrivalDate,
       departureAirportTerminal:departureAirportTerminal,
       arrivalAirportTerminal:arrivalAirportTerminal,
+      economicSeatPrice: economicSeatPrice,
+      businessSeatPrice: businessSeatPrice
       }
 
-      if ( flightNumber == "" || departureDate == "" || arrivalDate == "" || departureAirportTerminal == "" || arrivalAirportTerminal == ""){
+      if ( economicSeatPrice==""||businessSeatPrice==""|| flightNumber == "" || departureDate == "" || arrivalDate == "" || departureAirportTerminal == "" || arrivalAirportTerminal == ""){
         empty = true
       }
 
-    console.log(flight);
     
      if(!empty){
       await axios.post('http://localhost:8000/admin/createFlight' , flight )
       .then(res => {
+        console.log(res.data);
         setCreatedFlag(true);
         setNotify({
           isOpen: true,
@@ -106,7 +111,6 @@ const CreateFlight = () => {
   }
   else{
     alert("Some Empty Fields");
-    setFlag(true);
   }
   
     };
@@ -142,7 +146,6 @@ const CreateFlight = () => {
             <Grid container spacing={2}>
             <Grid item xs={12}>
                 <TextField
-                 
                   required
                   fullWidth
                   id="flightNumber"
@@ -154,6 +157,8 @@ const CreateFlight = () => {
                   autoFocus
                 />
               </Grid>
+              
+              
               <Grid item xs={12} sm={6}>
                 <TextField
                   name="departureAirportTerminal"
@@ -222,6 +227,32 @@ const CreateFlight = () => {
                     setEcoSeatsCount(event.target.value);
                 }
               }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  type= "number"
+                  id="businessSeatPrice"
+                  label="Business Seat Price"
+                  name="businessSeatPrice"
+                  placeholder="Business Seat Price"
+                  onChange = { (e) => {setBusinessSeatPrice(e.target.value)}   }
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  type= "number"
+                  id="economicSeatPrice"
+                  label="Economic Seat Price"
+                  name="economicSeatPrice"
+                  placeholder="Economic Seat Price"
+                  onChange = { (e) => {setEconomicSeatPrice(e.target.value)}   }
+                  autoFocus
                 />
               </Grid>
 
