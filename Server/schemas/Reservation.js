@@ -8,30 +8,29 @@ const reservationschema=new schema({
         unique:true,
         required:true
     },
-    flightId:{
+    departureFlightId:{
         type:String,
         required:true
     },
-    seats:{
-        type:Number,
+    departureSeats:{
+        type:Map,
+        of:String,
         required:true
     },
-    departureDate:{
-        type:Date,
-        required:true
-    },
-    arrivalDate:{
-        type:Date,
-        required:true
-    },
-    departureAirportTerminal:{
+    returnFlightId:{
         type:String,
         required:true
     },
-    arrivalAirportTerminal:{
-        type:String,
+    returnSeats:{
+        type:Map,
+        of:String,
         required:true
     },
+    totalPrice:{
+        type: Number,
+        required: true
+    },
+    
 },{timestamps:true}); 
 
 module.exports = mongoose.model('Reservation',reservationschema);

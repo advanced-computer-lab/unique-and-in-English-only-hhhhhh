@@ -61,10 +61,11 @@ module.exports = {
         const db = client.db("AirlineDB");
         const col = db.collection("flights");
         await col.insertOne(flight,(err,result)=>{
-          if (err) if (err.keyPattern.flightNumber==1) return res.status(500).send("duplicates");
-          else res.status(500).send("connection error");
-          console.log(result)
-          res.status(200).send("Flight created");
+          if (err)
+          res.status(500).send("connection error");
+          else
+          //console.log(result)
+          res.status(200).send(flight._id);
         });
     }
     catch(err){
@@ -91,7 +92,7 @@ module.exports = {
     try{
         const db = client.db("AirlineDB");
         const col = db.collection("flights");
-        const p = await col.updateOne({_id: mongoose.Types.ObjectId(id)}, update,(err,result)=>{
+        const p = await col.updateOne({"_id": mongoose.Types.ObjectId(id)}, update,(err,result)=>{
           // if (err)
           //   res.status(500).send(err);
           console.log(result);

@@ -38,6 +38,7 @@ module.exports={
         }
         const ecoSeatsCount = (req.body.ecoSeatsCount != "") ? req.body.ecoSeatsCount :0;
         const businessSeatsCount = (req.body.businessSeatsCount != "") ? req.body.businessSeatsCount :0;
+        const price = (req.body.price != "") ? req.body.price :0;
         const flights = DB.readFlight(_id, flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res);
 
         
@@ -48,10 +49,11 @@ module.exports={
       
     },
     updateFlight: async function(req,res){
-        const flight = new Flight(req.body.update);
+        //const flight = new Flight(req.body.update);
         
-        console.log(req.body._id);
-        await DB.updateFlight(req.body._id,{ $set: flight},res);
+        //console.log(req.body._id);
+        //console.log(req.body.update);
+        await DB.updateFlight(req.body._id,{ $set: req.body.update},res);
     },
     deleteFlight: async function(req,res){
          await DB.deleteFlight(req.body._id,res);
