@@ -8,16 +8,17 @@ router.route('/login')
     res.status(200).send("hhh");
 });
 
+router.route('/reserve')
+.post((req,res)=>{
+    userController.reserve(req,res);
+});
+
 router.route('/readReservation')
 .get((req,res)=>{
-    
-    
     userController.readAllReservations(req,res);
-    
 })
 .post(async (req,res)=>{
     userController.readReservation(req,res);
-
 });
 
 router.route('/deleteReservation')

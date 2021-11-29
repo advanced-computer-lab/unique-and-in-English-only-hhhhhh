@@ -2,7 +2,9 @@ const mongoose=require('mongoose');
 const userModel = require('../models/UserModel');
 
 module.exports = {
-   
+    reserve: async function(req,res){
+        await userModel.reserve(req,res);
+    },
     readReservation: async function(req,res){
         await userModel.readReservation(req,res);
     },

@@ -3,7 +3,7 @@ const schema=mongoose.Schema;
 const DB = require('../db/conn');
 const reservationschema=new schema({
    // _id: false,
-    userId:{
+    username:{
         type:String,
         unique:true,
         required:true

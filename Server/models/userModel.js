@@ -1,6 +1,13 @@
 const DB = require('../db/conn');
 const User = require('../schemas/User');
+const Reservation = require('../schemas/Reservation');
+
 module.exports={// this wil be edited 
+
+    reserve: async function(req,res){
+        const newReservation = new Reservation(req.body); 
+        await DB.reserve(newReservation,res);
+    },
     readReservation: async function(req,res){
         await DB.readReservation(req,res);
     },

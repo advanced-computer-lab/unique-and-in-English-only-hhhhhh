@@ -156,4 +156,20 @@ module.exports = {
       console.log(err);
     }
   },
+  reserve: async function(reservation, res){
+    try{
+      const db = client.db("AirlineDB");
+      const col = db.collection("reservations");
+      await col.insertOne(reservation,(err,result)=>{
+        if (err)
+        res.status(500).send("connection error");
+        else
+        //console.log(result)
+        res.status(200).send(reservation._id);
+      });
+  }
+  catch(err){
+    console.log(err);
+  }
+  }
 };
