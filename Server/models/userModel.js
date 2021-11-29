@@ -21,6 +21,7 @@ module.exports={// this wil be edited
     },
     createUser: async function(req,res){
         let newUser = new User(req.body);
+        //console.log(newUser);
         await DB.createUser(newUser,res);
     },
 }

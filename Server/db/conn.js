@@ -108,7 +108,7 @@ module.exports = {
   updateUserInfo: async function(userName, update, res){
     try{
       const db = client.db("AirlineDB");
-      const col = db.collection("User");
+      const col = db.collection("users");
       const p = await col.updateOne({"userName": userName}, update,(err,result)=>{
         // if (err)
         //   res.status(500).send(err);
@@ -125,7 +125,7 @@ module.exports = {
   createUser: async function (user,res) {
     try{
         const db = client.db("AirlineDB");
-        const col = db.collection("User");
+        const col = db.collection("users");
         await col.insertOne(user,(err,result)=>{
           if (err)
           res.status(500).send("connection error");
