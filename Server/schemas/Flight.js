@@ -12,11 +12,19 @@ const flightschema=new schema({
         type:Number,
         required:true
     },
+    availableEcoSeatsCount:{
+        type:Number,
+        required:true
+    },
     economicSeatPrice:{
         type: Number,
         required: true
     },
     businessSeatsCount:{
+        type:Number,
+        required:true
+    },
+    availableBusinessSeatsCount:{
         type:Number,
         required:true
     },

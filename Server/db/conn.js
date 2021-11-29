@@ -171,5 +171,31 @@ module.exports = {
   catch(err){
     console.log(err);
   }
+  },
+  readReservation :async function(departureFlight, returnFlight, res){
+    try{
+      console.log(departureFlight);
+      console.log(returnFlight);
+      const db = client.db("AirlineDB");
+      const col = db.collection("flights");
+      const requestedDepartureFlights = await Flight.find(departureFlight)
+      .where('departureDate').gte(departureFlight.departureDate) 
+      .where('arrivalDate').lte(departureFlight.arrivalDate)
+      .where('ecoSeatsCount').gte(departureFlight.ecoSeatsCount)
+      .where('businessSeatsCount').gte(departureFlight.businessSeatsCount);
+      console.log(requestedDepartureFlights);
+
+      const requestedReturnFlights = await Flight.find(returnFlight)
+      .where('departureDate').gte(returnFlight.departureDate) 
+      .where('arrivalDate').lte(returnFlight.arrivalDate)
+      .where('ecoSeatsCount').gte(returnFlight.ecoSeatsCount)
+      .where('businessSeatsCount').gte(returnFlight.businessSeatsCount);
+      //console.log(requestedReturnFlights);
+      
+    res.status(200).send({"departureFlights":requestedDepartureFlights});
   }
+  catch(err){
+    console.log(err);
+  }
+  },
 };

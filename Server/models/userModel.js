@@ -1,5 +1,6 @@
 const DB = require('../db/conn');
 const User = require('../schemas/User');
+const Flight = require('../schemas/Flight');
 const Reservation = require('../schemas/Reservation');
 
 module.exports={// this wil be edited 
@@ -9,7 +10,29 @@ module.exports={// this wil be edited
         await DB.reserve(newReservation,res);
     },
     readReservation: async function(req,res){
-        await DB.readReservation(req,res);
+        let departureFlight = {
+            //departureAirportTerminal: new RegExp(req.body.departureAirportTerminal,'i') ,
+            //arrivalAirportTerminal: new RegExp(req.body.arrivalAirportTerminal,'i') ,
+            "departureAirportTerminal": req.body.departureAirportTerminal,
+            "arrivalAirportTerminal": req.body.arrivalAirportTerminal,
+            "departureDate": req.body.departureDate,
+            //arrivalDate: req.body.arrivalDate,
+            "availableEcoSeatsCount" : (req.body.class =="economy")?(req.body.adults + req.body.children): 0 ,
+            "availableBusinessSeatsCount" : (req.body.class =="business")?(req.body.adults + req.body.children): 0
+        };
+
+        let returnFlight  = {
+            //departureAirportTerminal: new RegExp(req.body.arrivalAirportTerminal,'i'),
+            //arrivalAirportTerminal: new RegExp(req.body.departureAirportTerminal,'i'),
+            "departureAirportTerminal": req.body.arrivalAirportTerminal,
+            "arrivalAirportTerminal": req.body.departureAirportTerminal,
+            "departureDate": req.body.returnDate,
+            //arrivalDate: req.body.arrivalDate,
+            "availableEcoSeatsCount" : (req.body.class =="economy")?(req.body.adults + req.body.children): 0 ,
+            "availableBusinessSeatsCount" : (req.body.class =="business")?(req.body.adults + req.body.children): 0
+        };
+        
+        await DB.readReservation(departureFlight, returnFlight, res);
     },
     readAllReservations: async function(req,res){
         await DB.readAllReservations(req,res);
