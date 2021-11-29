@@ -15,6 +15,9 @@ module.exports = {
     updateUserInfo: async function(req,res){
         await userModel.updateUserInfo(req,res);
     },
+    updateSensitiveUserInfo: async function(req,res){
+        await userModel.updateSensitiveUserInfo(req,res);
+    },
     login: async function(req,res){
         await userModel.login(req,res);
     },

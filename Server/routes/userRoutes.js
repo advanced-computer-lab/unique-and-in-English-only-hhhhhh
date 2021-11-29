@@ -40,5 +40,9 @@ router.route('/updateUserInfo')
 .put((req,res)=>{
     userController.updateUserInfo(req,res);
 });
+router.route('/updateSensitiveUserInfo')
+.put((req,res)=>{
+    userController.updateSensitiveUserInfo(req,res);
+});
 
 module.exports = router;

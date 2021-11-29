@@ -105,6 +105,24 @@ module.exports = {
       console.log(err);
     }
   },
+  
+  createUser: async function (user,res) {
+    try{
+        const db = client.db("AirlineDB");
+        const col = db.collection("users");
+        await col.insertOne(user,(err,result)=>{
+          if (err)
+          res.status(500).send("connection error");
+          else
+          //console.log(result)
+          res.status(200).send(user.userName);
+        });
+    }
+    catch(err){
+      console.log(err);
+    }
+  
+  },
   updateUserInfo: async function(userName, update, res){
     try{
       const db = client.db("AirlineDB");
@@ -122,21 +140,20 @@ module.exports = {
       console.log(err);
     }
   },
-  createUser: async function (user,res) {
+  updateSensitiveUserInfo: async function(userName, password, update, res){
     try{
-        const db = client.db("AirlineDB");
-        const col = db.collection("users");
-        await col.insertOne(user,(err,result)=>{
-          if (err)
-          res.status(500).send("connection error");
-          else
-          //console.log(result)
-          res.status(200).send(user.userName);
-        });
+      const db = client.db("AirlineDB");
+      const col = db.collection("users");
+      const p = await col.updateOne({"userName": userName,"password": password}, update,(err,result)=>{
+        console.log(result);
+        if(result.modifiedCount ==0)
+          res.status(200).send("incorrect username or password");
+        else
+          res.status(200).send("User updated");
+      });
     }
     catch(err){
       console.log(err);
     }
-  
-  }
+  },
 };
