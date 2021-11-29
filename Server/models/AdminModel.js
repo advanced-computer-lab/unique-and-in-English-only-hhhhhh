@@ -1,29 +1,8 @@
 const DB = require('../db/conn');
 const Flight = require('../schemas/Flight');
-const { MongoClient } = require("mongodb");
 
-const Admin = require("../schemas/Admin");
-const Db = process.env.ATLAS_URI;
-console.log(Db);
-const client = new MongoClient(Db, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
- 
 module.exports={
-    connectToServer: async function(callback) {
-        try {
-             await client.connect((err,res)=>{
-              if(err){
-                throw err;
-              }else{
-                console.log("DB connected successfully");
-              }
-             });
-            } catch (err) {
-             console.log(err.stack);
-         }
-    },
+   
     authenticate: async function(req,res){
         const email = req.body.email;
         const password = req.body.password;
