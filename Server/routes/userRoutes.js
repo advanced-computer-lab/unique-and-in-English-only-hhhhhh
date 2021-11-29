@@ -15,6 +15,10 @@ router.route('/readFlight')
     res.status(200).send("hhh");
     
 })
+.post(async (req,res)=>{
+    userController.readFlight(req,res);
+
+});
 
 router.route('/deleteReservation')
 .post(async (req,res)=>{

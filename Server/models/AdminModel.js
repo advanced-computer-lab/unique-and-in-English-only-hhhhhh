@@ -38,44 +38,14 @@ module.exports={
             res.status(200).send(message);
             return;
         }
-       auth(email,password,res);
+      await DB.authenticate(email,password,res);
 
     },
-    auth: async function(email,password,res){
-        const valid = await Admin.exists({email:email,password:password},async(err,result)=>{
-          if(err) res.status(500).send("Connection error");
-          if(result==null){
-            await Admin.exists({email:email},(err1,result1)=>{
-              if(result1 == null) res.status(200).send("email doesn't exist");
-              else res.status(200).send("wrong password");
-            });
-          }
-          else{
-            res.status(200).send("success");
-          }
-        });
-      },
     createFlight: async function(req,res){
   
           let flight = new Flight(req.body);
           
-          await crfli(flight,res);
-      },
-      crfli: async function (flight,res) {
-        try{
-            const db = client.db("AirlineDB");
-            const col = db.collection("flights");
-            await col.insertOne(flight,(err,result)=>{
-              if (err) if (err.keyPattern.flightNumber==1) return res.status(500).send("duplicates");
-              else res.status(500).send("connection error");
-              console.log(result)
-              res.status(200).send("Flight created");
-            });
-        }
-        catch(err){
-          console.log(err);
-        }
-      
+          await DB.createFlight(flight,res);
       },
     readFlight: async function(req,res){
         const _id = (req.body._id != "") ? req.body._id : "";
