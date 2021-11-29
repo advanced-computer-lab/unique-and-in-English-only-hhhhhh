@@ -8,27 +8,33 @@ router.route('/login')
     res.status(200).send("hhh");
 });
 
-router.route('/readFlight')
+router.route('/readReservation')
 .get((req,res)=>{
     
     
-    res.status(200).send("hhh");
+    userController.readAllReservations(req,res);
     
 })
 .post(async (req,res)=>{
-    userController.readFlight(req,res);
+    userController.readReservation(req,res);
 
 });
 
 router.route('/deleteReservation')
 .post(async (req,res)=>{
-    res.status(200).send("hhh");
+    userController.deleteReservation(req,res);
+
+});
+
+router.route('/viewSummary')
+.get(async (req,res)=>{
+    userController.viewSummary(req,res);
 
 });
 
 router.route('/updateUser')
 .put((req,res)=>{
-    res.status(200).send("hhh");
+    userController.updateUser(req,res);
 });
 
 module.exports = router;

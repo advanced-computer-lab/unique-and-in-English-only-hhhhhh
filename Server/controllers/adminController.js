@@ -10,16 +10,16 @@ module.exports = {
         await adminModel.createFlight(req,res);
     },
     readFlight: async function(req,res){
-        return adminModel.readFlight(req,res);
+        await adminModel.readFlight(req,res);
     },
     readAllFlights: async function(res){
-        return adminModel.readAllFlights(res);
+        await adminModel.readAllFlights(res);
     },
     updateFlight: async function(req,res){
         await adminModel.updateFlight(req,res);
     },
     deleteFlight: async function(req,res){
-        return await adminModel.deleteFlight(req,res);
+        await adminModel.deleteFlight(req,res);
     },
     
 }
