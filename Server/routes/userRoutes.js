@@ -31,10 +31,14 @@ router.route('/viewSummary')
     userController.viewSummary(req,res);
 
 });
+router.route('/createUser')
+.post((req,res)=>{
+    userController.createUser(req,res);
+});
 
-router.route('/updateUser')
+router.route('/updateUserInfo')
 .put((req,res)=>{
-    userController.updateUser(req,res);
+    userController.updateUserInfo(req,res);
 });
 
 module.exports = router;

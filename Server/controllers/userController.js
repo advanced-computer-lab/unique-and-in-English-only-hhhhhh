@@ -12,14 +12,17 @@ module.exports = {
     deleteReservation: async function(req,res){
         await userModel.deleteReservation(req,res);
     },
-    updateUser: async function(req,res){
-        await userModel.updateUser(req,res);
+    updateUserInfo: async function(req,res){
+        await userModel.updateUserInfo(req,res);
     },
     login: async function(req,res){
         await userModel.login(req,res);
     },
     viewSummary: async function(req,res){
         await userModel.viewSummary(req,res);
+    },
+    createUser: async function(req,res){
+        await userModel.createUser(req,res);
     },
 
    

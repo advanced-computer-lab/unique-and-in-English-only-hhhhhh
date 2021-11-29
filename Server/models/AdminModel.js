@@ -27,7 +27,7 @@ module.exports={
           await DB.createFlight(flight,res);
       },
     readFlight: async function(req,res){
-        const _id = (req.body._id != "") ? req.body._id : "";
+        //const _id = (req.body._id != "") ? req.body._id : "";
         const flightNumber = (req.body.flightNumber != "") ? req.body.flightNumber : "";
         const departureAirportTerminal = (req.body.departureAirportTerminal != "") ? req.body.departureAirportTerminal : "";
         const arrivalAirportTerminal = (req.body.arrivalAirport != "") ? req.body.arrivalAirportTerminal: "";
@@ -40,7 +40,7 @@ module.exports={
         const ecoSeatsCount = (req.body.ecoSeatsCount != "") ? req.body.ecoSeatsCount :0;
         const businessSeatsCount = (req.body.businessSeatsCount != "") ? req.body.businessSeatsCount :0;
         const price = (req.body.price != "") ? req.body.price :0;
-        const flights = DB.readFlight(_id, flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res);
+        const flights = DB.readFlight(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res);
 
         
     },

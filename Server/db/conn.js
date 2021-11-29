@@ -41,9 +41,9 @@ module.exports = {
     });
   },
  
-  readFlight:async function(_id,flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
+  readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
     // search with parameters
-    const requestedFlights = await Flight.find({_id: mongoose.Types.ObjectId(_id),flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
+    const requestedFlights = await Flight.find({flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
     .where('departureDate').gte(departureDate) 
     .where('arrivalDate').lte(arrivalDate)
     .where('ecoSeatsCount').gte(ecoSeatsCount)
@@ -104,5 +104,39 @@ module.exports = {
     catch(err){
       console.log(err);
     }
+  },
+  updateUserInfo: async function(userName, update, res){
+    try{
+      const db = client.db("AirlineDB");
+      const col = db.collection("User");
+      const p = await col.updateOne({"userName": userName}, update,(err,result)=>{
+        // if (err)
+        //   res.status(500).send(err);
+        console.log(result);
+        console.log(err);
+        // else
+          res.status(200).send("User updated");
+      });
+    }
+    catch(err){
+      console.log(err);
+    }
+  },
+  createUser: async function (user,res) {
+    try{
+        const db = client.db("AirlineDB");
+        const col = db.collection("User");
+        await col.insertOne(user,(err,result)=>{
+          if (err)
+          res.status(500).send("connection error");
+          else
+          //console.log(result)
+          res.status(200).send(user.userName);
+        });
+    }
+    catch(err){
+      console.log(err);
+    }
+  
   }
 };

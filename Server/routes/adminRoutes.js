@@ -39,5 +39,7 @@ router.route('/updateFlight')
     adminController.updateFlight(req,res);
 });
 
+
+
 module.exports = router;
 
