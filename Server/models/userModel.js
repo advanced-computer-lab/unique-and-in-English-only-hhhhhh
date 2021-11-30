@@ -13,23 +13,23 @@ module.exports={// this wil be edited
         let departureFlight = {
             //departureAirportTerminal: new RegExp(req.body.departureAirportTerminal,'i') ,
             //arrivalAirportTerminal: new RegExp(req.body.arrivalAirportTerminal,'i') ,
-            "departureAirportTerminal": req.body.departureAirportTerminal,
-            "arrivalAirportTerminal": req.body.arrivalAirportTerminal,
-            "departureDate": req.body.departureDate,
+            "departureAirportTerminal": (req.body.departureAirportTerminal=="")?"":req.body.departureAirportTerminal,
+            "arrivalAirportTerminal": (req.body.arrivalAirportTerminal=="")?"":req.body.arrivalAirportTerminal,
+            "departureDate": (req.body.departureDate=="")?"":req.body.departureDate,
             //arrivalDate: req.body.arrivalDate,
-            "availableEcoSeatsCount" : (req.body.class =="economy")?(req.body.adults + req.body.children): 0 ,
-            "availableBusinessSeatsCount" : (req.body.class =="business")?(req.body.adults + req.body.children): 0
+            "ecoSeatsCount" : (req.body.class =="economy")?(req.body.adults + req.body.children): 0 ,
+            "businessSeatsCount" : (req.body.class =="business")?(req.body.adults + req.body.children): 0
         };
 
         let returnFlight  = {
             //departureAirportTerminal: new RegExp(req.body.arrivalAirportTerminal,'i'),
             //arrivalAirportTerminal: new RegExp(req.body.departureAirportTerminal,'i'),
-            "departureAirportTerminal": req.body.arrivalAirportTerminal,
-            "arrivalAirportTerminal": req.body.departureAirportTerminal,
-            "departureDate": req.body.returnDate,
+            "departureAirportTerminal": (req.body.arrivalAirportTerminal=="")?"":req.body.arrivalAirportTerminal,
+            "arrivalAirportTerminal": (req.body.departureAirportTerminal=="")?"":req.body.departureAirportTerminal,
+            "departureDate":(req.body.returnDate=="")?"":req.body.returnDate,
             //arrivalDate: req.body.arrivalDate,
-            "availableEcoSeatsCount" : (req.body.class =="economy")?(req.body.adults + req.body.children): 0 ,
-            "availableBusinessSeatsCount" : (req.body.class =="business")?(req.body.adults + req.body.children): 0
+            "ecoSeatsCount" : (req.body.class =="economy")?(req.body.adults + req.body.children): 0 ,
+            "businessSeatsCount" : (req.body.class =="business")?(req.body.adults + req.body.children): 0
         };
         
         await DB.readReservation(departureFlight, returnFlight, res);
@@ -38,7 +38,7 @@ module.exports={// this wil be edited
         await DB.readAllReservations(req,res);
     },
     deleteReservation: async function(req,res){
-        await DB.deleteReservation(req,res);
+        await DB.deleteReservation(req.body._id,res);
     },
     updateUserInfo: async function(req,res){
         await DB.updateUserInfo(req.body.userName,{ $set: req.body.update},res);

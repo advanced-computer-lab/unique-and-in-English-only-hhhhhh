@@ -5,7 +5,7 @@ const reservationschema=new schema({
    // _id: false,
     username:{
         type:String,
-        unique:true,
+       
         required:true
     },
     departureFlightId:{

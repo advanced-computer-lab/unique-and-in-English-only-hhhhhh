@@ -161,8 +161,8 @@ module.exports = {
       const db = client.db("AirlineDB");
       const col = db.collection("reservations");
       await col.insertOne(reservation,(err,result)=>{
-        if (err)
-        res.status(500).send("connection error");
+        if (err)    
+        res.status(500).send(err);
         else
         //console.log(result)
         res.status(200).send(reservation._id);
@@ -174,28 +174,40 @@ module.exports = {
   },
   readReservation :async function(departureFlight, returnFlight, res){
     try{
-      console.log(departureFlight);
-      console.log(returnFlight);
+       console.log(departureFlight);
+       console.log(returnFlight);
       const db = client.db("AirlineDB");
       const col = db.collection("flights");
-      const requestedDepartureFlights = await Flight.find(departureFlight)
-      .where('departureDate').gte(departureFlight.departureDate) 
-      .where('arrivalDate').lte(departureFlight.arrivalDate)
+      const requestedDepartureFlights = await Flight.find({departureAirportTerminal: departureFlight.departureAirportTerminal,
+      arrivalAirportTerminal: departureFlight.arrivalAirportTerminal})
       .where('ecoSeatsCount').gte(departureFlight.ecoSeatsCount)
       .where('businessSeatsCount').gte(departureFlight.businessSeatsCount);
-      console.log(requestedDepartureFlights);
-
-      const requestedReturnFlights = await Flight.find(returnFlight)
-      .where('departureDate').gte(returnFlight.departureDate) 
-      .where('arrivalDate').lte(returnFlight.arrivalDate)
-      .where('ecoSeatsCount').gte(returnFlight.ecoSeatsCount)
-      .where('businessSeatsCount').gte(returnFlight.businessSeatsCount);
-      //console.log(requestedReturnFlights);
-      
-    res.status(200).send({"departureFlights":requestedDepartureFlights});
+     
+      const requestedReturnFlights = await Flight.find({departureAirportTerminal: returnFlight.departureAirportTerminal,
+        arrivalAirportTerminal: returnFlight.arrivalAirportTerminal})
+        .where('ecoSeatsCount').gte(returnFlight.ecoSeatsCount)
+        .where('businessSeatsCount').gte(returnFlight.businessSeatsCount);
+        
+    res.status(200).send({"departureFlights":requestedDepartureFlights,"returnFlights":requestedReturnFlights});
   }
   catch(err){
     console.log(err);
+    res.status(500).send(err);
   }
+  },
+  deleteReservation: async function (_id,res){
+    try{
+        const db = client.db("AirlineDB");
+        const col = db.collection("reservations");
+        await col.deleteOne({_id : mongoose.Types.ObjectId(_id)},(err,result)=>{
+          console.log(result);
+          if (err) return res.status(500).send(false);
+            res.status(200).send(true);
+        });
+    }
+    catch(err){
+      console.log(err);
+    }
+  
   },
 };
