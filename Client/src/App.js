@@ -19,6 +19,7 @@ import UserSeachFlight from './components/UserSearchFlight'
 import Seat from './components/Seat';
 import UserFlightTicket from './components/UserFlightTicket';
 import UserSearchResult from './components/UserSearchResult';
+import SeatParent from './components/SeatParent';
 
 
 function App(props) {
@@ -59,7 +60,7 @@ function App(props) {
   <Profile />
 </Route>
 <Route path="/test4">
-  <Seat />
+  <SeatParent />
 </Route>
 <Route path="/test5" render={(props) => <UserSearchResult {...props}/>}/>
 
