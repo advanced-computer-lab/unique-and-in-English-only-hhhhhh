@@ -48,12 +48,18 @@ const EditFlight = (props) => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [checked, setChecked] = React.useState(true);
-    const [departureDate, setDepartureDate] = React.useState(props.departureDate);
-    const [returnDate, setReturnDate] = React.useState(props.arrivalDate);
     const [edit, setEdit] = React.useState(false);
     
-    const [ economicSeatPrice , setEconomicSeatPrice ]= React.useState("");
-    const [ businessSeatPrice , setBusinessSeatPrice ]= React.useState("");
+    const [ _id , setId ] = React.useState();
+    const [ flightNumber , setFlightNumber ]= React.useState(props.flightNumber);
+    const [ ecoSeatsCount , setEcoSeatsCount ]= React.useState(props.ecoSeatsCount);
+    const [ businessSeatsCount , setBusinessSeatsCount ]= React.useState(props.businessSeatsCount);
+    const [departureDate, setDepartureDate] = React.useState(props.departureDate);
+    const [arrivalDate, setarrivalDate] = React.useState(props.arrivalDate);
+    const [ departureAirportTerminal , setDepartureAirportTerminal ]= React.useState(props.departureAirportTerminal);
+    const [ arrivalAirportTerminal , setArrivalAirportTerminal ]= React.useState(props.arrivalAirportTerminal);
+    const [ economicSeatPrice , setEconomicSeatPrice ]= React.useState(props.economicSeatPrice);
+    const [ businessSeatPrice , setBusinessSeatPrice ]= React.useState(props.businessSeatPrice);
 
     const history = useHistory() ;
 
@@ -71,11 +77,6 @@ const EditFlight = (props) => {
     
       
     const onChangeData = (e)=> {
-      const { name, value } = e.target;
-      setState(prevState => ({
-          ...prevState,
-          [name]: value
-      }));
       setEdit(false);
     };
 
@@ -87,27 +88,19 @@ const EditFlight = (props) => {
     const handleChangeOfDeparture = (newValue) => {
       setDepartureDate(newValue);
       setEdit(false);
-      if ( newValue > returnDate ) {
-        setReturnDate(newValue);
+      if ( newValue.getTime() > arrivalDate.getTime() ) {
+        setarrivalDate(newValue);
       }
-      setState(prevState => ({
-        ...prevState,
-        ["departureDate"]: departureDate
-    }));
     };
 
-    const handleChangeOfReturn = (newValue) => {
+    const handleChangeOfArrival = (newValue) => {
       setEdit(false);
-     if (newValue <= departureDate) {
-        setReturnDate(returnDate);
+      if (newValue.getTime() <= departureDate.getTime()) {
+        setarrivalDate(arrivalDate);
       }
       else{
-        setReturnDate(newValue);
-      }
-      setState(prevState => ({
-        ...prevState,
-        ["arrivalDate"]: returnDate
-    }));
+        setarrivalDate(newValue);
+      }        
         
     };
 
@@ -115,24 +108,27 @@ const EditFlight = (props) => {
       
     const handleSubmit = (event) => {
       event.preventDefault();
-    
+      var empty = false ;
       const flight = {
         _id: props._id,  
           update: {
-            flightNumber: state["flightNumber"],
-            ecoSeatsCount:   state["ecoSeatsCount"],
-            businessSeatsCount:   state["businessSeatsCount"],
-            departureDate:  new Date( state["departureDate"] ),
-            arrivalDate:   new Date(state["arrivalDate"])  ,
-            departureAirportTerminal:  state["departureAirportTerminal"] ,
-            arrivalAirportTerminal:   state["arrivalAirportTerminal"],
-            economicSeatPrice: economicSeatPrice,
-            businessSeatPrice: businessSeatPrice
+            flightNumber: flightNumber,
+      ecoSeatsCount:(ecoSeatsCount!="") ?ecoSeatsCount : 0,
+      businessSeatsCount:(businessSeatsCount!="") ?businessSeatsCount : 0,
+      departureDate:departureDate,
+      arrivalDate:arrivalDate,
+      departureAirportTerminal:departureAirportTerminal,
+      arrivalAirportTerminal:arrivalAirportTerminal,
+      economicSeatPrice: economicSeatPrice,
+      businessSeatPrice: businessSeatPrice
           }
       }
+      if ( economicSeatPrice==""||businessSeatPrice==""|| flightNumber == "" || departureDate == "" || arrivalDate == "" || departureAirportTerminal == "" || arrivalAirportTerminal == ""){
+        empty = true
+      }
 
-
-      axios.put('http://localhost:8000/admin/updateFlight' , flight )
+      if(!empty){
+        axios.put('http://localhost:8000/admin/updateFlight' , flight )
       .then(res => {
         setEdit(true);
 
@@ -140,6 +136,11 @@ const EditFlight = (props) => {
         alert("Connection Error with the server" );
         
     });
+      }
+      else {
+        alert("No Empty Spaces are Allowed");
+      }
+      
     
     
     };
@@ -184,7 +185,7 @@ const EditFlight = (props) => {
                   helperText="Max 7 Charchters"
                   placeholder="EX. PI 150"
                   inputProps={{ maxLength: 7 , defaultValue: props.flightNumber }}
-                  onChange = {onChangeData}
+                  onChange = { (e) => {setFlightNumber(e.target.value)} }
                   autoFocus
                 />
               </Grid>
@@ -198,7 +199,7 @@ const EditFlight = (props) => {
                   label="From"
                   placeholder="The Airport Name"
                   autoFocus
-                  onChange = {onChangeData}
+                  onChange = { (e) => {setDepartureAirportTerminal(e.target.value)} }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -210,7 +211,7 @@ const EditFlight = (props) => {
                   label="To"
                   name="arrivalAirportTerminal"
                   placeholder="The Airport Name"
-                  onChange = {onChangeData}
+                  onChange = { (e) => {setArrivalAirportTerminal(e.target.value)} }
                 />
               </Grid>
               
@@ -231,7 +232,7 @@ const EditFlight = (props) => {
                     else if (event.target.value > 100){
                       event.target.value = 100
                     }
-                    onChangeData(event);
+                    setBusinessSeatsCount(event.target.value);
                 } 
               }
                 />
@@ -253,7 +254,7 @@ const EditFlight = (props) => {
                     else if (event.target.value > 500){
                       event.target.value = 500
                     }
-                    onChangeData(event);
+                    setEcoSeatsCount(event.target.value);
                 }
               }
                 />
@@ -293,7 +294,6 @@ const EditFlight = (props) => {
                      id = 'departureDate'
                      name = "departureDate"
                      label="Date&Time of Depature"
-                     
                      value={departureDate}
                      onChange={handleChangeOfDeparture  }
                      renderInput={(params) => <TextField {...params} />}
@@ -306,10 +306,9 @@ const EditFlight = (props) => {
                 <MobileDateTimePicker
                      id = "arrivalDate"
                      name = "arrivalDate"
-                     label="Date&Time of Arrival"
-                     
-                     value={returnDate}
-                     onChange={handleChangeOfReturn}
+                     label="Date&Time of Arrival"   
+                     value={arrivalDate}
+                     onChange={ handleChangeOfArrival }
                      renderInput={(params) => <TextField {...params} />}
                     />
                     </LocalizationProvider>

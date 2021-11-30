@@ -15,6 +15,19 @@ const Combine = () => {
     const [deleted , setDeleted] = React.useState("");
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
+
+
+    const [ _id , setId ] = React.useState('');
+    const [ flightNumber , setFlightNumber ]= React.useState('');
+    const [ ecoSeatsCount , setEcoSeatsCount ]= React.useState('');
+    const [ businessSeatsCount , setBusinessSeatsCount ]= React.useState('');
+    const [departureDate, setDepartureDate] = React.useState( '' );
+    const [arrivalDate, setarrivalDate] = React.useState( '' );
+    const [ departureAirportTerminal , setDepartureAirportTerminal ]= React.useState('');
+    const [ arrivalAirportTerminal , setArrivalAirportTerminal ]= React.useState('');
+    const [ economicSeatPrice , setEconomicSeatPrice ]= React.useState('');
+    const [ businessSeatPrice , setBusinessSeatPrice ]= React.useState('');
+
     const [state , setState] = React.useState({
       _id: '',
       flightNumber:'',
@@ -24,6 +37,8 @@ const Combine = () => {
       arrivalDate:  '',
       departureAirportTerminal:'',
       arrivalAirportTerminal:'',
+      economicSeatPrice:'',
+      businessSeatPrice:''
       });
 
 
@@ -43,9 +58,10 @@ const Combine = () => {
     
      
       const handleSerach = async (newValue) => {
-        setState(newValue);
-         await axios.post('http://localhost:8000/admin/readFlight' , state)
+        console.log(newValue);
+         await axios.post('http://localhost:8000/admin/readFlight' , newValue)
         .then((result) => {
+          console.log(result.data);
           setAllState(result.data);
           setNotify({
             isOpen: true,
@@ -53,6 +69,7 @@ const Combine = () => {
             type: 'success'
         });
         }).catch(err => {
+          
           setNotify({
             isOpen: true,
             message: 'Search Failed',
@@ -61,13 +78,13 @@ const Combine = () => {
           
 
       });
+      console.log(test);
       } ;
 
 
 
 
       const handleDeleted = async ( newValue )=>{
-         // setDeleted( newValue );
           setConfirmDialog({
             isOpen: true,
             title: 'Are you sure to delete this record?',

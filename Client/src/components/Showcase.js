@@ -1,11 +1,14 @@
 import React from 'react'
 import Grow from '@mui/material/Grow';
+import UserSearch from './UserSearch';
 
 
 const Showcase = () => {
     const isReloaded = true ;
     return (
 <><Grow in={ isReloaded } timeout={3000}> 
+<div>
+
        <section className="showcase">
        
            <div className="overlay">
@@ -16,6 +19,11 @@ const Showcase = () => {
            </div>
            
        </section>
+       <div className="ml-32 -mt-60">
+       <UserSearch />
+       </div>
+       </div>
+
           </Grow>
       </> 
     )

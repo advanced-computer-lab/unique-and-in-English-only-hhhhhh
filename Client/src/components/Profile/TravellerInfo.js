@@ -15,24 +15,67 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
 import Stack from '@mui/material/Stack';
 import SaveIcon from '@mui/icons-material/Save';
+import Notification from '../Notification';
+import axios from 'axios';
+
 
 
 const TravellerInfo = () => {
+    const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [gender, setGender] = React.useState('');
     const [country, setCountry] = useState("");
     const [birth, setBirth] = React.useState('1/5/2000');
-    const handleChangeGender = (event) => {
-        setGender(event.target.value);
-     };
-     const handleChangeCountry = (event , value) => {
-        setCountry(value["label"]);
-        console.log(country);
+    const [firstName, setFirstName] = React.useState('');
+    const [lastName, setLastName] = useState("");
+    const [passport , setPassport] = React.useState('');
+    const [telephone , setTelephone] = React.useState(0);
+
+     const handleSubmit = async (event) => {
+      event.preventDefault();
+       const user = {
+        userName: "konar",
+        update:{
+            firstName: firstName,
+            lastName: lastName,
+            gender: gender,
+            country: country,
+            telephoneNumber: telephone,
+            passportNumber: passport
+        }
+    };
+    console.log(user);
+
+
+    await axios.put('http://localhost:8000/user/updateUserInfo' , user )
+    .then(res => {
+      console.log(res.data);
+      setNotify({
+        isOpen: true,
+        message: 'You Information Has Been Updated Successfully',
+        type: 'success'
+    })
+    }).catch(err => {
+      console.log(err);
+      setNotify({
+        isOpen: true,
+        message: 'Error with The SERVER and Faild to Update',
+        type: 'error'
+    });
+  });
+
+        
       };
 
     return (
+      <>
+      <Notification
+            notify={notify}
+            setNotify={setNotify}
+                      />
+
         <div className="inline-grid justify-items-center justify-center" >
             <Box  className="inline-grid justify-items-center"
-            component="form" noValidate onSubmit={() => { console.log("Hi"); } } sx={{ mt: 3 }}>
+            component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
 
                
@@ -44,16 +87,19 @@ const TravellerInfo = () => {
                   label="First Name"
                   placeholder="First Name"
                   autoFocus
+                  onChange= { e => {setFirstName(e.target.value)}}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  name="lasttName"
+                  name="lastName"
                   fullWidth
-                  id="lasttName"
+                  id="lastName"
                   label="Last Name"
                   placeholder="Last Name"
                   autoFocus
+                  onChange= { e => {setLastName(e.target.value)}}
+
                 />
               </Grid>
               
@@ -70,7 +116,7 @@ const TravellerInfo = () => {
           id="gender"
           value={gender}
           label="Gender"
-          onChange={handleChangeGender}
+          onChange={ e => {setGender(e.target.value)} }
         >
           <MenuItem value={"male"}>Male</MenuItem>
           <MenuItem value={"female"}>Female</MenuItem>
@@ -90,8 +136,8 @@ const TravellerInfo = () => {
       getOptionLabel={(option) => option.label}
       sx={{ width: 400 }}
       renderInput={(params) => <TextField {...params} label="Country" />}
-      onChange={handleChangeCountry}
-    />
+      onChange={ (e , value) => {setCountry(value["label"])} }
+      />
             </Grid>
             <Grid item xs={12} sm={6} />
             <Grid item xs={12} sm={6} >
@@ -109,8 +155,8 @@ const TravellerInfo = () => {
         </Stack>
     </LocalizationProvider>
 </Grid>
-<Grid item xs={12} sm={6} />
 
+<Grid item xs={12} sm={6} />
 <Grid item xs={12} sm={6} >
 <TextField
                   name="passport"
@@ -119,6 +165,23 @@ const TravellerInfo = () => {
                   label="Passport Number"
                   placeholder="Passport Number"
                   autoFocus
+                  onChange={ (e) => {setPassport(e.target.value)} }
+
+                />
+  </Grid>
+
+<Grid item xs={12} sm={6} />
+<Grid item xs={12} sm={6} >
+<TextField
+                  name="telephone"
+                  fullWidth
+                  type = "tel"
+                  id="telephone"
+                  label="Telephone Number"
+                  placeholder="Telephone Number"
+                  autoFocus
+                  onChange={ (e) => {setTelephone(e.target.value)} }
+
                 />
   </Grid>
 
@@ -139,7 +202,8 @@ const TravellerInfo = () => {
             </Box>
         
         </div>
-    )
+        </>
+    );
 }
 
 export default TravellerInfo

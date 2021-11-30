@@ -14,6 +14,8 @@ import Notification from './Notification'
 const UserFlightCard = () => {
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
+    
+
     const handleCancel = () =>{
         setConfirmDialog({
             isOpen: true,

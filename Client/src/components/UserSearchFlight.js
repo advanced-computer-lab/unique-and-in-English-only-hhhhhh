@@ -15,10 +15,16 @@ import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
 import LuggageIcon from '@mui/icons-material/Luggage';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 
-const UserSearchFlight = () => {
-    return (
-        
-           
+
+const UserSearchFlight = (props) => {
+  const durationTime = () => {
+    const diffTime = Math.abs( new Date((props.arrivalDate)).getTime() - new Date((props.departureDate)).getTime() );
+    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60  * 24)); 
+    console.log(diffTime + " milliseconds");
+    console.log(diffHours + " hours");
+    return diffHours ;
+  };
+    return (  
         <div className="mx-32 mb-6 w-5/6">
             <Accordion>
         <AccordionSummary
@@ -30,23 +36,23 @@ const UserSearchFlight = () => {
             <div className=" w-full justify-center">
             <div className=" flex justify-between justify-items-center">
                   <Typography  variant="h4">
-              HH:MM
+                  {(props.departureDate).substring(11, 16)}
             </Typography>
              <SendIcon sx={{fontSize:40}}/>             
             <Typography  variant="h4">
-            HH:MM
+                  {(props.arrivalDate).substring(11, 16)}
             </Typography>     
             </div>
 
             <div className=" flex justify-between justify-items-center mb-6">
-            <Typography gutterBottom variant="caption" color="text.secondary">
-            City 1
+            <Typography gutterBottom variant="body1" color="text.secondary">
+            {props.departureAirportTerminal}
             </Typography>
             <Typography gutterBottom variant="caption" color="text.secondary">
-            Flight duration
+            { durationTime() + " hours"}
             </Typography>
-            <Typography gutterBottom variant="caption" color="text.secondary">
-            City 2
+            <Typography gutterBottom variant="body1" color="text.secondary">
+            {props.arrivalAirportTerminal}
             </Typography>
             </div>
             </div>
@@ -55,29 +61,29 @@ const UserSearchFlight = () => {
         <AccordionDetails>
             <div>
             <Typography sx={{marginBottom: 2}}>
-            <FlightIcon /> Flight Number
+            <FlightIcon /> { props.flightNumber }
           </Typography>
         <div className="flex justify-evenly">
           <Typography>
-          <EventIcon/> Outbound Date
+          <EventIcon/> {(props.departureDate).substring(0, 10)}
           </Typography>
            <Typography>
-          <ClassRoundedIcon /> Class
+          <ClassRoundedIcon /> { (props.Class) }
           </Typography>
           </div>
           <div className="flex justify-evenly">
           <Typography>
-          <EventIcon/> Arrival Date
+          <EventIcon/> {(props.arrivalDate).substring(0, 10)}
           </Typography>
           <Typography>
-          <AttachMoneyIcon/> price
+          <AttachMoneyIcon/> { (props.Class === 'business')? props.businessSeatPrice : props.economicSeatPrice }
           </Typography>
           </div>
           <Typography>
-          <LuggageIcon /> Baggage Allowance
+          <LuggageIcon /> { (props.Class === 'business')? "2*32KG" : "1*23KG" }
           </Typography>
           <div className="flex justify-end">
-          <Button variant="contained" startIcon={<EventSeatIcon />} size="large">Reserve</Button>
+          <Button onClick={() => { props.ReserveAction(props._id) }} variant="contained" startIcon={<EventSeatIcon />} size="large">Reserve</Button>
           </div>
           </div>
         </AccordionDetails>

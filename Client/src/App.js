@@ -10,11 +10,15 @@ import Error from './components/Error';
 import SignUp2 from './components/Signup2'
 import Advertisement from './components/Advertisement';
 import CreateFlight from './components/CreateFlight';
+import UserSearch from './components/UserSearch';
 import EditFlight from './components/EditFlight';
 import Combine from './components/Combine';
 import Profile from './components/Profile/Profile';
 import UserFlightCard from './components/UserFlightCard';
 import UserSeachFlight from './components/UserSearchFlight'
+import Seat from './components/Seat';
+import UserFlightTicket from './components/UserFlightTicket';
+import UserSearchResult from './components/UserSearchResult';
 
 
 function App(props) {
@@ -46,14 +50,18 @@ function App(props) {
 </Route>
 
 <Route path="/test1">
-  <UserFlightCard />
+  <UserFlightTicket />
 </Route>
 <Route path="/test2">
-  <UserSeachFlight />
+   <></>
 </Route>
 <Route path="/test3">
   <Profile />
 </Route>
+<Route path="/test4">
+  <Seat />
+</Route>
+<Route path="/test5" render={(props) => <UserSearchResult {...props}/>}/>
 
 
 <Route path="/edit">
@@ -65,7 +73,7 @@ function App(props) {
 </Route>
 
 </Switch>
-
+<div className="mb-32" />
 <Footer />
    </ Router>
 

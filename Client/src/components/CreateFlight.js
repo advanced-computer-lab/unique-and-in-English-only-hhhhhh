@@ -162,7 +162,6 @@ const CreateFlight = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   name="departureAirportTerminal"
-                  
                   required
                   fullWidth
                   id="departureAirportTerminal"
@@ -278,7 +277,7 @@ const CreateFlight = () => {
                      label="Date&Time of Arrival"
                      disablePast
                      value={arrivalDate}
-                     onChange={ handleChangeOfArrival}
+                     onChange={ handleChangeOfArrival }
                      renderInput={(params) => <TextField {...params} />}
                     />
                     </LocalizationProvider>

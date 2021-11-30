@@ -20,26 +20,17 @@ import axios from 'axios';
 
 const SearchBox = (props) => {
     const [checked, setChecked] = React.useState(true);
-    const [departureDate, setDepartureDate] = React.useState( new Date() );
-    const [returnDate, setReturnDate] = React.useState( new Date() );
-    const [state, setState] = React.useState({
-      flightNumber:'',
-      ecoSeatsCount:'',
-      businessSeatsCount:'',
-      departureDate:   departureDate,
-      arrivalDate:   returnDate,
-      departureAirportTerminal:'',
-      arrivalAirportTerminal:'',
-      });
-
-      
-    const onChangeData = (e)=> {
-      const { name, value } = e.target;
-      setState(prevState => ({
-          ...prevState,
-          [name]: value
-      }));
-    };
+    
+    const [ flightNumber , setFlightNumber ]= React.useState("");
+    const [ ecoSeatsCount , setEcoSeatsCount ]= React.useState("");
+    const [ businessSeatsCount , setBusinessSeatsCount ]= React.useState("");
+    const [departureDate, setDepartureDate] = React.useState(  new Date() );
+    const [arrivalDate, setarrivalDate] = React.useState( new Date() );
+    const [ departureAirportTerminal , setDepartureAirportTerminal ]= React.useState("");
+    const [ arrivalAirportTerminal , setArrivalAirportTerminal ]= React.useState("");
+    
+    
+    
     
   const clickOnTheIcon = () => {
     setChecked((prev) => !prev);
@@ -47,46 +38,34 @@ const SearchBox = (props) => {
 
     const handleChangeOfDeparture = (newValue) => {
       setDepartureDate(newValue);
-      if ( newValue > returnDate ) {
-        setReturnDate(newValue);
+      if ( newValue.getTime() > arrivalDate.getTime() ) {
+        setarrivalDate(newValue);
       }
-      setState(prevState => ({
-        ...prevState,
-        ["departureDate"]: departureDate
-    }));
     };
 
-    const handleChangeOfReturn = (newValue) => {
-     if (newValue <= departureDate) {
-        setReturnDate(returnDate);
+    const handleChangeOfArrival = (newValue) => {
+      if (newValue.getTime() <= departureDate.getTime()) {
+        setarrivalDate(arrivalDate);
       }
       else{
-        setReturnDate(newValue);
-      }
-      setState(prevState => ({
-        ...prevState,
-        ["arrivalDate"]: returnDate
-    })); 
+        setarrivalDate(newValue);
+      }        
     };
 
 
   const handleSubmit = (event) => {
     event.preventDefault();
-  /*  if ( state["departureDate"].toDateString() === state["arrivalDate"].toDateString() ){
-      setState(prevState => ({
-        ...prevState,
-        ["departureDate"]: new Date('1000-08-18T21:11:54') , ["arrivalDate"]: new Date('3000-08-18T21:11:54')
-    }));
-    }*/
+
     const flight = {
-      flightNumber: state["flightNumber"],
-      ecoSeatsCount:state["ecoSeatsCount"],
-      businessSeatsCount:state["businessSeatsCount"],
-      departureDate:state["departureDate"],
-      arrivalDate:state["arrivalDate"],
-      departureAirportTerminal:state["departureAirportTerminal"],
-      arrivalAirportTerminal:state["arrivalAirportTerminal"],
+      flightNumber: flightNumber,
+      ecoSeatsCount:ecoSeatsCount ,
+      businessSeatsCount:businessSeatsCount,
+      departureDate:departureDate,
+      arrivalDate:arrivalDate,
+      departureAirportTerminal:departureAirportTerminal,
+      arrivalAirportTerminal:arrivalAirportTerminal,
       }
+      console.log(flight);
       props.Changedata(flight);
   };
 
@@ -124,7 +103,7 @@ const SearchBox = (props) => {
                   name="flightNumber"
                   placeholder="EX. AB 1500"
                   inputProps={{ maxLength: 7 }}
-                  onChange = {onChangeData}
+                  onChange = {(e) => {setFlightNumber(e.target.value)}}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -136,7 +115,7 @@ const SearchBox = (props) => {
                   name="departureAirportTerminal"
                   label="from"
                   placeholder="Country, City or Airport"
-                  onChange = {onChangeData}
+                  onChange = {(e) => {setDepartureAirportTerminal(e.target.value)}}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -148,7 +127,7 @@ const SearchBox = (props) => {
                   id="arrivalAirportTerminal"
                   label="To"
                   placeholder="Country, City or Airport"
-                  onChange = {onChangeData}
+                  onChange = {(e) => {setArrivalAirportTerminal(e.target.value)}}
                 />
               </Grid>                             
               
@@ -174,8 +153,8 @@ const SearchBox = (props) => {
                      name = "arrivalDate"
                      label="Date&Time of Arrival"
                      disablePast
-                     value={returnDate}
-                     onChange={handleChangeOfReturn}
+                     value={arrivalDate}
+                     onChange={ handleChangeOfArrival }
                      renderInput={(params) => <TextField {...params} />}
                     />
                     </LocalizationProvider>
