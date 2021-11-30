@@ -199,6 +199,7 @@ module.exports = {
     try{
         const db = client.db("AirlineDB");
         const col = db.collection("reservations");
+        console.log(_id);
         await col.deleteOne({_id : mongoose.Types.ObjectId(_id)},(err,result)=>{
           console.log(result);
           if (err) return res.status(500).send(false);
