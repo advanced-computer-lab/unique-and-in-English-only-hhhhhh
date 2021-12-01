@@ -41,6 +41,8 @@ const style = {
     await axios.post('http://localhost:8000/user/readFlightSeats', flight)
         .then(result => {
           setSeats(result.data.flightSeats);
+          setIndex(result.data.index)
+          console.log(result.data.index);
         }).catch(err => {
            setNotify({
             isOpen: true,
@@ -48,14 +50,8 @@ const style = {
             type: 'error'
         });
       });
-
-      while (index < seats.length) {
-        if ( seats[index].length === 0){
-            break;
-        }
-        setIndex( index + 1 );
-    }
     console.log(props.maxNumber);
+    
     console.log(seats.slice(0 , index));
   }, [] );
 
@@ -76,6 +72,7 @@ const style = {
         setSelected([]);
         
     }
+    console.log(seats);
 
   };
 
@@ -104,7 +101,7 @@ const style = {
          <Box sx={style}>
     <div className="w-1/2">
         <div className="w-full flex justify-center my-16">
-      <Seat setSelected={setSelected} maxNumber={props.maxNumber} seat={(props.Class=='business')? seats.slice(0,index) : seats.slice(index+1 , seats.length)}/>
+      <Seat setSelected={setSelected} maxNumber={props.maxNumber} seat={(props.Class=='economic')?seats.slice(index+1 , seats.length) : seats.slice(0,index) }/>
         </div>
       <div className="">
         <div className="w-full flex justify-center"> 

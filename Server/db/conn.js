@@ -371,7 +371,7 @@ module.exports = {
         flightSeats.push(row);row = [];
       }
 
-
+      const index = flightSeats.length + 1
       flightSeats.push([]);
       var ecoSpace = 0;
       for(var i =0,s1 = 0;i<ecoSeats[0]['ecoSeats'].length;i++,s1++){
@@ -395,7 +395,7 @@ module.exports = {
       if(row.length !=0){
         flightSeats.push(row);row = [];
       }
-      res.status(200).send({flightSeats: flightSeats});
+      res.status(200).send({index: index , flightSeats: flightSeats});
     }
     catch(err){
       console.log(err);
