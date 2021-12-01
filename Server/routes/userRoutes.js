@@ -46,4 +46,9 @@ router.route('/updateSensitiveUserInfo')
     userController.updateSensitiveUserInfo(req,res);
 });
 
+router.route('/readFlightSeats')
+.post((req,res)=>{
+    userController.readFlightSeats(req,res);
+})
+
 module.exports = router;

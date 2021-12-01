@@ -7,10 +7,6 @@ const seatSchema = new schema({
         required: true,
         unique: true
     },
-    number:{
-        type: Number,
-        required: true,
-    },
     isReserved:{
         type: Boolean,
         required: true,
@@ -32,7 +28,7 @@ const flightSeatsSchema=new schema({
         type:Number,
         required : true
     },
-    seats:[[seatSchema]]
-
+    ecoSeats:[seatSchema],
+    businessSeats:[seatSchema]
 },{timestamps:true}); 
 module.exports = mongoose.model('FlightSeats',flightSeatsSchema);

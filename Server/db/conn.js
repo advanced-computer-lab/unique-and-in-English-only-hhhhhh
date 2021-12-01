@@ -2,6 +2,8 @@ const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 const Flight = require("../schemas/Flight");
 const Admin = require("../schemas/Admin");
+const FlightSeats = require("../schemas/FlightSeats");
+const Seat = require("../schemas/Seat")
 const Db = process.env.ATLAS_URI;
 console.log(Db);
 const client = new MongoClient(Db, {
@@ -67,6 +69,24 @@ module.exports = {
           //console.log(result)
           res.status(200).send(flight._id);
         });
+
+        // create seats schema
+        var ecoFlightSeats = [];
+        var businessFlightSeats = [];
+        const ecoSeatsCount = flight['ecoSeatsCount'];
+        const businessSeatsCount = flight['businessSeatsCount'];
+        for(var i = 0; i <businessSeatsCount; i++){
+          var seat = new Seat({id:i+1,isReserved:false});
+          businessFlightSeats.push(seat);
+        }
+        for(var i = businessSeatsCount; i <businessSeatsCount+ecoSeatsCount; i++){
+          var seat = new Seat({id:i+1,isReserved:false});
+          ecoFlightSeats.push(seat);
+        }
+        const flightSeats = new FlightSeats({flightId:flight._id,availableEcoSeatsCount:ecoSeatsCount,
+        availableBusinessSeatsCount:businessSeatsCount,ecoSeats:ecoFlightSeats,businessSeats:businessFlightSeats});
+        await flightSeats.save();
+        // the end
     }
     catch(err){
       console.log(err);
@@ -213,4 +233,65 @@ module.exports = {
     }
   
   },
+  readFlightSeats: async function (_id,res){
+    try{
+      var flightSeats = [];
+      console.log(mongoose.Types.ObjectId(_id));
+      var ecoSeats = await FlightSeats.find({flightId:mongoose.Types.ObjectId(_id)}).select('ecoSeats').exec();
+        //res.status(200).send(flightSeats);
+      console.log(ecoSeats[0]['ecoSeats']);
+
+      const businessSeats = await FlightSeats.find({flightId:mongoose.Types.ObjectId(_id)}).select('businessSeats').exec();
+      console.log(businessSeats[0]['businessSeats']);
+
+      var businessSpace = 0;
+      var row = [];
+      for(var i =0,c=0;i<(businessSeats[0]['businessSeats']).length;i++,c++){
+        if(c==2 && businessSpace == 0){
+          c=0;row.push(null);businessSpace = 1;
+        }
+        if(c==2 && businessSpace == 1){
+          c=0;businessSpace = 0;
+          flightSeats.push(row);row = [];
+        }
+        var seatObject = {
+          id : businessSeats[0]['businessSeats'][i]['id'],
+          isReserved : businessSeats[0]['businessSeats'][i]['isReserved']
+        }
+        row.push(seatObject);
+      }
+      if(row.length !=0){
+        flightSeats.push(row);row = [];
+      }
+
+
+      flightSeats.push([]);
+      var ecoSpace = 0;
+      for(var i =0,s1 = 0;i<ecoSeats[0]['ecoSeats'].length;i++,s1++){
+        if(s1==2 && ecoSpace ==0){
+          s1=0;row.push(null);ecoSpace=1;
+        }
+        if(s1==3 && ecoSpace ==1){
+          s1=0;row.push(null);ecoSpace=2;
+        }
+        if(s1==2 && ecoSpace ==2){
+          s1=0;ecoSpace=0;
+          flightSeats.push(row);row = [];
+        }
+        var seatObject = {
+          id : ecoSeats[0]['ecoSeats'][i]['id'],
+          isReserved : ecoSeats[0]['ecoSeats'][i]['isReserved']
+        }
+        row.push(seatObject);
+      }
+      if(row.length !=0){
+        flightSeats.push(row);row = [];
+      }
+      res.status(200).send({flightSeats: flightSeats});
+    }
+    catch(err){
+      console.log(err);
+    }
+
+    }
 };
