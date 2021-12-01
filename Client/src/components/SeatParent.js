@@ -65,8 +65,16 @@ const style = {
         setReachedMax(true);
     }
     else {
+      setNotify({
+        isOpen: true,
+        message: 'You Have Chosen The Seats',
+        type: 'success'
+    });
         setReachedMax(false);
-        // send the Selected Array to Backend that contained The Seat Id
+        setIndex(0);
+        props.close(false , selected);
+        setSelected([]);
+        
     }
 
   };
@@ -82,9 +90,6 @@ const style = {
         className="modal"
         {...props}
         onClose= { ()=> {
-          if ( selected.length < props.maxNumber ){
-            setSelected([]);
-          }
           setIndex(0);
           setSelected([]);
           props.close(false , selected);
