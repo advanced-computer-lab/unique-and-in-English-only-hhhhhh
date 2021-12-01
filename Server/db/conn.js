@@ -293,7 +293,6 @@ module.exports = {
         }
         var seatObject = {
           id : businessSeats[0]['businessSeats'][i]['id'],
-          number : businessSeats[0]['businessSeats'][i]['id'],
           isReserved : businessSeats[0]['businessSeats'][i]['isReserved']
         }
         row.push(seatObject);
@@ -318,7 +317,6 @@ module.exports = {
         }
         var seatObject = {
           id : ecoSeats[0]['ecoSeats'][i]['id'],
-          number : ecoSeats[0]['ecoSeats'][i]['id'],
           isReserved : ecoSeats[0]['ecoSeats'][i]['isReserved']
         }
         row.push(seatObject);
