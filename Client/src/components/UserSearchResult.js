@@ -23,7 +23,7 @@ const UserSearchResult = (props) => {
 
 
 
-    const handleReservation = (id) => {
+    const handleReservation = (id , selected) => {
 
             setDepartureId(id);
             setTrigger_seat_1( true );
@@ -67,7 +67,7 @@ const UserSearchResult = (props) => {
    businessSeatPrice= { oneElement.businessSeatPrice}
    Class = {props.history.location.state.Class} 
    maxNumber = {props.history.location.state.maxNumber}
-   ReserveAction={ (id) => handleReservation(id) }
+   ReserveAction={ (id , selected ) => handleReservation( id , selected) }
    />
     )
     :
@@ -85,7 +85,7 @@ const UserSearchResult = (props) => {
    businessSeatPrice= { oneElement.businessSeatPrice}
    Class = {props.history.location.state.Class} 
    maxNumber = {props.history.location.state.maxNumber}
-   ReserveAction={ (id) => handleReservation(id) }
+   ReserveAction={ (id , selected ) => handleReservation( id , selected) }
    />
     )
 }

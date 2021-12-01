@@ -61,7 +61,7 @@ const style = {
 
 
   const handleSeatReservation = () => {
-    if ( selected.length < 5 ){
+    if ( selected.length < props.maxNumber ){
         setReachedMax(true);
     }
     else {
@@ -81,7 +81,14 @@ const style = {
         aria-describedby="transition-modal-description"
         className="modal"
         {...props}
-        onClose= { ()=> { setIndex(0); setSelected([]); props.close(false , selected);}}
+        onClose= { ()=> {
+          if ( selected.length < props.maxNumber ){
+            setSelected([]);
+          }
+          setIndex(0);
+          setSelected([]);
+          props.close(false , selected);
+           }}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{

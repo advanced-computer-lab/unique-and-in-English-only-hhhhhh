@@ -19,7 +19,7 @@ import SeatParent from './SeatParent';
 
 const UserSearchFlight = (props) => {
   const [open , setOpen] = React.useState( false );
-    const [ seats , setSeats] = React.useState([]);
+  const [ seats , setSeats] = React.useState([]);
 
 
   const durationTime = () => {
@@ -30,6 +30,7 @@ const UserSearchFlight = (props) => {
 
   const handleReservation = () => {
     setOpen(true);
+    props.ReserveAction( props._id , seats)
     console.log(props.maxNumber);
   };
 
