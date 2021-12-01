@@ -2,6 +2,7 @@ const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 const Flight = require("../schemas/Flight");
 const Admin = require("../schemas/Admin");
+const Reservation = require("../schemas/Reservation");
 const Db = process.env.ATLAS_URI;
 console.log(Db);
 const client = new MongoClient(Db, {
@@ -211,6 +212,16 @@ module.exports = {
     catch(err){
       console.log(err);
     }
-  
+  },
+  viewMyReservations:  async function (username ,res){
+    try{
+      console.log(username);
+        const reservations = await Reservation.find({username: username});
+        //console.log(reservations);
+        res.status(200).send(reservations);
+    }
+    catch(err){
+      console.log(err);
+    }
   },
 };

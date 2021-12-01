@@ -29,6 +29,9 @@ module.exports = {
     createUser: async function(req,res){
         await userModel.createUser(req,res);
     },
+    viewMyReservations: async function(req,res){
+        await userModel.viewMyReservations(req,res);
+    },
 
    
     
