@@ -28,7 +28,6 @@ module.exports = {
     },
     createUser: async function(req,res){
         await userModel.createUser(req,res);
-    }
     },
     readFlightSeats: async function(req,res){
         userModel.readFlightSeats(req,res);
