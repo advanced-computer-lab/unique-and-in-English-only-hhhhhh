@@ -178,13 +178,15 @@ module.exports = {
        console.log(returnFlight);
       const db = client.db("AirlineDB");
       const col = db.collection("flights");
-      const requestedDepartureFlights = await Flight.find({departureAirportTerminal: departureFlight.departureAirportTerminal,
-      arrivalAirportTerminal: departureFlight.arrivalAirportTerminal})
+
+      //flightNumber:new RegExp(flightNumber,'i')
+      const requestedDepartureFlights = await Flight.find({departureAirportTerminal: new RegExp(departureFlight.departureAirportTerminal,'i'),
+      arrivalAirportTerminal: new RegExp(departureFlight.arrivalAirportTerminal,'i')})
       .where('ecoSeatsCount').gte(departureFlight.ecoSeatsCount)
       .where('businessSeatsCount').gte(departureFlight.businessSeatsCount);
      
-      const requestedReturnFlights = await Flight.find({departureAirportTerminal: returnFlight.departureAirportTerminal,
-        arrivalAirportTerminal: returnFlight.arrivalAirportTerminal})
+      const requestedReturnFlights = await Flight.find({departureAirportTerminal: new RegExp(returnFlight.departureAirportTerminal,'i'),
+        arrivalAirportTerminal: new RegExp(returnFlight.arrivalAirportTerminal,'i')})
         .where('ecoSeatsCount').gte(returnFlight.ecoSeatsCount)
         .where('businessSeatsCount').gte(returnFlight.businessSeatsCount);
         

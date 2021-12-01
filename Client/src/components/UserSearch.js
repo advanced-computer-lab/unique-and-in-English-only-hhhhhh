@@ -59,6 +59,10 @@ const handleChangeOfReturn = (newValue) => {
 const handleSubmit = async (event) => {
   event.preventDefault();
   // rest of colleted Data and axios function
+  setFirstVisit(true);
+  if(departureAirportTerminal ==="" || arrivalAirportTerminal ===""){
+    return;
+  }
   const flight = {
     departureAirportTerminal: departureAirportTerminal,
     arrivalAirportTerminal: arrivalAirportTerminal,
@@ -168,6 +172,9 @@ const handleSubmit = async (event) => {
               }
                 />
              </div>   
+             
+             
+
 <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth >
         <InputLabel id="class">Class</InputLabel>
@@ -256,7 +263,6 @@ const handleSubmit = async (event) => {
           }}
         /> : <></>
             }
-
 
 </>
  
