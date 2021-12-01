@@ -66,6 +66,7 @@ const UserSearchResult = (props) => {
    economicSeatPrice= { oneElement.economicSeatPrice}
    businessSeatPrice= { oneElement.businessSeatPrice}
    Class = {props.history.location.state.Class} 
+   maxNumber = {props.history.location.state.maxNumber}
    ReserveAction={ (id) => handleReservation(id) }
    />
     )
@@ -83,6 +84,7 @@ const UserSearchResult = (props) => {
    economicSeatPrice= { oneElement.economicSeatPrice}
    businessSeatPrice= { oneElement.businessSeatPrice}
    Class = {props.history.location.state.Class} 
+   maxNumber = {props.history.location.state.maxNumber}
    ReserveAction={ (id) => handleReservation(id) }
    />
     )

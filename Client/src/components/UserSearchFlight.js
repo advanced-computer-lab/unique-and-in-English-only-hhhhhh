@@ -30,6 +30,7 @@ const UserSearchFlight = (props) => {
 
   const handleReservation = () => {
     setOpen(true);
+    console.log(props.maxNumber);
   };
 
     return (  
@@ -101,6 +102,7 @@ const UserSearchFlight = (props) => {
 
         <SeatParent
         open={open}
+        maxNumber = { props.maxNumber }
         close={ (boolean , selected) => {console.log(boolean);console.log(selected); setSeats(selected); setOpen(boolean);} }
         flightNumber = { props._id }
         Class = { props.Class } 

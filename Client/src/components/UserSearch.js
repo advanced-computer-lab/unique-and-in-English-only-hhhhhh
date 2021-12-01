@@ -259,7 +259,7 @@ const handleSubmit = async (event) => {
             <Redirect
             to={{
             pathname: "/test5",
-            state: { flights : flights , Class: Class }
+            state: { flights : flights , Class: Class, maxNumber: ( parseInt(childrenCount) + parseInt(adultsCount) )  }
           }}
         /> : <></>
             }

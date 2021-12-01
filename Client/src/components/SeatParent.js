@@ -33,12 +33,16 @@ const style = {
 
   React.useEffect( async() => {
    const flight = {
-     _id : props.flightNumber 
+    _id : props.flightNumber
    };
-    await axios.get('http://localhost:8000/user/readFlightSeats', flight)
+   console.log(props.flightNumber);
+    await axios.post('http://localhost:8000/user/readFlightSeats', flight)
         .then(result => {
-          console.log( result);
-          setSeats(result.data);
+          setSeats(result.data.flightSeats);
+          console.log(seats[0]);
+          console.log(seats);
+          console.log(result.data);
+
         }).catch(err => {
            setNotify({
             isOpen: true,
@@ -53,12 +57,7 @@ const style = {
         }
         setIndex( index + 1 );
     }
-    console.log(index);
-    console.log(seats);
-    console.log(props.flightNumber);
-    console.log(props.Class);
-
-
+    console.log(props.maxNumber)
   }, [] );
 
 
@@ -70,7 +69,7 @@ const style = {
         setReachedMax(false);
         // send the Selected Array to Backend that contained The Seat Id
     }
-    console.log(selected) 
+
   };
 
 
@@ -83,7 +82,7 @@ const style = {
         aria-describedby="transition-modal-description"
         className="modal"
         {...props}
-        onClose= { ()=> { setSelected([]); props.close(false , selected);}}
+        onClose= { ()=> { setIndex(0); setSelected([]); props.close(false , selected);}}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -94,7 +93,7 @@ const style = {
          <Box sx={style}>
     <div className="w-1/2">
         <div className="w-full flex justify-center my-16">
-      <Seat setSelected={setSelected} maxNumber="5" seat={( props.Class === 'business' )? seats.slice(0,index) : seats.slice(index+1 , seats.length)}/>
+      <Seat setSelected={setSelected} maxNumber={props.maxNumber} seat={( props.Class === 'business' )? seats.slice(0,index) : seats.slice(index+1 , seats.length)}/>
         </div>
       <div className="">
         <div className="w-full flex justify-center"> 
