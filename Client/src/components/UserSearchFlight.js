@@ -14,17 +14,26 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
 import LuggageIcon from '@mui/icons-material/Luggage';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
+import SeatParent from './SeatParent';
 
 
 const UserSearchFlight = (props) => {
+  const [open , setOpen] = React.useState( false );
+    const [ seats , setSeats] = React.useState([]);
+
+
   const durationTime = () => {
     const diffTime = Math.abs( new Date((props.arrivalDate)).getTime() - new Date((props.departureDate)).getTime() );
     const diffHours = Math.ceil(diffTime / (1000 * 60 * 60  * 24)); 
-    console.log(diffTime + " milliseconds");
-    console.log(diffHours + " hours");
     return diffHours ;
   };
+
+  const handleReservation = () => {
+    setOpen(true);
+  };
+
     return (  
+      <>
         <div className="mx-32 mb-6 w-5/6">
             <Accordion>
         <AccordionSummary
@@ -83,15 +92,21 @@ const UserSearchFlight = (props) => {
           <LuggageIcon /> { (props.Class === 'business')? "2*32KG" : "1*23KG" }
           </Typography>
           <div className="flex justify-end">
-          <Button onClick={() => { props.ReserveAction(props._id) }} variant="contained" startIcon={<EventSeatIcon />} size="large">Reserve</Button>
+          <Button onClick={() => { handleReservation() }} variant="contained" startIcon={<EventSeatIcon />} size="large">Reserve</Button>
           </div>
           </div>
         </AccordionDetails>
       </Accordion>
-
-     
-      
         </div>
+
+        <SeatParent
+        open={open}
+        close={ (boolean , selected) => {console.log(boolean);console.log(selected); setSeats(selected); setOpen(boolean);} }
+        flightNumber = { props._id }
+        Class = { props.Class } 
+        />
+
+        </>
     )
 }
 

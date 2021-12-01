@@ -20,6 +20,8 @@ import Seat from './components/Seat';
 import UserFlightTicket from './components/UserFlightTicket';
 import UserSearchResult from './components/UserSearchResult';
 import SeatParent from './components/SeatParent';
+import Ticket from './components/Ticket';
+
 
 
 function App(props) {
@@ -51,7 +53,7 @@ function App(props) {
 </Route>
 
 <Route path="/test1">
-  <UserFlightTicket />
+  <Ticket />
 </Route>
 <Route path="/test2">
    <></>

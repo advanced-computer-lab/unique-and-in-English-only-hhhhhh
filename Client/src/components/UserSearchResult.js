@@ -1,19 +1,35 @@
 import Typography from '@mui/material/Typography';
-import React from 'react'
+import React, { useState } from 'react'
 import Showcase from './Showcase'
 import UserSearchFlight from './UserSearchFlight'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SeatParent from './SeatParent';
+
+
 
 const UserSearchResult = (props) => {
     const [ choseDeparture , setChoseDeparture] = React.useState( true );
-    const handleReservation1 = (clicked) => {
-        setChoseDeparture(false);
-        console.log( choseDeparture) ;
-        console.log( clicked) ;
+    const [stage , setStage ] = React.useState( 0 );
+    const [trigger_seat_1 , setTrigger_seat_1] = React.useState( false );
+    const [trigger_seat_2 , setTrigger_seat_2] = React.useState( false );
+    const [departureId,setDepartureId] = useState('');
+    const [ returnId , setReturnId] = useState('');
+    const [ departureSeats , setDepartureSeats] = React.useState([]);
+    const [ returnSeats , setReturnSeats] = React.useState([]);
+    
+
+
+
+
+
+
+    const handleReservation = (id) => {
+
+            setDepartureId(id);
+            setTrigger_seat_1( true );
+            console.log(departureId);
 
     };
-
-    const handleReservation2 = (clicked) => {};
 
     React.useEffect(() => {
         console.log(props.history.location.state);
@@ -50,7 +66,7 @@ const UserSearchResult = (props) => {
    economicSeatPrice= { oneElement.economicSeatPrice}
    businessSeatPrice= { oneElement.businessSeatPrice}
    Class = {props.history.location.state.Class} 
-   ReserveAction={ (clicked) => handleReservation1(clicked) }
+   ReserveAction={ (id) => handleReservation(id) }
    />
     )
     :
@@ -67,10 +83,13 @@ const UserSearchResult = (props) => {
    economicSeatPrice= { oneElement.economicSeatPrice}
    businessSeatPrice= { oneElement.businessSeatPrice}
    Class = {props.history.location.state.Class} 
-   ReserveAction={ (clicked) => handleReservation2(clicked) }
+   ReserveAction={ (id) => handleReservation(id) }
    />
     )
 }
+
+       
+
 
         </div>
     )
