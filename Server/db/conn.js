@@ -3,16 +3,43 @@ const mongoose = require("mongoose");
 const Flight = require("../schemas/Flight");
 const Admin = require("../schemas/Admin");
 var nodemailer = require('nodemailer');
+const Reservation = require("../schemas/Reservation");
+const User = require ("../schemas/User");
 const Db = process.env.ATLAS_URI;
-const mail=process.env.userName;
-const mailpass=process.env.password;
+const mail=process.env.GMAIL_USERNAME;
+const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
 const client = new MongoClient(Db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
- 
- 
+ //nodemailer
+async function cancellationMail(email,refundValue){
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: mail,
+      pass: mailpass
+    }
+  })
+  var mailOptions = {
+    from: mail,
+    to: email,
+    subject: 'Flight Cancellation',
+    text: `The Reservation Has Been Cancelled Successfully , AmountRefunded:${refundValue}`,
+    attachments: [{
+      filename: 'cancelled-meeting.jpg',
+      path: "./db/cancelled-meeting.jpg",
+      cid: 'unique@cid'
+  }]
+  }
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  })}
 // MongoClient.
 module.exports = {
   connectToServer: async function(callback) {
@@ -204,7 +231,12 @@ module.exports = {
     try{
         const db = client.db("AirlineDB");
         const col = db.collection("reservations");
+        const reservation = await Reservation.find({_id: mongoose.Types.ObjectId(_id)});
+        const user= await User.find({userName: reservation[0].username});
+        const refundValue = reservation[0].totalPrice;
+        const usermail= user[0].email;
         console.log(_id);
+        cancellationMail(usermail,refundValue);
         await col.deleteOne({_id : mongoose.Types.ObjectId(_id)},(err,result)=>{
           console.log(result);
           if (err) return res.status(500).send(false);
@@ -216,26 +248,5 @@ module.exports = {
     }
   
   },
-  //nodemailer
-  cancellationMail: async function(email,refundValue){
-  var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: mail,
-      pass: mailpass
-    }
-  })
-  var mailOptions = {
-    from: mail,
-    to: email,
-    subject: 'Flight Cancellation',
-    text: `The Reservation Has Been Cancelled Successfully , AmountRefunded:${refundValue}`
-  }
-  transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  })}
+  
 };

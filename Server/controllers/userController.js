@@ -28,8 +28,7 @@ module.exports = {
     },
     createUser: async function(req,res){
         await userModel.createUser(req,res);
-    },
-
+    }
    
     
 }
