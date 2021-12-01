@@ -10,7 +10,23 @@ const client = new MongoClient(Db, {
   useUnifiedTopology: true,
 });
  
- 
+ async function processArray(reservations){
+  var resultArray =[];
+        
+        for(var item in reservations) {
+          const departureFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].departureFlightId)});
+          const returnFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].returnFlightId)});
+          var resultElement ={
+            departureFlight: departureFlight,
+            departureSeats: reservations[item].departureSeats,
+            returnFlight: returnFlight,
+            returnSeats: reservations[item].returnSeats,
+          }
+          
+          resultArray.push(resultElement);
+        }
+        return resultArray;
+ }
 // MongoClient.
 module.exports = {
   connectToServer: async function(callback) {
@@ -216,35 +232,9 @@ module.exports = {
   viewMyReservations:  async function (username ,res){
     try{
       console.log(username);
-        const reservations = await Reservation.find({username: username});
-        
-        console.log(reservations);
-        var resultArray =[];
-         for(var item in reservations) {
-          const departureFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].departureFlightId)});
-          const returnFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].returnFlightId)});
-          const resultElement ={
-            departureFlight: departureFlight,
-            departureSeats: reservations[item].departureSeats,
-            returnFlight: returnFlight,
-            departureSeats: reservations[item].returnSeats,
-            
-          }
-          console.log(departureFlight);
-          console.log(returnFlight);
-        }
-        
-       
-
-
-        res.send(resultArray);
-        // res.status(200).send({
-        //   departureFlight:departureFlight,
-        //   departureSeats: reservations.departureSeats,
-        //   returnFlight: returnFlight,
-        //   returnSeats: reservations.returnSeats,
-        //   totalPrice:reservations.totalPrice
-        // });
+      const reservations = await Reservation.find({username: username});
+      const resultArray = await processArray(reservations);
+      res.status(500).send(resultArray);
     }
     catch(err){
       console.log(err);
