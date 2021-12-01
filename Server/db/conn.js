@@ -7,11 +7,16 @@ const Reservation = require("../schemas/Reservation");
 const User = require ("../schemas/User");
 const FlightSeats = require("../schemas/FlightSeats");
 const Seat = require("../schemas/Seat");
-const Reservation = require("../schemas/Reservation");
+
 const Db = process.env.ATLAS_URI;
 const mail=process.env.GMAIL_USERNAME;
 const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
+const jwt = require('jsonwebtoken')
+
+let refreshTokens = [];
+
+require('dotenv').config();
 const client = new MongoClient(Db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -90,7 +95,40 @@ module.exports = {
         res.status(200).send("success");
       }
     });
-  },
+  },userAuthenticate: async function(user,pass,res){
+    const valid = await User.exists({user:user,pass:pass},async(err,result)=>{
+      if(err) res.status(500).send("Connection error");
+      if(result==null){
+        await User.exists({user:user},(err1,result1)=>{
+          if(result1 == null) res.status(200).send("username doesn't exist");
+          else res.status(200).send("wrong password");
+        });
+      }
+      else{
+        //res.status(200).send("success");
+        const accessToken= generateAccessToken(user);
+    const refreshToken= jwt.sign(user,process.env.REFRESH_TOKEN_SECRET);
+    refreshTokens.push(refreshToken);
+    res.json({ accessToken: accessToken, refreshToken: refreshToken })
+      }
+    });
+    
+   
+     
+  
+    },checkToken:async function(req,res){
+      const refreshToken = req.body.token;
+      if (refreshToken == null) return res.sendStatus(404);
+      if (!refreshTokens.includes(refreshToken)) return res.sendStatus(402);
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(410)
+        const accessToken = generateAccessToken({ name: user.name })
+        res.json({ accessToken: accessToken })
+      })
+    },
+    deleteToken:async function(req,res){
+      refreshTokens = refreshTokens.filter(token => token !== req.body.token)     
+    },
  
   readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
     // search with parameters
@@ -360,3 +398,6 @@ module.exports = {
 
     }
 };
+function generateAccessToken(user){
+  return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{ expiresIn: '15s' });
+}
