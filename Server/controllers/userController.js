@@ -31,7 +31,11 @@ module.exports = {
     },
     readFlightSeats: async function(req,res){
         userModel.readFlightSeats(req,res);
-    }
+    },
+    viewMyReservations: async function(req,res){
+        await userModel.viewMyReservations(req,res);
+    },
+
    
     
 }

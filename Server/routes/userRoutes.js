@@ -41,6 +41,7 @@ router.route('/updateUserInfo')
 .put((req,res)=>{
     userController.updateUserInfo(req,res);
 });
+
 router.route('/updateSensitiveUserInfo')
 .put((req,res)=>{
     userController.updateSensitiveUserInfo(req,res);
@@ -50,5 +51,10 @@ router.route('/readFlightSeats')
 .post((req,res)=>{
     userController.readFlightSeats(req,res);
 })
+router.route('/viewMyReservations')
+.post(async (req,res)=>{
+    userController.viewMyReservations(req,res);
+
+});
 
 module.exports = router;
