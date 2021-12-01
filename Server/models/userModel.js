@@ -6,7 +6,12 @@ const Reservation = require('../schemas/Reservation');
 module.exports={// this wil be edited 
 
     reserve: async function(req,res){
-        const newReservation = new Reservation(req.body); 
+        const body = req.body;
+        const newReservation = new Reservation({
+            userName:body.userName,
+            departureFlightId:body.departureFlightId,
+            returnFlightId: body.returnFlightId,
+        }); 
         await DB.reserve(newReservation,res);
     },
     readReservation: async function(req,res){
