@@ -49,23 +49,26 @@ async function cancellationMail(email,refundValue){
     }
   })}
  
- async function processArray(reservations){
-  var resultArray =[];
-        
-        for(var item in reservations) {
-          const departureFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].departureFlightId)});
-          const returnFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].returnFlightId)});
-          var resultElement ={
-            departureFlight: departureFlight,
-            departureSeats: reservations[item].departureSeats,
-            returnFlight: returnFlight,
-            returnSeats: reservations[item].returnSeats,
-          }
+  async function processArray(reservations){
+    var resultArray =[];
           
-          resultArray.push(resultElement);
-        }
-        return resultArray;
- }
+          for(var item in reservations) {
+            console.log(reservations[item].cabinClass);
+            const departureFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].departureFlightId)});
+            const returnFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].returnFlightId)});
+            var resultElement ={
+              departureFlight: departureFlight[0],
+              departureSeats: reservations[item].departureSeats,
+              returnFlight: returnFlight[0],
+              returnSeats: reservations[item].returnSeats,
+              totalCost: reservations[item].totalCost,
+              cabinClass :reservations[item].cabinClass
+            }
+            
+            resultArray.push(resultElement);
+          }
+          return resultArray;
+   }
 // MongoClient.
 module.exports = {
   connectToServer: async function(callback) {

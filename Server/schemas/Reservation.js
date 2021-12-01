@@ -12,8 +12,8 @@ const reservationschema=new schema({
         required:true
     },
     departureSeats:{
-        type:Map,
-        of:String,
+        type:Array,
+        
         required:true
     },
     returnFlightId:{
@@ -21,14 +21,19 @@ const reservationschema=new schema({
         required:true
     },
     returnSeats:{
-        type:Map,
-        of:String,
+        type:Array,
+       
         required:true
     },
     totalPrice:{
         type: Number,
         required: true
     },
+    cabinClass:{
+        type: String,
+        required: true
+    },
+    
     
 },{timestamps:true}); 
 
