@@ -5,7 +5,8 @@ const userController = require('../controllers/userController');
 
 router.route('/login')
 .post((req,res)=>{
-    res.status(200).send("hhh");
+   
+    userController.authenticate(req,res);
 });
 
 router.route('/reserve')
@@ -55,6 +56,11 @@ router.route('/viewMyReservations')
 .post(async (req,res)=>{
     userController.viewMyReservations(req,res);
 
-});
+});router.route('/token').post( (req, res) => {
+    userController.token(req,res);
+  })
+  router.route('/logout').delete ((req, res) => {
+    userController.deleteToken(req,res);
+  })
 
 module.exports = router;

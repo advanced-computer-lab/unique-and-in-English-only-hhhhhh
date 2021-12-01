@@ -4,6 +4,15 @@ const userModel = require('../models/UserModel');
 module.exports = {
     reserve: async function(req,res){
         await userModel.reserve(req,res);
+    },authenticate: async function(req,res){
+        return userModel.authenticate(req,res);
+    
+    },
+    token: async function(req,res){
+        return userModel.tokenCheck(req,res);
+    },
+    deleteToken:async function(req,res){
+        return userModel.deleteToken(req,res)
     },
     readReservation: async function(req,res){
         await userModel.readReservation(req,res);

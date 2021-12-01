@@ -18,6 +18,29 @@ module.exports={// this wil be edited
 
         }); 
         await DB.reserve(newReservation,res);
+    },authenticate: async function(req,res){
+    
+        const username = req.body.username;
+        const password = req.body.password;
+        const user={name: username};
+        const pass={name: password};
+            var message ="";
+        if(username == "" || username ==null){
+            message = "username missing,\n";
+        }
+        if(password ==""|| password == null){
+            message+= "password number is missing";
+        }
+        if(message.length>0){
+            res.status(200).send(message);
+            return;
+        }
+       DB.userAuthenticate(user,pass,res);
+    
+    },tokenCheck: async function(req,res){
+       DB.checkToken(req,res);
+    },deleteToken:async function(req,res){
+        DB.deleteToken(req,res);
     },
     readReservation: async function(req,res){
         let departureFlight = {
@@ -66,6 +89,7 @@ module.exports={// this wil be edited
         let newUser = new User(req.body);
         //console.log(newUser);
         await DB.createUser(newUser,res);
+
     },
     readFlightSeats: async function(req,res){
         await DB.readFlightSeats(req.body._id,res);
@@ -74,5 +98,5 @@ module.exports={// this wil be edited
         
         
         await DB.viewMyReservations(req.body.username,res);
-    },
+    }
 }

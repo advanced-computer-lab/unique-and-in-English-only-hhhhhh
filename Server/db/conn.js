@@ -2,17 +2,70 @@ const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 const Flight = require("../schemas/Flight");
 const Admin = require("../schemas/Admin");
+var nodemailer = require('nodemailer');
+const Reservation = require("../schemas/Reservation");
+const User = require ("../schemas/User");
 const FlightSeats = require("../schemas/FlightSeats");
 const Seat = require("../schemas/Seat");
-const Reservation = require("../schemas/Reservation");
+
 const Db = process.env.ATLAS_URI;
+const mail=process.env.GMAIL_USERNAME;
+const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
+const jwt = require('jsonwebtoken')
+
+let refreshTokens = [];
+
+require('dotenv').config();
 const client = new MongoClient(Db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+ //nodemailer
+async function cancellationMail(email,refundValue){
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: mail,
+      pass: mailpass
+    }
+  })
+  var mailOptions = {
+    from: mail,
+    to: email,
+    subject: 'Flight Cancellation',
+    text: `The Reservation Has Been Cancelled Successfully , AmountRefunded:${refundValue}`,
+    attachments: [{
+      filename: 'cancelled-meeting.jpg',
+      path: "./db/cancelled-meeting.jpg",
+      cid: 'unique@cid'
+  }]
+  }
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  })}
  
- 
+ async function processArray(reservations){
+  var resultArray =[];
+        
+        for(var item in reservations) {
+          const departureFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].departureFlightId)});
+          const returnFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].returnFlightId)});
+          var resultElement ={
+            departureFlight: departureFlight,
+            departureSeats: reservations[item].departureSeats,
+            returnFlight: returnFlight,
+            returnSeats: reservations[item].returnSeats,
+          }
+          
+          resultArray.push(resultElement);
+        }
+        return resultArray;
+ }
 // MongoClient.
 module.exports = {
   connectToServer: async function(callback) {
@@ -42,7 +95,40 @@ module.exports = {
         res.status(200).send("success");
       }
     });
-  },
+  },userAuthenticate: async function(user,pass,res){
+    const valid = await User.exists({user:user,pass:pass},async(err,result)=>{
+      if(err) res.status(500).send("Connection error");
+      if(result==null){
+        await User.exists({user:user},(err1,result1)=>{
+          if(result1 == null) res.status(200).send("username doesn't exist");
+          else res.status(200).send("wrong password");
+        });
+      }
+      else{
+        //res.status(200).send("success");
+        const accessToken= generateAccessToken(user);
+    const refreshToken= jwt.sign(user,process.env.REFRESH_TOKEN_SECRET);
+    refreshTokens.push(refreshToken);
+    res.json({ accessToken: accessToken, refreshToken: refreshToken })
+      }
+    });
+    
+   
+     
+  
+    },checkToken:async function(req,res){
+      const refreshToken = req.body.token;
+      if (refreshToken == null) return res.sendStatus(404);
+      if (!refreshTokens.includes(refreshToken)) return res.sendStatus(402);
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(410)
+        const accessToken = generateAccessToken({ name: user.name })
+        res.json({ accessToken: accessToken })
+      })
+    },
+    deleteToken:async function(req,res){
+      refreshTokens = refreshTokens.filter(token => token !== req.body.token)     
+    },
  
   readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
     // search with parameters
@@ -222,7 +308,12 @@ module.exports = {
     try{
         const db = client.db("AirlineDB");
         const col = db.collection("reservations");
+        const reservation = await Reservation.find({_id: mongoose.Types.ObjectId(_id)});
+        const user= await User.find({userName: reservation[0].username});
+        const refundValue = reservation[0].totalPrice;
+        const usermail= user[0].email;
         console.log(_id);
+        cancellationMail(usermail,refundValue);
         await col.deleteOne({_id : mongoose.Types.ObjectId(_id)},(err,result)=>{
           console.log(result);
           if (err) return res.status(500).send(false);
@@ -233,38 +324,13 @@ module.exports = {
       console.log(err);
     }
   },
+  
   viewMyReservations:  async function (username ,res){
     try{
       console.log(username);
-        const reservations = await Reservation.find({username: username});
-        
-        console.log(reservations);
-        var resultArray =[];
-         for(var item in reservations) {
-          const departureFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].departureFlightId)});
-          const returnFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].returnFlightId)});
-          const resultElement ={
-            departureFlight: departureFlight,
-            departureSeats: reservations[item].departureSeats,
-            returnFlight: returnFlight,
-            departureSeats: reservations[item].returnSeats,
-            
-          }
-          console.log(departureFlight);
-          console.log(returnFlight);
-        }
-        
-       
-
-
-        res.send(resultArray);
-        // res.status(200).send({
-        //   departureFlight:departureFlight,
-        //   departureSeats: reservations.departureSeats,
-        //   returnFlight: returnFlight,
-        //   returnSeats: reservations.returnSeats,
-        //   totalPrice:reservations.totalPrice
-        // });
+      const reservations = await Reservation.find({username: username});
+      const resultArray = await processArray(reservations);
+      res.status(500).send(resultArray);
     }
     catch(err){
       console.log(err);
@@ -334,3 +400,6 @@ module.exports = {
 
     }
 };
+function generateAccessToken(user){
+  return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{ expiresIn: '15s' });
+}

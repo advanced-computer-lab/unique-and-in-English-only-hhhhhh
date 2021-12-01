@@ -1,0 +1,21 @@
+DELETE http://localhost:8000/user/logout
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoia29uYXIiLCJpYXQiOjE2MzgzOTA3MzV9.qxqmw5hWKdbnCpnua7eckOo06uWC7VrmmzszIdnjZQ4"
+}
+###
+POST http://localhost:8000/user/token
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoia29uYXIiLCJpYXQiOjE2MzgzOTA3MzV9.qxqmw5hWKdbnCpnua7eckOo06uWC7VrmmzszIdnjZQ4"
+}
+###
+POST http://localhost:8000/user/login
+Content-Type: application/json
+
+{
+  "username": "konar",
+  "password":"www"
+}
