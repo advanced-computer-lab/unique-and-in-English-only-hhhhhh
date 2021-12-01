@@ -23,6 +23,7 @@ import EventSeatIcon from '@mui/icons-material/EventSeat';
 import TravellerInfo from "./TravellerInfo";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import TravellerSensitiveData from "./TravellerSensitiveData";
+import ReservedFlights from "./ReservedFlights";
 
 const drawerWidth = 240;
 
@@ -157,7 +158,7 @@ export default function NavBar2() {
         <DrawerHeader />
 
 
-        {selectedIndex === 0? <TravellerSensitiveData/> :  selectedIndex === 1? <TravellerInfo/> : <h1> Ur Planes :D </h1>}
+        {selectedIndex === 0? <TravellerSensitiveData/> :  selectedIndex === 1? <TravellerInfo/> : <ReservedFlights />}
 
 
       </Main>

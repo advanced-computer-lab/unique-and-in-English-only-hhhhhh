@@ -15,11 +15,14 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: "80%",
-  height: "80%",
+  maxHeight: 'calc(100vh - 100px)',
+  height: "auto",
   bgcolor: '#fff',
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+  overflowY: 'auto',
+
 };
 
 
@@ -35,14 +38,9 @@ const style = {
    const flight = {
     _id : props.flightNumber
    };
-   console.log(props.flightNumber);
     await axios.post('http://localhost:8000/user/readFlightSeats', flight)
         .then(result => {
           setSeats(result.data.flightSeats);
-          console.log(seats[0]);
-          console.log(seats);
-          console.log(result.data);
-
         }).catch(err => {
            setNotify({
             isOpen: true,
@@ -52,12 +50,13 @@ const style = {
       });
 
       while (index < seats.length) {
-        if ( seats[index].length == 0){
+        if ( seats[index].length === 0){
             break;
         }
         setIndex( index + 1 );
     }
-    console.log(props.maxNumber)
+    console.log(props.maxNumber);
+    console.log(seats.slice(0 , index));
   }, [] );
 
 
@@ -93,7 +92,7 @@ const style = {
          <Box sx={style}>
     <div className="w-1/2">
         <div className="w-full flex justify-center my-16">
-      <Seat setSelected={setSelected} maxNumber={props.maxNumber} seat={( props.Class === 'business' )? seats.slice(0,index) : seats.slice(index+1 , seats.length)}/>
+      <Seat setSelected={setSelected} maxNumber={props.maxNumber} seat={(props.Class=='business')? seats.slice(0,index) : seats.slice(index+1 , seats.length)}/>
         </div>
       <div className="">
         <div className="w-full flex justify-center"> 

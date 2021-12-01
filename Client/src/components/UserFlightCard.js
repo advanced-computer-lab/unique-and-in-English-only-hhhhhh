@@ -11,7 +11,7 @@ import SendIcon from '@mui/icons-material/Send';
 import ConfirmDialog from './ConfirmDialog'
 import Notification from './Notification'
 
-const UserFlightCard = () => {
+const UserFlightCard = (props) => {
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     
@@ -48,15 +48,15 @@ const UserFlightCard = () => {
          <div className="flex justify-between justify-items-center ml-3 mr-3">
          <Typography variant="h7" sx={{color:"#ffffff"}} > 
              Passenger Name: <br/>
-               Zeyad
+               {props.passengerName}
          </Typography>
          <Typography variant="h7" sx={{color:"#ffffff"}} > 
          Departs: <br/>
-          1/5/2000
+         {(props.departureDate).substring(0, 10)}
          </Typography>
          <Typography variant="h7" sx={{color:"#ffffff"}}> 
          Arrives: <br/>
-           25/11/2021
+         {(props.arrivalDate).substring(0, 10)}
          </Typography>
          </div>
          </div>
@@ -64,11 +64,11 @@ const UserFlightCard = () => {
           <CardContent>
               <div className=" flex justify-between justify-items-center">
                   <Typography  variant="h4">
-              HomeLand
+                  {props.departureAirportTerminal}
             </Typography>
              <SendIcon sx={{fontSize:40}}/>             
             <Typography  variant="h4">
-              El Ghorba
+                  {props.arrivalAirportTerminal}
             </Typography>     
             </div>
 
@@ -90,7 +90,7 @@ const UserFlightCard = () => {
                         Flight
                     </Typography>
                  <Typography  variant="caption" color="text.secondary">
-                     Fligth Number
+                 {props.flightNumber}
                     </Typography>
                   </div>
 
@@ -99,7 +99,7 @@ const UserFlightCard = () => {
               Seat
             </Typography>
             <Typography  variant="caption" color="text.secondary">
-            SeatNumber
+            {props.seats}
             </Typography>
             </div>
            
@@ -108,7 +108,7 @@ const UserFlightCard = () => {
               Class
             </Typography>
             <Typography  variant="caption" color="text.secondary">
-            Class Status
+            {props.cabineClass}
             </Typography>
             </div>
             </div>

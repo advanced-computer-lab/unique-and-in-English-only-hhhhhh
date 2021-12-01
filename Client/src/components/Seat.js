@@ -21,7 +21,6 @@ export default class Seat extends Component {
           addSeatCallback={this.addSeatCallback.bind(this)}
           removeSeatCallback={this.removeSeatCallback.bind(this)}
           rows={this.props.seat}
-          alpha
           maxReservableSeats={parseInt(this.props.maxNumber) }
           visible
         />

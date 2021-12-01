@@ -22,7 +22,21 @@ export default class App extends React.Component {
         <ReactCardFlip isFlipped={this.state.isFlipped} flipDirection="horizontal">
             <div className="w-full">
                 <div className="flex justify-center mb-3">
-                    <UserFlightCard />
+                    <UserFlightCard
+                      _id = {this.props.departureFlight._id}
+                      flightNumber= {this.props.departureFlight.flightNumber}
+                      ecoSeatsCount= {this.props.departureFlight.ecoSeatsCount}
+                      economicSeatPrice= {this.props.departureFlight.economicSeatPrice}
+                      businessSeatsCount= {this.props.departureFlight.businessSeatsCount}
+                      businessSeatPrice= {this.props.departureFlight.businessSeatPrice}
+                      departureDate= {this.props.departureFlight.departureDate}
+                      arrivalDate= {this.props.departureFlight.arrivalDate}
+                      departureAirportTerminal= {this.props.departureFlight.departureAirportTerminal}
+                      arrivalAirportTerminal= {this.props.departureFlight.arrivalAirportTerminal}
+                      seats = {this.props.departureSeats}
+                      cabineClass = {this.props.cabinClass}
+                      passengerName = {this.props.passengerName}
+                    />
                 </div>
                 <div className="flex justify-center mb-3">
                     <Button onClick={this.handleClick}>Click to flip</Button>
@@ -33,7 +47,21 @@ export default class App extends React.Component {
   
             <div className="w-full">
                 <div className="flex justify-center mb-3">
-                    <UserFlightCard />
+                    <UserFlightCard
+                    _id = {this.props.returnFlight._id}
+                    flightNumber= {this.props.returnFlight.flightNumber}
+                    ecoSeatsCount= {this.props.returnFlight.ecoSeatsCount}
+                    economicSeatPrice= {this.props.returnFlight.economicSeatPrice}
+                    businessSeatsCount= {this.props.returnFlight.businessSeatsCount}
+                    businessSeatPrice= {this.props.returnFlight.businessSeatPrice}
+                    departureDate= {this.props.returnFlight.departureDate}
+                    arrivalDate= {this.props.returnFlight.arrivalDate}
+                    departureAirportTerminal= {this.props.returnFlight.departureAirportTerminal}
+                    arrivalAirportTerminal= {this.props.returnFlight.arrivalAirportTerminal}
+                    seats = {this.props.returnSeats}
+                    cabineClass = {this.props.cabinClass}
+                    passengerName = {this.props.passengerName}
+                     />
                 </div>
                 <div className="flex justify-center mb-3">
                     <Button onClick={this.handleClick}>Click to flip</Button>
