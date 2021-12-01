@@ -237,8 +237,34 @@ module.exports = {
     try{
       console.log(username);
         const reservations = await Reservation.find({username: username});
-        //console.log(reservations);
-        res.status(200).send(reservations);
+        
+        console.log(reservations);
+        var resultArray =[];
+         for(var item in reservations) {
+          const departureFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].departureFlightId)});
+          const returnFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].returnFlightId)});
+          const resultElement ={
+            departureFlight: departureFlight,
+            departureSeats: reservations[item].departureSeats,
+            returnFlight: returnFlight,
+            departureSeats: reservations[item].returnSeats,
+            
+          }
+          console.log(departureFlight);
+          console.log(returnFlight);
+        }
+        
+       
+
+
+        res.send(resultArray);
+        // res.status(200).send({
+        //   departureFlight:departureFlight,
+        //   departureSeats: reservations.departureSeats,
+        //   returnFlight: returnFlight,
+        //   returnSeats: reservations.returnSeats,
+        //   totalPrice:reservations.totalPrice
+        // });
     }
     catch(err){
       console.log(err);
