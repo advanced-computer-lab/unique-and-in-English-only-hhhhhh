@@ -48,7 +48,7 @@ router.route('/updateSensitiveUserInfo')
 });
 
 router.route('/viewMyReservations')
-.get(async (req,res)=>{
+.post(async (req,res)=>{
     userController.viewMyReservations(req,res);
 
 });
