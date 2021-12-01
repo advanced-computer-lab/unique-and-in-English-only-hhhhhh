@@ -47,6 +47,10 @@ router.route('/updateSensitiveUserInfo')
     userController.updateSensitiveUserInfo(req,res);
 });
 
+router.route('/readFlightSeats')
+.post((req,res)=>{
+    userController.readFlightSeats(req,res);
+})
 router.route('/viewMyReservations')
 .post(async (req,res)=>{
     userController.viewMyReservations(req,res);

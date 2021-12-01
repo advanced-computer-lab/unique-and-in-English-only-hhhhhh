@@ -13,7 +13,7 @@ export default function SeatParent() {
     }
     else {
         setReachedMax(false);
-        // send the Selected Array to Backend that contained The Seat Id
+        // send the Selected Array to Backend that contained The Seat Id hi I am Mamhoud I am new to this world lots of things to figure out not sure of my exact identity yet
     } 
   };
   return (
