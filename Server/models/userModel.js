@@ -8,9 +8,14 @@ module.exports={// this wil be edited
     reserve: async function(req,res){
         const body = req.body;
         const newReservation = new Reservation({
-            userName:body.userName,
+            username:body.username,
             departureFlightId:body.departureFlightId,
+            departureSeats: body.departureSeats,
+
             returnFlightId: body.returnFlightId,
+            returnSeats: body.returnSeats,
+            totalPrice: body.totalPrice
+
         }); 
         await DB.reserve(newReservation,res);
     },
@@ -62,4 +67,13 @@ module.exports={// this wil be edited
         //console.log(newUser);
         await DB.createUser(newUser,res);
     }
+    },
+    readFlightSeats: async function(req,res){
+        await DB.readFlightSeats(req.body._id,res);
+    },
+    viewMyReservations: async function(req,res){
+        
+        
+        await DB.viewMyReservations(req.body.username,res);
+    },
 }
