@@ -61,7 +61,7 @@ async function cancellationMail(email,refundValue){
               departureSeats: reservations[item].departureSeats,
               returnFlight: returnFlight[0],
               returnSeats: reservations[item].returnSeats,
-              totalCost: reservations[item].totalCost,
+              totalPrice: reservations[item].totalPrice,
               cabinClass :reservations[item].cabinClass
             }
             
