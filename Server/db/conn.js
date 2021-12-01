@@ -2,7 +2,10 @@ const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 const Flight = require("../schemas/Flight");
 const Admin = require("../schemas/Admin");
+var nodemailer = require('nodemailer');
 const Db = process.env.ATLAS_URI;
+const mail=process.env.userName;
+const mailpass=process.env.password;
 console.log(Db);
 const client = new MongoClient(Db, {
   useNewUrlParser: true,
@@ -213,4 +216,26 @@ module.exports = {
     }
   
   },
+  //nodemailer
+  cancellationMail: async function(email,refundValue){
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: mail,
+      pass: mailpass
+    }
+  })
+  var mailOptions = {
+    from: mail,
+    to: email,
+    subject: 'Flight Cancellation',
+    text: `The Reservation Has Been Cancelled Successfully , AmountRefunded:${refundValue}`
+  }
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  })}
 };
