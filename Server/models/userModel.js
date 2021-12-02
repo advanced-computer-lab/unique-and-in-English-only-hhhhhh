@@ -14,7 +14,8 @@ module.exports={// this wil be edited
 
             returnFlightId: body.returnFlightId,
             returnSeats: body.returnSeats,
-            totalPrice: body.totalPrice
+            totalPrice: body.totalPrice,
+            cabinClass: body.cabinClass
 
         }); 
         await DB.reserve(newReservation,res);

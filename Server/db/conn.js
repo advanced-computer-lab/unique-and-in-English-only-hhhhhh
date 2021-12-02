@@ -51,7 +51,7 @@ async function cancellationMail(email,refundValue){
  
   async function processArray(reservations){
     var resultArray =[];
-          
+          console.log(reservations);
           for(var item in reservations) {
             console.log(reservations[item].cabinClass);
             const departureFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].departureFlightId)});
