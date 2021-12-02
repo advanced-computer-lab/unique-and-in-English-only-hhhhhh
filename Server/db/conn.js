@@ -333,7 +333,7 @@ module.exports = {
       console.log(username);
       const reservations = await Reservation.find({username: username});
       const resultArray = await processArray(reservations);
-      res.status(500).send(resultArray);
+      res.status(200).send(resultArray);
     }
     catch(err){
       console.log(err);

@@ -87,7 +87,6 @@ module.exports={// this wil be edited
     },
     createUser: async function(req,res){
         let newUser = new User(req.body);
-        //console.log(newUser);
         await DB.createUser(newUser,res);
 
     },
@@ -95,7 +94,6 @@ module.exports={// this wil be edited
         await DB.readFlightSeats(req.body._id,res);
     },
     viewMyReservations: async function(req,res){
-        
         
         await DB.viewMyReservations(req.body.username,res);
     }

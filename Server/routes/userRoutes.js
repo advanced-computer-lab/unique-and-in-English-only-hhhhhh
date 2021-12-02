@@ -52,8 +52,9 @@ router.route('/readFlightSeats')
 .post((req,res)=>{
     userController.readFlightSeats(req,res);
 })
-router.route('/viewMyReservations')
+router.route('/viewMyReservation')
 .post(async (req,res)=>{
+    //res.send("asdasdasdas");
     userController.viewMyReservations(req,res);
 
 });router.route('/token').post( (req, res) => {
