@@ -57,6 +57,7 @@ async function cancellationMail(email,refundValue){
             const departureFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].departureFlightId)});
             const returnFlight = await Flight.find({_id: mongoose.Types.ObjectId(reservations[item].returnFlightId)});
             var resultElement ={
+              _id: reservations._id,
               departureFlight: departureFlight[0],
               departureSeats: reservations[item].departureSeats,
               returnFlight: returnFlight[0],
