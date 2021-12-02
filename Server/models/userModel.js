@@ -43,24 +43,27 @@ module.exports={// this wil be edited
         DB.deleteToken(req,res);
     },
     readReservation: async function(req,res){
+        //console.log(req.body);
+        // console.log(req.body.departureDate);
+        // console.log(req.body.departureDate);
         let departureFlight = {
             //departureAirportTerminal: new RegExp(req.body.departureAirportTerminal,'i') ,
             //arrivalAirportTerminal: new RegExp(req.body.arrivalAirportTerminal,'i') ,
             "departureAirportTerminal": (req.body.departureAirportTerminal=="")?"":req.body.departureAirportTerminal,
             "arrivalAirportTerminal": (req.body.arrivalAirportTerminal=="")?"":req.body.arrivalAirportTerminal,
-            "departureDate": (req.body.departureDate=="")?"":req.body.departureDate,
-            //arrivalDate: req.body.arrivalDate,
+            "departureDate": (req.body.departureDate=="")?new Date():new Date(req.body.departureDate),
+            //"arrivalDate": new Date(req.body.arrivalDate),
             "ecoSeatsCount" : (req.body.class =="economy")?(req.body.adults + req.body.children): 0 ,
             "businessSeatsCount" : (req.body.class =="business")?(req.body.adults + req.body.children): 0
         };
-
+        //console.log(req.body.returnDate);
         let returnFlight  = {
             //departureAirportTerminal: new RegExp(req.body.arrivalAirportTerminal,'i'),
             //arrivalAirportTerminal: new RegExp(req.body.departureAirportTerminal,'i'),
             "departureAirportTerminal": (req.body.arrivalAirportTerminal=="")?"":req.body.arrivalAirportTerminal,
             "arrivalAirportTerminal": (req.body.departureAirportTerminal=="")?"":req.body.departureAirportTerminal,
-            "departureDate":(req.body.returnDate=="")?"":req.body.returnDate,
-            //arrivalDate: req.body.arrivalDate,
+            "departureDate":(req.body.returnDate=="")?new Date():new Date(req.body.returnDate),
+            //"arrivalDate": new Date(req.body.arrivalDate),
             "ecoSeatsCount" : (req.body.class =="economy")?(req.body.adults + req.body.children): 0 ,
             "businessSeatsCount" : (req.body.class =="business")?(req.body.adults + req.body.children): 0
         };

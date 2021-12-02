@@ -311,21 +311,26 @@ module.exports = {
   },
   readReservation :async function(departureFlight, returnFlight, res){
     try{
-       console.log(departureFlight);
-       console.log(returnFlight);
-      const db = client.db("AirlineDB");
-      const col = db.collection("flights");
 
-      //flightNumber:new RegExp(flightNumber,'i')
+       var d = departureFlight.departureDate;
+
       const requestedDepartureFlights = await Flight.find({departureAirportTerminal: new RegExp(departureFlight.departureAirportTerminal,'i'),
       arrivalAirportTerminal: new RegExp(departureFlight.arrivalAirportTerminal,'i')})
       .where('ecoSeatsCount').gte(departureFlight.ecoSeatsCount)
-      .where('businessSeatsCount').gte(departureFlight.businessSeatsCount);
-     
+      .where('businessSeatsCount').gte(departureFlight.businessSeatsCount)
+      .where('departureDate').gte(new Date(d.getFullYear(),d.getMonth(),d.getDate(),02,00,00,0))
+      .where('departureDate').lte(new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,02,00,00,0));
+      d = returnFlight.departureDate;
+
+      // console.log(new Date(d.getFullYear(),d.getMonth(),d.getDate(),02,00,00,0));
+      // console.log(new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,02,00,00,0));
+
       const requestedReturnFlights = await Flight.find({departureAirportTerminal: new RegExp(returnFlight.departureAirportTerminal,'i'),
         arrivalAirportTerminal: new RegExp(returnFlight.arrivalAirportTerminal,'i')})
         .where('ecoSeatsCount').gte(returnFlight.ecoSeatsCount)
-        .where('businessSeatsCount').gte(returnFlight.businessSeatsCount);
+        .where('businessSeatsCount').gte(returnFlight.businessSeatsCount)
+        .where('departureDate').gte(new Date(d.getFullYear(),d.getMonth(),d.getDate(),02,00,00,0))
+        .where('departureDate').lte(new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,02,00,00,0));
         
     res.status(200).send({"departureFlights":requestedDepartureFlights,"returnFlights":requestedReturnFlights});
   }
