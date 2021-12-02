@@ -98,5 +98,8 @@ module.exports={// this wil be edited
         
         
         await DB.viewMyReservations(req.body.username,res);
+    },
+    test: async function(req,res){
+        DB.reserveFlightSeats("61a7dd7918416aff86516d8c",[1,5,25,35]);
     }
 }

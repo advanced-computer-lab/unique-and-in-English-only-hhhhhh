@@ -56,6 +56,9 @@ router.route('/viewMyReservations')
 .post(async (req,res)=>{
     userController.viewMyReservations(req,res);
 
+})
+router.route('/test').get(async (req,res)=>{
+    userController.test(req,res);
 });router.route('/token').post( (req, res) => {
     userController.token(req,res);
   })
