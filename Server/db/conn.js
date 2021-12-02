@@ -278,28 +278,60 @@ module.exports = {
         //console.log(result)
         res.status(200).send(reservation._id);
       });
+      // find the desired flightSeats
+      //make the seats busy
+      reserveFlightSeats(reservation.departureFlightId,reservation.departureSeats);
+      reserveFlightSeats(reservation.returnFlightId,reservation.returnSeats);
   }
   catch(err){
     console.log(err);
   }
   },
+  reserveFlightSeats: async function (flightId,seats){
+    var allFlightSeats = await FlightSeats.findById(flightId).select(['availableEcoSeatsCount','availableBusinessSeatsCount','ecoSeats','businessSeats']);
+    var ecoSeats = allFlightSeats['ecoSeats'];
+    var businessSeats = allFlightSeats['businessSeats'];
+    var ecoSeatsCount = allFlightSeats['availableEcoSeatsCount'];
+    var businessSeatsCount = allFlightSeats['availableBusinessSeatsCount'];
+    var reservedBusiness = 0;
+    for (var i = 0;i<seats.length;i++){
+      if(seats[i]<ecoSeats[0]['id']){
+        businessSeats[seats[i]-1]['isReserved'] = true;
+        reservedBusiness ++;
+      }
+      else{
+        ecoSeats[seats[i]-1-businessSeats.length]['isReserved'] = true;
+      }
+      console.log(seats[i]);
+    }
+    var reservedEco = seats.length-reservedBusiness;
+    allFlightSeats['ecoSeats'] = ecoSeats;
+    allFlightSeats['businessSeats'] = businessSeats;
+    await FlightSeats.findByIdAndUpdate(flightId,{ecoSeats:ecoSeats , businessSeats:businessSeats, 
+      availableBusinessSeatsCount: businessSeatsCount-reservedBusiness, availableEcoSeatsCount: ecoSeatsCount-reservedEco});
+  },
   readReservation :async function(departureFlight, returnFlight, res){
     try{
-       console.log(departureFlight);
-       console.log(returnFlight);
-      const db = client.db("AirlineDB");
-      const col = db.collection("flights");
 
-      //flightNumber:new RegExp(flightNumber,'i')
+       var d = departureFlight.departureDate;
+
       const requestedDepartureFlights = await Flight.find({departureAirportTerminal: new RegExp(departureFlight.departureAirportTerminal,'i'),
       arrivalAirportTerminal: new RegExp(departureFlight.arrivalAirportTerminal,'i')})
       .where('ecoSeatsCount').gte(departureFlight.ecoSeatsCount)
-      .where('businessSeatsCount').gte(departureFlight.businessSeatsCount);
-     
+      .where('businessSeatsCount').gte(departureFlight.businessSeatsCount)
+      .where('departureDate').gte(new Date(d.getFullYear(),d.getMonth(),d.getDate(),02,00,00,0))
+      .where('departureDate').lte(new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,02,00,00,0));
+      d = returnFlight.departureDate;
+
+      // console.log(new Date(d.getFullYear(),d.getMonth(),d.getDate(),02,00,00,0));
+      // console.log(new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,02,00,00,0));
+
       const requestedReturnFlights = await Flight.find({departureAirportTerminal: new RegExp(returnFlight.departureAirportTerminal,'i'),
         arrivalAirportTerminal: new RegExp(returnFlight.arrivalAirportTerminal,'i')})
         .where('ecoSeatsCount').gte(returnFlight.ecoSeatsCount)
-        .where('businessSeatsCount').gte(returnFlight.businessSeatsCount);
+        .where('businessSeatsCount').gte(returnFlight.businessSeatsCount)
+        .where('departureDate').gte(new Date(d.getFullYear(),d.getMonth(),d.getDate(),02,00,00,0))
+        .where('departureDate').lte(new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,02,00,00,0));
         
     res.status(200).send({"departureFlights":requestedDepartureFlights,"returnFlights":requestedReturnFlights});
   }

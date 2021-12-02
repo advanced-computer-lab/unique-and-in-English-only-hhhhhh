@@ -5,7 +5,6 @@ const seatSchema = new schema({
     id:{
         type: Number,
         required: true,
-        unique: true
     },
     isReserved:{
         type: Boolean,

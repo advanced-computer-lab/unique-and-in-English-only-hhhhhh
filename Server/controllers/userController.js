@@ -44,7 +44,9 @@ module.exports = {
     viewMyReservations: async function(req,res){
         await userModel.viewMyReservations(req,res);
     },
-
+    test: async function(req,res){
+        userModel.test(req,res);
+    }
    
     
 }
