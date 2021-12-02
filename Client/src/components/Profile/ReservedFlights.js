@@ -1,54 +1,53 @@
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
+import { width } from '@mui/system';
 import axios from 'axios';
 import React from 'react'
 import Ticket from '../Ticket'
 
 const ReservedFlights = () => {
-    // http://localhost:8000/user/viewMyReservations
-    const [ flights , setFlights ] = React.useState();
+    
+    const [ flights , setFlights ] = React.useState([]);
+    const [ user , setUser ]= React.useState({username: "konar"});
 
     React.useEffect( async() => {
-        console.log(15);
-        const user = {
-            username: "konar"
-         };
-        console.log(1);
 
-         await axios.post('http://localhost:8000/user/viewMyReservations', user)
+         await axios.post('http://localhost:8000/user/viewMyReservation', user)
              .then(result => {
                setFlights(result.data);
-               console.log(flights);
-               console.log(result.data);
              }).catch(err => {
-                console.log(5);
                 alert("Error with The Server " + err );
-                
-
            });
-           console.log(0);
-
-
-       }, [] );
+       } );
 
     return (
         <div>
 
-{/* { 
-//     flights.map((oneElement) =>
-//     <Grid key={oneElement.flightNumber}  item xs={4} sx={{minWidth: "450px"}}>
+{
+ (flights.length > 0) ? 
 
-//     <Ticket 
-//    passengerName = "konar"
-//    departureFlight = {oneElement.departureFlight}
-//    departureSeats={oneElement.departureSeats}
-//    returnFlight ={oneElement.returnFlight}
-//    returnSeats ={oneElement.returnSeats}
-//    cabinClass ={oneElement.cabinClass}
-//    />
-//     </Grid>
+    flights.map((oneElement) =>
+    <div className="w-full flex justify-center">
+    <Grid  item xs={4 } sx={{minWidth: "450px"}}>
 
-
- )} */}
+    <Ticket
+   reservationId = {oneElement._id} 
+   passengerName = {user.username}
+   departureFlight = {oneElement.departureFlight}
+   departureSeats={oneElement.departureSeats}
+   returnFlight ={oneElement.returnFlight}
+   returnSeats ={oneElement.returnSeats}
+   cabinClass ={oneElement.cabinClass}
+   totalPrice = {oneElement.totalPrice}
+   />
+    </Grid>
+    </div>
+ )
+ : 
+    <Typography variant="h3" sx={{width:"full" ,display: "flex" , justifyContent:"center" }}>
+        You Have No Reservations Yet
+    </Typography>
+ 
+}
 
             
         </div>

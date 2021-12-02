@@ -27,7 +27,7 @@ import Ticket from './components/Ticket';
 function App(props) {
   return (
    <Router>
-   {  /* <Header  isLogged={props.isLogged}  userName={props.userName}/>   */ }
+   {   <Header  isLogged={props.isLogged}  userName={props.userName}/>   }
      <Switch>
 <Route exact path="/">
 <Showcase />

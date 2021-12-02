@@ -15,6 +15,7 @@ export default class App extends React.Component {
     handleClick(e) {
       e.preventDefault();
       this.setState(prevState => ({ isFlipped: !prevState.isFlipped }));
+      console.log( this.props.cabinClass);
     }
   
     render() {
@@ -34,8 +35,11 @@ export default class App extends React.Component {
                       departureAirportTerminal= {this.props.departureFlight.departureAirportTerminal}
                       arrivalAirportTerminal= {this.props.departureFlight.arrivalAirportTerminal}
                       seats = {this.props.departureSeats}
-                      cabineClass = {this.props.cabinClass}
+                      cabinClass = {this.props.cabinClass}
                       passengerName = {this.props.passengerName}
+                      totalPrice = {this.props.totalPrice}
+                      reservationId = {this.props.reservationId}
+                      type = "Departure Flight"
                     />
                 </div>
                 <div className="flex justify-center mb-3">
@@ -59,8 +63,11 @@ export default class App extends React.Component {
                     departureAirportTerminal= {this.props.returnFlight.departureAirportTerminal}
                     arrivalAirportTerminal= {this.props.returnFlight.arrivalAirportTerminal}
                     seats = {this.props.returnSeats}
-                    cabineClass = {this.props.cabinClass}
+                    cabinClass = {this.props.cabinClass}
                     passengerName = {this.props.passengerName}
+                    totalPrice = {this.props.totalPrice}
+                    reservationId = {this.props.reservationId}
+                    type = "Return Flight"
                      />
                 </div>
                 <div className="flex justify-center mb-3">

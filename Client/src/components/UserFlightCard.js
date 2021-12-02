@@ -10,11 +10,12 @@ import AirplaneTicketRoundedIcon from '@mui/icons-material/AirplaneTicketRounded
 import SendIcon from '@mui/icons-material/Send';
 import ConfirmDialog from './ConfirmDialog'
 import Notification from './Notification'
+import axios from 'axios';
+
 
 const UserFlightCard = (props) => {
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
-    
 
     const handleCancel = () =>{
         setConfirmDialog({
@@ -24,23 +25,49 @@ const UserFlightCard = (props) => {
             onConfirm: () => { cancelReservation() }
         })
     };
-    const cancelReservation = () => {
+    const cancelReservation = async() => {
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
         })
+
+        await axios.post('http://localhost:8000/user/deleteReservation', { _id : props.reservationId })
+             .then(result => {
+              setNotify({
+                isOpen: true,
+                message: 'Deleted Successfully',
+                type: 'success'
+            });
+             }).catch(err => {
+              setNotify({
+                isOpen: true,
+                message: 'Failed To Delete',
+                type: 'error'
+            });
+           });
+    };
+
+    const durationTime = () => {
+      const diffTime = Math.abs( new Date((props.arrivalDate)).getTime() - new Date((props.departureDate)).getTime() );
+      const diffHours = Math.ceil(diffTime / (1000 * 60 * 60  * 24)); 
+      return diffHours ;
     };
 
     return (
     <div >
         <Card sx={{  borderRadius: 10, minWidth: 550 ,maxWidth:650, maxHeight:600,  minHeight: 400 }} >
             <div className="h-36  bg-blue-900 border-b-4 border-green-900">
-                <div className="flex ml-5 mb-5 pt-5">
+                <div className="flex justify-between ml-5 mb-5 pt-5"> 
+                <div className="flex">
                 <AirplaneTicketRoundedIcon sx={{color:"#ffff", height:30}} className="mr-3"/>
-             <Typography sx={{color:"#ffffff"}} variant="h5" > 
-             Zeyad Tayara
-         </Typography>
-         </div>
+                <Typography sx={{color:"#ffffff"}} variant="h5" > 
+                Zeyad Tayara
+                </Typography>
+                </div>
+                <Typography sx={{marginRight:5 , color:"white"}} variant="body1">
+                  {props.type}
+                </Typography>
+                </div>
             <div className="mb-2">
          <Divider variant="middle" />
          <Divider variant="middle" />
@@ -74,13 +101,13 @@ const UserFlightCard = (props) => {
 
             <div className=" flex justify-between justify-items-center mb-6">
             <Typography gutterBottom variant="caption" color="text.secondary">
-            City 1
+            {(props.departureDate).substring(11, 16)}
             </Typography>
             <Typography gutterBottom variant="caption" color="text.secondary">
-            2 days, 15 hours
+            {durationTime() + " Hours"}
             </Typography>
             <Typography gutterBottom variant="caption" color="text.secondary">
-            City 2
+            {(props.arrivalDate).substring(11, 16)}
             </Typography>
             </div>
 
@@ -99,7 +126,7 @@ const UserFlightCard = (props) => {
               Seat
             </Typography>
             <Typography  variant="caption" color="text.secondary">
-            {props.seats}
+            {props.seats.toString()}
             </Typography>
             </div>
            
@@ -108,7 +135,7 @@ const UserFlightCard = (props) => {
               Class
             </Typography>
             <Typography  variant="caption" color="text.secondary">
-            {props.cabineClass}
+            {props.cabinClass}
             </Typography>
             </div>
             </div>
@@ -126,6 +153,10 @@ const UserFlightCard = (props) => {
         <ConfirmDialog
                 confirmDialog={confirmDialog}
                 setConfirmDialog={setConfirmDialog}
+            />
+         <Notification
+                notify={notify}
+                setNotify={setNotify}
             />
         </div>
       );
