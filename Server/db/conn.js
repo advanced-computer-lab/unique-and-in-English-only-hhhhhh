@@ -221,6 +221,22 @@ module.exports = {
           if (err) return res.status(500).send(false);
             res.status(200).send(true);
         });
+        try{
+        const reservations=db.collection("reservations");
+        for (var k in reservations) {
+          if ((reservations[k]['departureFlightId'] == _id)||(reservations[k]['returnFlightId'] == _id)){
+            const id=reservations[k]['_id'];
+            await reservations.deleteOne({id : mongoose.Types.ObjectId(id)},(err,result)=>{
+              console.log(result);
+              if (err) return res.status(500).send(false);
+                res.status(200).send(true);
+            });
+          } 
+          
+      }
+        }catch(err){
+          console.log(err);
+        }
     }
     catch(err){
       console.log(err);
@@ -237,7 +253,23 @@ module.exports = {
           console.log(result);
           console.log(err);
           // else
-            res.status(200).send("Flight updated");
+           // res.status(200).send("Flight updated");
+            try{
+              const reservations=db.collection("reservations");
+              for (var k in reservations) {
+                if ((reservations[k]['departureFlightId'] == _id)||(reservations[k]['returnFlightId'] == _id)){
+                  const id=reservations[k]['_id'];
+                   reservations.updateOne({id : mongoose.Types.ObjectId(id)},update,(err,result)=>{
+                    console.log(result);
+                    if (err) return res.status(500).send(false);
+                      res.status(200).send(true);
+                  });
+                } 
+                
+            }
+              }catch(err){
+                console.log(err);
+              }
         });
     }
     catch(err){
