@@ -18,8 +18,6 @@ import SeatParent from './SeatParent';
 
 
 const UserSearchFlight = (props) => {
-  const [open , setOpen] = React.useState( false );
-  const [ seats , setSeats] = React.useState('');
 
   // React.useEffect( () => {
 
@@ -33,14 +31,7 @@ const UserSearchFlight = (props) => {
     return diffHours ;
   };
 
-  const handleReservation = (selected) => {
-    console.log(props._id);
-    console.log(selected);
-    console.log( (props.Class === 'business')? props.businessSeatPrice : props.economicSeatPrice );
-    props.setId( props._id );
-    props.setSeats( selected );
-    props.setPrice( (props.Class === 'business')? props.businessSeatPrice : props.economicSeatPrice );
-  };
+
 
     return (  
       <>
@@ -102,23 +93,13 @@ const UserSearchFlight = (props) => {
           <LuggageIcon /> { (props.Class === 'business')? "2*32KG" : "1*23KG" }
           </Typography>
           <div className="flex justify-end">
-          <Button onClick={() => { setOpen(true) }} variant="contained" startIcon={<EventSeatIcon />} size="large">Reserve</Button>
           </div>
           </div>
         </AccordionDetails>
       </Accordion>
         </div>
 
-        <SeatParent
-        // 
-        open={open}
-        maxNumber = { props.maxNumber }
-        // console.log(boolean);
-        close={ (boolean ) => {  setOpen(boolean);} }
-        sendSeats = { (selected) => { handleReservation(selected); console.log(selected); } } 
-        flightNumber = { props._id }
-        Class = { props.Class } 
-        />
+       
 
         </>
     )
