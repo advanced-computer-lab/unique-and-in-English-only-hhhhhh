@@ -19,7 +19,7 @@ import SeatParent from './SeatParent';
 
 const UserSearchFlight = (props) => {
   const [open , setOpen] = React.useState( false );
-  const [ seats , setSeats] = React.useState([]);
+  const [ seats , setSeats] = React.useState('');
 
 
   const durationTime = () => {
@@ -30,8 +30,8 @@ const UserSearchFlight = (props) => {
 
   const handleReservation = () => {
     setOpen(true);
-    props.ReserveAction( props._id , seats)
-    console.log(props.maxNumber);
+    console.log(seats);
+    props.ReserveAction( props._id , seats , (props.Class === 'business')? props.businessSeatPrice : props.economicSeatPrice );
   };
 
     return (  
@@ -102,9 +102,12 @@ const UserSearchFlight = (props) => {
         </div>
 
         <SeatParent
+        // 
         open={open}
         maxNumber = { props.maxNumber }
-        close={ (boolean , selected) => {console.log(boolean);console.log(selected); setSeats(selected); setOpen(boolean);} }
+        // console.log(boolean);
+        close={ (boolean ) => {  setOpen(boolean);} }
+        sendSeats = { (selected) => { setSeats(selected); console.log(selected); console.log(seats); } } 
         flightNumber = { props._id }
         Class = { props.Class } 
         />

@@ -70,6 +70,34 @@ async function cancellationMail(email,refundValue){
           }
           return resultArray;
    }
+
+   async function reserveFlightSeats (flightId,seats){
+    //seats= seats[0].split(",");
+    var allFlightSeats = await FlightSeats.find({flightId:flightId}).select(['availableEcoSeatsCount','availableBusinessSeatsCount','ecoSeats','businessSeats']);
+    allFlightSeats = allFlightSeats[0];
+    var ecoSeats = allFlightSeats['ecoSeats'];
+    console.log(ecoSeats);
+    var businessSeats = allFlightSeats['businessSeats'];
+    var ecoSeatsCount = allFlightSeats['availableEcoSeatsCount'];
+    var businessSeatsCount = allFlightSeats['availableBusinessSeatsCount'];
+    var reservedBusiness = 0;
+    for (var i = 0;i<seats.length;i++){
+      if(parseInt(seats[i]) <ecoSeats[0]['id']){
+        businessSeats[parseInt(seats[i])-1]['isReserved'] = true;
+        reservedBusiness ++;
+      }
+      else{
+        ecoSeats[parseInt(seats[i])-1-businessSeats.length]['isReserved'] = true;
+      }
+      console.log(seats[i]);
+    }
+    var reservedEco = seats.length-reservedBusiness;
+    allFlightSeats['ecoSeats'] = ecoSeats;
+    allFlightSeats['businessSeats'] = businessSeats;
+    await FlightSeats.findOneAndUpdate({flightId:flightId},{ecoSeats:ecoSeats , businessSeats:businessSeats, 
+      availableBusinessSeatsCount: businessSeatsCount-reservedBusiness, availableEcoSeatsCount: ecoSeatsCount-reservedEco});
+  }
+
 // MongoClient.
 module.exports = {
   connectToServer: async function(callback) {
@@ -287,29 +315,6 @@ module.exports = {
     console.log(err);
   }
   },
-  reserveFlightSeats: async function (flightId,seats){
-    var allFlightSeats = await FlightSeats.findById(flightId).select(['availableEcoSeatsCount','availableBusinessSeatsCount','ecoSeats','businessSeats']);
-    var ecoSeats = allFlightSeats['ecoSeats'];
-    var businessSeats = allFlightSeats['businessSeats'];
-    var ecoSeatsCount = allFlightSeats['availableEcoSeatsCount'];
-    var businessSeatsCount = allFlightSeats['availableBusinessSeatsCount'];
-    var reservedBusiness = 0;
-    for (var i = 0;i<seats.length;i++){
-      if(seats[i]<ecoSeats[0]['id']){
-        businessSeats[seats[i]-1]['isReserved'] = true;
-        reservedBusiness ++;
-      }
-      else{
-        ecoSeats[seats[i]-1-businessSeats.length]['isReserved'] = true;
-      }
-      console.log(seats[i]);
-    }
-    var reservedEco = seats.length-reservedBusiness;
-    allFlightSeats['ecoSeats'] = ecoSeats;
-    allFlightSeats['businessSeats'] = businessSeats;
-    await FlightSeats.findByIdAndUpdate(flightId,{ecoSeats:ecoSeats , businessSeats:businessSeats, 
-      availableBusinessSeatsCount: businessSeatsCount-reservedBusiness, availableEcoSeatsCount: ecoSeatsCount-reservedEco});
-  },
   readReservation :async function(departureFlight, returnFlight, res){
     try{
 
@@ -404,7 +409,7 @@ module.exports = {
         flightSeats.push(row);row = [];
       }
 
-      const index = flightSeats.length + 1
+      const index = flightSeats.length +1
       flightSeats.push([]);
       var ecoSpace = 0;
       for(var i =0,s1 = 0;i<ecoSeats[0]['ecoSeats'].length;i++,s1++){

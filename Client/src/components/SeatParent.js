@@ -29,6 +29,7 @@ const style = {
 // props is flight_id and class Flight
   const SeatParent = (props) => {
   const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
+  const [ reRun , setReRun ] = React.useState(true);
   const [selected, setSelected] = React.useState([]);
   const [reachedMax , setReachedMax ] = React.useState( false );
   const [seats , setSeats] = React.useState([]);
@@ -42,7 +43,6 @@ const style = {
         .then(result => {
           setSeats(result.data.flightSeats);
           setIndex(result.data.index)
-          console.log(result.data.index);
         }).catch(err => {
            setNotify({
             isOpen: true,
@@ -50,10 +50,9 @@ const style = {
             type: 'error'
         });
       });
-    console.log(props.maxNumber);
+    console.log(selected);
     
-    console.log(seats.slice(0 , index));
-  }, [] );
+  } , [ reRun , selected ]  );
 
 
   const handleSeatReservation = () => {
@@ -68,7 +67,9 @@ const style = {
     });
         setReachedMax(false);
         setIndex(0);
-        props.close(false , selected);
+        setReRun( !reRun );
+        console.log(selected);
+        props.sendSeats( selected.toString() );
         setSelected([]);
         
     }
@@ -89,7 +90,9 @@ const style = {
         onClose= { ()=> {
           setIndex(0);
           setSelected([]);
-          props.close(false , selected);
+          setReRun( !reRun);
+          setReachedMax(false);
+          props.close(false );
            }}
         closeAfterTransition
         BackdropComponent={Backdrop}
@@ -101,7 +104,7 @@ const style = {
          <Box sx={style}>
     <div className="w-1/2">
         <div className="w-full flex justify-center my-16">
-      <Seat setSelected={setSelected} maxNumber={props.maxNumber} seat={(props.Class=='economic')?seats.slice(index+1 , seats.length) : seats.slice(0,index) }/>
+      <Seat setSelected={setSelected} maxNumber={props.maxNumber} seat={(props.Class=='economic')?seats.slice(index , seats.length) : seats.slice(0,index) }/>
         </div>
       <div className="">
         <div className="w-full flex justify-center"> 

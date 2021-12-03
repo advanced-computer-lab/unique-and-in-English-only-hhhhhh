@@ -72,6 +72,7 @@ const handleSubmit = async (event) => {
     departureDate: departureDate,
     returnDate:returnDate
   }
+  console.log(flight);
 
   await axios.post('http://localhost:8000/user/readReservation' , flight)
         .then((result) => {
