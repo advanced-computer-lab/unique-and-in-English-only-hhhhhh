@@ -50,11 +50,10 @@ const style = {
             type: 'error'
         });
       });
-    console.log(selected);
-    
-  } , [ reRun , selected ]  );
+    console.log("reRun");
+  } , [ reRun , selected , reachedMax , props.flightNumber ]   );
 
-
+// , [ reRun , selected , reachedMax ] 
   const handleSeatReservation = () => {
     if ( selected.length < props.maxNumber ){
         setReachedMax(true);
@@ -65,15 +64,15 @@ const style = {
         message: 'You Have Chosen The Seats',
         type: 'success'
     });
-        setReachedMax(false);
+        props.sendSeats( selected.toString() );        
         setIndex(0);
-        setReRun( !reRun );
-        console.log(selected);
-        props.sendSeats( selected.toString() );
         setSelected([]);
+        setReRun( !reRun);
+        setReachedMax(false);
+        props.close(false );
         
     }
-    console.log(seats);
+    setReRun( !reRun );
 
   };
 

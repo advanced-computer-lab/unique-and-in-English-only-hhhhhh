@@ -21,6 +21,7 @@ import UserFlightTicket from './components/UserFlightTicket';
 import UserSearchResult from './components/UserSearchResult';
 import SeatParent from './components/SeatParent';
 import Ticket from './components/Ticket';
+import ReservationSummaryParent from './components/ReservationSummaryParent'
 
 
 
@@ -52,11 +53,10 @@ function App(props) {
   <Combine />
 </Route>
 
-<Route path="/test1">
-  <Ticket />
-</Route>
+<Route path="/test1" render={(props) => <ReservationSummaryParent {...props}/>}/> 
+
 <Route path="/test2">
-   <></>
+   <Ticket></Ticket>
 </Route>
 <Route path="/test3">
   <Profile />
