@@ -221,11 +221,15 @@ module.exports = {
           if (err) return res.status(500).send(false);
             res.status(200).send(true);
         });
-        try{
+        try{ 
+          await Reservation.deleteMany({departureFlightId:_id});
+          await Reservation.deleteMany({returnFlightId:_id});
+          await FlightSeats.deleteOne({flightId:_id});
+          /*
         const reservations=db.collection("reservations");
         for (var k in reservations) {
-          if ((reservations[k]['departureFlightId'] == _id)||(reservations[k]['returnFlightId'] == _id)){
-            const id=reservations[k]['_id'];
+          if ((k['departureFlightId'] == _id)||(k['returnFlightId'] == _id)){
+            const id=k['_id'];
             await reservations.deleteOne({id : mongoose.Types.ObjectId(id)},(err,result)=>{
               console.log(result);
               if (err) return res.status(500).send(false);
@@ -233,7 +237,7 @@ module.exports = {
             });
           } 
           
-      }
+      }*/
         }catch(err){
           console.log(err);
         }
@@ -247,30 +251,67 @@ module.exports = {
     try{
         const db = client.db("AirlineDB");
         const col = db.collection("flights");
+        var flight=await Flight.find({_id:id});
+        flight=flight[0];
+        var flightSeats=await FlightSeats.find({flightId:id});
+        flightSeats=flightSeats[0];
         const p = await col.updateOne({"_id": mongoose.Types.ObjectId(id)}, update,(err,result)=>{
           // if (err)
           //   res.status(500).send(err);
           console.log(result);
           console.log(err);
+          //const EconomicSeatsCount=update["ecoSeatsCount"];
+          //const 
           // else
-           // res.status(200).send("Flight updated");
-            try{
-              const reservations=db.collection("reservations");
-              for (var k in reservations) {
-                if ((reservations[k]['departureFlightId'] == _id)||(reservations[k]['returnFlightId'] == _id)){
-                  const id=reservations[k]['_id'];
-                   reservations.updateOne({id : mongoose.Types.ObjectId(id)},update,(err,result)=>{
-                    console.log(result);
-                    if (err) return res.status(500).send(false);
-                      res.status(200).send(true);
-                  });
-                } 
-                
-            }
-              }catch(err){
-                console.log(err);
-              }
+            res.status(200).send("Flight updated");
+          
+
+           
         });
+        /*
+        try{
+              var updateReservation={
+                economicSeatsPrice:(update["economicSeatsPrice"]!=null)?update["economicSeatsPrice"]:"",
+                businessSeatsPrice:(update["businessSeatsPrice"]!=null)?update["businessSeatsPrice"]:"",
+              };
+              var seats=flightSeats["ecoSeats"];
+             for(i=flight["ecoSeatsCount"];i<update["ecoSeatsCount"];i++){
+               var seat={
+                 id:i+1+flight[""],
+                 isReserved:false
+               }
+             }
+              var updateFlightseats={
+
+                     availableEcoSeatsCount:(update["ecoSeatsCount"])-flight["ecoSeatsCount"]+flightSeats["availableEcoSeatsCount"],
+                     availableBusinessSeatsCount:(update["businessSeatsCount"])-flight["businessSeatsCount"]+flightSeats["availableBusinessSeatsCount"],
+                       
+              };
+
+            
+          await Reservation.updateMany({returnFlightId:id},update);
+           await Reservation.updateMany({departureFlightId:id},update);
+           await FlightSeats.updateMany({FlightId:id},update);
+
+          /*
+          const reservations=db.collection("reservations");
+          for (var k in reservations) {
+            if ((k['departureFlightId'] == _id)||(k['returnFlightId'] == _id)){
+              const id=k['_id'];
+               reservations.updateOne({id : mongoose.Types.ObjectId(id)},update,(err,result)=>{
+                console.log(result);
+                if (err) return res.status(500).send(false);
+                  res.status(200).send(true);
+              });
+            } 
+            
+        }
+        
+          }catch(err){
+            console.log(err);
+          }
+          
+      */
     }
     catch(err){
       console.log(err);
