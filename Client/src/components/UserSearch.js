@@ -48,7 +48,7 @@ const handleChangeOfDeparture = (newValue) => {
 };
 
 const handleChangeOfReturn = (newValue) => {
- if (newValue.getTime() <= departureDate.getTime()) {
+ if (newValue <= departureDate) {
     setReturnDate(returnDate);
   }
   else{
@@ -260,7 +260,7 @@ const handleSubmit = async (event) => {
             <Redirect
             to={{
             pathname: "/test5",
-            state: { flights : flights , Class: Class, maxNumber: ( parseInt(childrenCount) + parseInt(adultsCount) )  }
+            state: { flights : flights , Class: Class, maxNumber: ( parseInt(childrenCount) + parseInt(adultsCount) ) }
           }}
         /> : <></>
             }

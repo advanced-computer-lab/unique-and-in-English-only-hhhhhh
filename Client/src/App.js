@@ -29,6 +29,7 @@ function App(props) {
   return (
    <Router>
    {   <Header  isLogged={props.isLogged}  userName={props.userName}/>   }
+   <div className="mt-14" />
      <Switch>
 <Route exact path="/">
 <Showcase />

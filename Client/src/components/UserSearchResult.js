@@ -27,23 +27,22 @@ const UserSearchResult = (props) => {
     const [ departureFlight , setDepartureFlight ] = React.useState();
     const [ returnFlight , setReturnFlight ] = React.useState();
 
-    
-
-    // const [ body , setBody ] = React.useState({
-    //     username:"konar",
-    //     cabinClass:  props.history.location.state.Class ,
-    //     departureFlightId: departureId,
-    //     departureSeats: departureSeats.split(','),
-    //     returnFlightId: returnId,
-    //     returnSeats: returnSeats.split(','),
-    //     totalPrice: (departurePrice + returnPrice ) * parseInt(props.history.location.state.maxNumber)
-    //     });
-    
-       
+           
+    React.useEffect(() => {
+        setFoundTheFlight(false);
+        setChoseDeparture(false);
+        setDepartureId('');
+        setReturnId('');
+        setDepartureSeats('');
+        setReturnSeats('');
+        setDeparturePrice(0);
+        setReturnPrice(0);
+        setBody();
+        setDepartureFlight();
+        setReturnFlight();
+      } , [ props.history.location.state.flights , props.history.location.state.Class ,  props.history.location.state.maxNumber ] );
 
     const sendTheReservation = async() => {
-
-
         setBody({
             username:"konar",
             cabinClass:  props.history.location.state.Class ,
@@ -53,48 +52,31 @@ const UserSearchResult = (props) => {
             returnSeats: returnSeats.split(','),
             totalPrice: (departurePrice + returnPrice ) * parseInt(props.history.location.state.maxNumber)
             });
-
             const departueF = {
                 _id : departureId
             }
             const returnF = {
                 _id : returnId
             }
-
-            await axios.post('http://localhost:8000/user/reserve', departueF)
+            await axios.post('http://localhost:8000/user/readFlightById', departueF)
                    .then(result => {
                      alert("Departure Successfully fetched " );
                      setDepartureFlight(result.data);
                      }).catch(err => {
                      alert("Departure Successfully didn't Fetch " + err );
                      });
-            await axios.post('http://localhost:8000/user/reserve', returnF)
+            await axios.post('http://localhost:8000/user/readFlightById', returnF)
                    .then(result => {
                      alert("Return Successfully fetched " );
                      setReturnFlight(result.data);
                      }).catch(err => {
                      alert("Return Successfully didn't Fetch " + err );
                      });            
-
-
-
                      setFoundTheFlight(true);
-            // console.log(body);
-            // await axios.post('http://localhost:8000/user/reserve', body)
-            //        .then(result => {
-            //          alert("Reservation Successfully " );
-            //          }).catch(err => {
-            //          alert("Error with The Server " + err );
-            //          });
                 };     
     
 
-    // React.useEffect(() => {
-    //     if ( departureSeats !== '' ){
-    //            setChoseDeparture(true);
-    //     }
-         
-    //   } , [departureSeats] );
+   
 
     return (
         <div>

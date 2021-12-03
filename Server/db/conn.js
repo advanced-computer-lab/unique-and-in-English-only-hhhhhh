@@ -221,11 +221,18 @@ module.exports = {
           if (err) return res.status(500).send(false);
             res.status(200).send(true);
         });
+        try{ 
+          await Reservation.deleteMany({departureFlightId:_id});
+          await Reservation.deleteMany({returnFlightId:_id});
+          await FlightSeats.deleteOne({flightId:_id});
+        }catch(err){
+          console.log(err);
+        }
     }
     catch(err){
       console.log(err);
     }
-  
+
   },
  updateFlight: async function (id, update,res){
     try{

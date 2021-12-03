@@ -17,7 +17,7 @@ import EventSeatIcon from '@mui/icons-material/EventSeat';
 import SeatParent from './SeatParent';
 
 
-const UserSearchFlight = (props) => {
+const ReservationSummary = (props) => {
 
   // React.useEffect( () => {
 
@@ -78,7 +78,7 @@ const UserSearchFlight = (props) => {
           <EventIcon/> {(props.departureDate).substring(0, 10)}
           </Typography>
            <Typography>
-          <ClassRoundedIcon /> { (props.Class) }
+          <ClassRoundedIcon /> { (props.cabinClass) }
           </Typography>
           </div>
           <div className="flex justify-evenly">
@@ -86,11 +86,11 @@ const UserSearchFlight = (props) => {
           <EventIcon/> {(props.arrivalDate).substring(0, 10)}
           </Typography>
           <Typography>
-          <AttachMoneyIcon/> { (props.Class === 'business')? props.businessSeatPrice : props.economicSeatPrice }
+          <AttachMoneyIcon/> { ((props.Class === 'business')? props.businessSeatPrice  : props.economicSeatPrice) * props.seatsCount }
           </Typography>
           </div>
           <Typography>
-          <LuggageIcon /> { (props.Class === 'business')? "2*32KG" : "1*23KG" }
+          <LuggageIcon /> { (props.cabinClass === 'business')? "2*32KG" : "1*23KG" }
           </Typography>
           <div className="flex justify-end">
           </div>
@@ -105,4 +105,4 @@ const UserSearchFlight = (props) => {
     )
 }
 
-export default UserSearchFlight
+export default ReservationSummary
