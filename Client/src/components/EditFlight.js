@@ -88,14 +88,14 @@ const EditFlight = (props) => {
     const handleChangeOfDeparture = (newValue) => {
       setDepartureDate(newValue);
       setEdit(false);
-      if ( newValue.getTime() > arrivalDate.getTime() ) {
+      if ( newValue > arrivalDate ) {
         setarrivalDate(newValue);
       }
     };
 
     const handleChangeOfArrival = (newValue) => {
       setEdit(false);
-      if (newValue.getTime() <= departureDate.getTime()) {
+      if (newValue <= departureDate) {
         setarrivalDate(arrivalDate);
       }
       else{

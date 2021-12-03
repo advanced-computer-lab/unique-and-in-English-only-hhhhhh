@@ -439,6 +439,10 @@ module.exports = {
       console.log(err);
     }
 
+    },
+    readFlightById: async function(_id,res){
+      var flight = await Flight.findById(_id);
+      res.status(200).send(flight);
     }
 };
 function generateAccessToken(user){
