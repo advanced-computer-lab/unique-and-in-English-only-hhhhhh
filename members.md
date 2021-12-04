@@ -1,3 +1,4 @@
+##sprint 1##
 #Mohamed Mahmoud Abdulatif# 
 - handling the create/ delete functionality at the backend with its errors
 - connecting to the database 
@@ -22,3 +23,24 @@
 #Ali Helmy#
 - handling routing by using router and switch react-router
 - handling the interaction between the client and server with Axios 
+
+##sprint 2##
+
+#Mohamed Mahmoud Abdulatif# 
+- Reserving flights- backend
+- Updating user info- backend
+
+
+#Mahmoud Ahmed Abdelkhaleq#
+- reservation summary functionality- backend
+- seats reservation- backend
+
+#Omar Osama#
+- ensuring the consistency in the DB whenever a flight gets removed/updated -> all the corresponding reservations get removed/updated
+ 
+#Zeyad Elsaed# 
+-the frontend
+
+#Ali Helmy#
+- handling the delete functionality- backend
+- sending email to the user upon reservation cancel
