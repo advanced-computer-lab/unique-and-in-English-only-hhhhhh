@@ -20,7 +20,7 @@ import axios from 'axios';
 
 
 
-const TravellerInfo = () => {
+const TravellerInfo = ( props ) => {
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [gender, setGender] = React.useState('');
     const [country, setCountry] = useState("");
@@ -88,6 +88,7 @@ const TravellerInfo = () => {
                   placeholder="First Name"
                   autoFocus
                   onChange= { e => {setFirstName(e.target.value)}}
+                  inputProps= { {defaultValue: props.user.firstName } }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -99,7 +100,7 @@ const TravellerInfo = () => {
                   placeholder="Last Name"
                   autoFocus
                   onChange= { e => {setLastName(e.target.value)}}
-
+                  inputProps= { {defaultValue: props.user.lastName } }
                 />
               </Grid>
               
@@ -117,7 +118,7 @@ const TravellerInfo = () => {
           value={gender}
           label="Gender"
           onChange={ e => {setGender(e.target.value)} }
-        >
+          >
           <MenuItem value={"male"}>Male</MenuItem>
           <MenuItem value={"female"}>Female</MenuItem>
           <MenuItem value={"other"}>Other</MenuItem>
@@ -135,8 +136,9 @@ const TravellerInfo = () => {
       autoHighlight
       getOptionLabel={(option) => option.label}
       sx={{ width: 400 }}
-      renderInput={(params) => <TextField {...params} label="Country" />}
+      renderInput={(params) => <TextField {...params} label="Country" defaultValue={props.user.country} />}
       onChange={ (e , value) => {setCountry(value["label"])} }
+      defaultValue={{ code: 'AD', label:props.user.country , phone: '376' }}
       />
             </Grid>
             <Grid item xs={12} sm={6} />
@@ -151,6 +153,7 @@ const TravellerInfo = () => {
             setBirth(newValue);
           }}
           renderInput={(params) => <TextField {...params} />}
+          // inputProps= { {defaultValue: props.user.dateOfBirth } }
         />
         </Stack>
     </LocalizationProvider>
@@ -166,7 +169,7 @@ const TravellerInfo = () => {
                   placeholder="Passport Number"
                   autoFocus
                   onChange={ (e) => {setPassport(e.target.value)} }
-
+                  inputProps= { {defaultValue: props.user.passportNumber } }
                 />
   </Grid>
 
@@ -181,7 +184,7 @@ const TravellerInfo = () => {
                   placeholder="Telephone Number"
                   autoFocus
                   onChange={ (e) => {setTelephone(e.target.value)} }
-
+                  inputProps= { {defaultValue: props.user.telephoneNumber } }
                 />
   </Grid>
 

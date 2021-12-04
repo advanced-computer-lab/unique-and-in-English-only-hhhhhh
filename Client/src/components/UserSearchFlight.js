@@ -29,7 +29,7 @@ const UserSearchFlight = (props) => {
 
   const durationTime = () => {
     const diffTime = Math.abs( new Date((props.arrivalDate)).getTime() - new Date((props.departureDate)).getTime() );
-    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60  * 24)); 
+    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60 )); 
     return diffHours ;
   };
 

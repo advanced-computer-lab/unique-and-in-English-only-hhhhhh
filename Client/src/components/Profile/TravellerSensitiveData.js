@@ -6,13 +6,14 @@ import Box from '@mui/material/Box';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import axios from 'axios';
 import Notification from '../Notification';
+import SaveIcon from '@mui/icons-material/Save';
 
 
 
 
 
 
-const TravellerSensitiveData = () => {
+const TravellerSensitiveData = (props) => {
   const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
   const [email, setEmail] = React.useState('');
   const [oldPassword, setOldPassword] = React.useState('');
@@ -86,7 +87,7 @@ else {
                   placeholder="E-Mail"
                   autoFocus
                   onChange= { e => {setEmail(e.target.value)}}
-
+                  inputProps= { {defaultValue: props.email   } }
                 />
               </Grid>
               <Grid item xs={12} >
@@ -134,11 +135,11 @@ else {
               <Button
               type="submit"
               fullWidth
-              endIcon= {<NoteAddIcon  />}
+              startIcon= {<SaveIcon  />}
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Create
+              Save
             </Button>
 
 

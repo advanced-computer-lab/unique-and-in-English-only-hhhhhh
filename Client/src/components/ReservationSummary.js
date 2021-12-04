@@ -86,7 +86,7 @@ const ReservationSummary = (props) => {
           <EventIcon/> {(props.arrivalDate).substring(0, 10)}
           </Typography>
           <Typography>
-          <AttachMoneyIcon/> { ((props.Class === 'business')? props.businessSeatPrice  : props.economicSeatPrice) * props.seatsCount }
+          <AttachMoneyIcon/> { ((props.cabinClass === 'business')? props.businessSeatPrice  : props.economicSeatPrice) * props.seatsCount }
           </Typography>
           </div>
           <Typography>

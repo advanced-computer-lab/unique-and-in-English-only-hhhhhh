@@ -48,8 +48,8 @@ const UserFlightCard = (props) => {
     };
 
     const durationTime = () => {
-      const diffTime = Math.abs( new Date((props.arrivalDate)).getTime() - new Date((props.departureDate)).getTime() );
-      const diffHours = Math.ceil(diffTime / (1000 * 60 * 60  * 24)); 
+      const diffTime = Math.abs( new Date((props.arrivalDate)) - new Date((props.departureDate)) );
+      const diffHours = Math.ceil(diffTime / (1000 * 60 * 60  )); 
       return diffHours ;
     };
 
@@ -143,7 +143,7 @@ const UserFlightCard = (props) => {
           
           <CardActions className="flex justify-between mr-2 mb-2">
           <Typography  variant="caption" color="text.secondary">
-            Baggage: 1 * 23KG
+          { (props.cabinClass === 'business')? "2*32KG" : "1*23KG" }
             </Typography>
             <Button sx={{borderRadius: 5}} variant="contained" color="error" size="small" onClick={handleCancel}>Cancel Booking</Button>
           </CardActions>

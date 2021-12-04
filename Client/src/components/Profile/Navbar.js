@@ -24,7 +24,7 @@ import TravellerInfo from "./TravellerInfo";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import TravellerSensitiveData from "./TravellerSensitiveData";
 import ReservedFlights from "./ReservedFlights";
-
+// inputProps= { {defaultValue: props.departureAirportTerminal   } }
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -72,7 +72,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end"
 }));
 
-export default function NavBar2() {
+export default function Navbar(props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -105,7 +105,7 @@ export default function NavBar2() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Hello Zeyad :D
+            Hello {props.user.firstName}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -157,8 +157,10 @@ export default function NavBar2() {
       <Main open={open}>
         <DrawerHeader />
 
-
-        {selectedIndex === 0? <TravellerSensitiveData/> :  selectedIndex === 1? <TravellerInfo/> : <ReservedFlights />}
+        
+        {selectedIndex === 0? <TravellerSensitiveData email={props.user.email} /> :
+          selectedIndex === 1? <TravellerInfo user={props.user}  /> :
+           <ReservedFlights />}
 
 
       </Main>

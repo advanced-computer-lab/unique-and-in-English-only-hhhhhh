@@ -130,7 +130,7 @@ else{
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
+        <MenuItem onClick={event =>  window.location.href='/test3'}>
           <Avatar /> Profile
         </MenuItem>
         <MenuItem>
@@ -162,7 +162,7 @@ else{
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={event =>  isLogged = true }>
+        <MenuItem >
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

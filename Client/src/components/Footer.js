@@ -16,7 +16,7 @@ import React from 'react'
 
             <ul>
                 <li>
-                    <button onClick={event =>  window.location.href='/search'}>Book ur Flight</button>
+                    <button onClick={event =>  window.location.href='/'}>Book ur Flight</button>
                 </li>
                 <li>
                     <button>Giveaway</button>

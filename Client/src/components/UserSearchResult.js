@@ -60,14 +60,12 @@ const UserSearchResult = (props) => {
             }
             await axios.post('http://localhost:8000/user/readFlightById', departueF)
                    .then(result => {
-                     alert("Departure Successfully fetched " );
                      setDepartureFlight(result.data);
                      }).catch(err => {
                      alert("Departure Successfully didn't Fetch " + err );
                      });
             await axios.post('http://localhost:8000/user/readFlightById', returnF)
                    .then(result => {
-                     alert("Return Successfully fetched " );
                      setReturnFlight(result.data);
                      }).catch(err => {
                      alert("Return Successfully didn't Fetch " + err );
@@ -95,7 +93,7 @@ const UserSearchResult = (props) => {
             { !choseDeparture ?
              <div className="w-full flex justify-between justify-items-end  mb-8 text-opacity-25">
                     <div/>
-                    <Typography sx={{opacity: 0.7}}  variant="h3">Departure Flights {departureSeats} </Typography>
+                    <Typography sx={{opacity: 0.7}}  variant="h3">Departure Flights  </Typography>
                     <IconButton color="primary" onClick={() => {setChoseDeparture(true);}} disabled= { (departureSeats === '') }>
                     <ArrowForwardIcon sx={{fontSize: 50, opacity: 0.7}} />
                     </IconButton>
@@ -109,7 +107,7 @@ const UserSearchResult = (props) => {
                     <ArrowBackIcon sx={{fontSize: 50, opacity: 0.7}} />  
                     </IconButton>
                     
-                    <Typography sx={{opacity: 0.7}}  variant="h3">Return Flights {returnSeats}</Typography>
+                    <Typography sx={{opacity: 0.7}}  variant="h3">Return Flights </Typography>
                     <div/>
              </div>
             }

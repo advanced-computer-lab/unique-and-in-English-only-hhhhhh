@@ -4,7 +4,7 @@ import SeatPicker from "react-seat-picker";
 export default class Seat extends Component {
   addSeatCallback = ({ row, number, id }, addCb) => {
     this.props.setSelected((prevItems) => [...prevItems, id]);
-    const newTooltip = `You Have Selected Seat row ${row}, number ${number}`;
+    const newTooltip = `You Have Selected Seat row ${row}, number ${number} in Your Desired Class`;
     addCb(row, number, id, newTooltip);
   };
 

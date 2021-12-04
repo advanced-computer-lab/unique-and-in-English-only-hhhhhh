@@ -12,8 +12,8 @@ const Showcase = () => {
        <section className="showcase">
        
            <div className="overlay">
-               <h1> Zeyad Tayara Travel Agency</h1>
-                <p>
+               <h1 style={{fontFamily: 'Bebas Neue, cursive'}}> Zeyad Tayara Travel Agency</h1>
+                <p style={{fontFamily: 'Yellowtail, cursive'}}>
                     Travel the World Now!!
                 </p>
            </div>
