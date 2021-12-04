@@ -48,6 +48,44 @@ async function cancellationMail(email,refundValue){
       console.log('Email sent: ' + info.response);
     }
   })}
+  async function unreserveSeats(flightId,seats){
+    var flightSeats = await FlightSeats.find({flightId:flightId});
+    var ecoSeats = flightSeats[0]['ecoSeats'];
+    var businessSeats = flightSeats[0]['businessSeats'];
+    var ecoSeatsStart = ecoSeats[0]['id'];
+    var availableEcoSeatsCount = flightSeats[0]['availableEcoSeatsCount'];
+    var availableBusinessSeatsCount = flightSeats[0]['availableBusinessSeatsCount'];
+
+    console.log("b4 the loop");
+    console.log(seats);
+
+    for(var seat in seats){
+      console.log("still inside the loop");
+      
+      var seatNumber = parseInt(seats[seat]);
+      console.log(seatNumber);
+      console.log(ecoSeatsStart);
+      if(seatNumber<ecoSeatsStart){
+        businessSeats[seatNumber-1].isReserved = false;
+        availableBusinessSeatsCount ++;
+      }
+      else{
+        ecoSeats[seatNumber-ecoSeatsStart].isReserved = false;
+        availableEcoSeatsCount++;
+      }
+    }
+    console.log(flightSeats);
+    console.log("---");
+    console.log(businessSeats);
+    console.log("__");
+    console.log(ecoSeats);
+    await FlightSeats.updateOne({flightId:flightId},{
+       ecoSeats:ecoSeats,
+       businessSeats:businessSeats,
+       availableEcoSeatsCount: availableEcoSeatsCount,
+       availableBusinessSeatsCount: availableBusinessSeatsCount
+       });
+  }
  
   async function processArray(reservations){
     var resultArray =[];
@@ -353,20 +391,30 @@ module.exports = {
   }
   },
   deleteReservation: async function (_id,res){
+    console.log(_id, "here is the _id");
     try{
+      
         const db = client.db("AirlineDB");
         const col = db.collection("reservations");
         const reservation = await Reservation.find({_id: mongoose.Types.ObjectId(_id)});
         const user= await User.find({userName: reservation[0].username});
         const refundValue = reservation[0].totalPrice;
         const usermail= user[0].email;
-        console.log(_id);
+        //console.log(_id);
+        var departureId = reservation[0]['departureFlightId'];
+        var departureSeats = reservation[0]['departureSeats'];
+        var returnId = reservation[0]['returnFlightId'];
+        var returnSeats = reservation[0]['returnSeats'];
         cancellationMail(usermail,refundValue);
         await col.deleteOne({_id : mongoose.Types.ObjectId(_id)},(err,result)=>{
-          console.log(result);
+          //console.log(result);
           if (err) return res.status(500).send(false);
             res.status(200).send(true);
         });
+        console.log("b4 reverting seats");
+        unreserveSeats(departureId,departureSeats);
+        unreserveSeats(returnId,returnSeats);
+
     }
     catch(err){
       console.log(err);
@@ -460,6 +508,8 @@ module.exports = {
         console.log(err);
       }
     },
+    
+    
 };
 function generateAccessToken(user){
   return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{ expiresIn: '15s' });

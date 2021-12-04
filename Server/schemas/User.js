@@ -39,6 +39,11 @@ const userschema=new schema({
         type:String,
         required:true
     },
+    dateOfBirth:{
+        type:Date,
+        required:true
+    },
+    
 },{timestamps:true})
 const User=mongoose.model('User',userschema);
 module.exports=User;
