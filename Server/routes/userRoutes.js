@@ -58,6 +58,12 @@ router.route('/viewMyReservation')
     userController.viewMyReservations(req,res);
 
 })
+router.route('/viewUserInfo')
+.post(async (req,res)=>{
+    //res.send("asdasdasdas");
+    userController.viewUserInfo(req,res);
+
+})
 router.route('/readFlightById').
 post(async (req,res)=>{
     userController.readFlightById(req,res);

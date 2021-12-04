@@ -106,5 +106,8 @@ module.exports={// this wil be edited
     },
     readFlightById: async function(req,res){
         DB.readFlightById(req.body._id,res);
+    },
+    viewUserInfo: async function(req,res){
+        DB.viewUserInfo(req.body.userName,res);
     }
 }

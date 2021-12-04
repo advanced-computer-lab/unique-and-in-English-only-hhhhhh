@@ -450,7 +450,16 @@ module.exports = {
     readFlightById: async function(_id,res){
       var flight = await Flight.findById(_id);
       res.status(200).send(flight);
-    }
+    },
+    viewUserInfo: async function(userName,res){
+      try{
+        const user = await User.find({userName: userName});
+        res.status(200).send(user[0]);
+      }
+      catch(err){
+        console.log(err);
+      }
+    },
 };
 function generateAccessToken(user){
   return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{ expiresIn: '15s' });

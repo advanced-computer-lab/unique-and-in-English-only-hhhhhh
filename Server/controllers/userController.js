@@ -49,6 +49,9 @@ module.exports = {
     },
     readFlightById: async function(req,res){
         userModel.readFlightById(req,res);
+    },
+    viewUserInfo: async function(req,res){
+        userModel.viewUserInfo(req,res);
     }
     
 }
