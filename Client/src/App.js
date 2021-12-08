@@ -23,8 +23,6 @@ import SeatParent from './components/SeatParent';
 import Ticket from './components/Ticket';
 import ReservationSummaryParent from './components/ReservationSummaryParent'
 
-
-
 function App(props) {
   return (
    <Router>
