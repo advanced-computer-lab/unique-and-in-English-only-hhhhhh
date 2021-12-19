@@ -29,7 +29,7 @@ function App(props) {
   console.log(localStorage.getItem('username'));
    console.log(localStorage.getItem('user token'));
   return (
-   <Router basename='/blabezo'>   
+   <Router>   
    {   <Header  isLogged={props.isLogged}  userName={props.userName}/>   }
    <div className="mt-14" />
      <Switch>

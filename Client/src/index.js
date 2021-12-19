@@ -5,7 +5,7 @@ import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App isLogged={false} userName={"Zeyad EL"}/>
+    <App isLogged={localStorage.getItem('user token') ==null?false: true} userName={localStorage.getItem('username')}/>
   </React.StrictMode>,
   document.getElementById('root')
 );
