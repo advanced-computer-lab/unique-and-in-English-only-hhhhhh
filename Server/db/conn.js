@@ -183,11 +183,15 @@ signUp:async function(user,res){
      login:async function(userLoggingIn,res){
        User.findOne({userName:userLoggingIn.userName})
        .then(dbUser => {
+         console.log(dbUser);
          if(!dbUser){
            return res.json({
              message:"Invalid Username or Password"
            })
          }
+        //  console.log("asdasdas");
+        //  console.log( bcrypt.hash(userLoggingIn.password,10));
+        //  console.log(dbUser.password);
          bcrypt.compare(userLoggingIn.password,dbUser.password)
          .then(isCorrect =>{
            if(isCorrect){
@@ -360,6 +364,9 @@ signUp:async function(user,res){
     try{
         const db = client.db("AirlineDB");
         const col = db.collection("users");
+        user.password = await bcrypt.hash(user.password, 10);
+
+        //console.log(user.password);
         await col.insertOne(user,(err,result)=>{
           if (err)
           res.status(500).send("connection error");
@@ -371,7 +378,6 @@ signUp:async function(user,res){
     catch(err){
       console.log(err);
     }
-  
   },
   updateUserInfo: async function(userName, update, res){
     try{
@@ -405,15 +411,16 @@ signUp:async function(user,res){
         .then(async isCorrect =>{
           if(isCorrect){
             if(update.password!=""){
-              update.password = bcrypt(update.password,10);
+              console.log(update.$set);
+              update.$set.password = await bcrypt.hash(update.$set.password,10);
           }
-          const p = await col.updateOne({"userName": userName,"password": password}, update,(err,result)=>{
+          const p = await col.updateOne({"userName": userName}, update,(err,result)=>{
+            console.log(err);
+
             console.log(result);
-            if(result.modifiedCount ==0)
-              res.status(200).send("incorrect username or password");
-            else
-              res.status(200).send("User updated");
+            res.status(200).send("User updated");
           })
+          // res.send("ok");
         }else{
            return res.json({
              message:"Invalid Username or Password"
