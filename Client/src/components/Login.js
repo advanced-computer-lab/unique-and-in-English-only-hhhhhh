@@ -68,10 +68,10 @@ const handleSubmit = async (event) => {
         localStorage.setItem('username', user.userName);
         localStorage.setItem('user token', res.data.token);
         
-      
+        setLogged(true);
+        setUsername(user.userName);
         setFinish(true);
-        // setLogged(true);
-        // setUsername(user.userName);
+        
         
         //setMessage( {isVisible: true , message: res.data+ ""} );
       }
@@ -184,11 +184,11 @@ else {
     </ThemeProvider>
     { finish ?
       <Redirect
-      to={{
-      pathname: "/",
-      isLogged: logged
-    }}
-  /> : <></>
+            to={{
+            pathname: "/",
+            state: { isLogged  : logged, username : username }
+          }}
+        /> : <></>
       }
       </>
   );
