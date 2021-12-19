@@ -183,15 +183,11 @@ signUp:async function(user,res){
      login:async function(userLoggingIn,res){
        User.findOne({userName:userLoggingIn.userName})
        .then(dbUser => {
-         console.log(dbUser);
          if(!dbUser){
            return res.json({
              message:"Invalid Username or Password"
            })
          }
-        //  console.log("asdasdas");
-        //  console.log( bcrypt.hash(userLoggingIn.password,10));
-        //  console.log(dbUser.password);
          bcrypt.compare(userLoggingIn.password,dbUser.password)
          .then(isCorrect =>{
            if(isCorrect){
@@ -207,6 +203,7 @@ signUp:async function(user,res){
                if(err) return res.json({message: err})
                return res.json({
                  message:"Success",
+                 type: "User",
                  token:"Bearer"+token
                })
              }
@@ -221,20 +218,43 @@ signUp:async function(user,res){
       }
       ,
 
-  authenticate: async function(email,password,res){
-    const valid = await Admin.exists({email:email,password:password},async(err,result)=>{
-      if(err) res.status(500).send("Connection error");
-      if(result==null){
-        await Admin.exists({email:email},(err1,result1)=>{
-          if(result1 == null) res.status(200).send("email doesn't exist");
-          else res.status(200).send("wrong password");
-        });
+  adminLogin: async function(email,password,res){
+    Admin.findOne({email:email})
+    .then(dbAdmin => {
+      if(!dbAdmin){
+        return res.json({
+          message:"Invalid Username or Password"
+        })
+      }
+      var isCorrect = (password.localeCompare(dbAdmin.password)==0);
+      if(isCorrect){
+        const payload = {
+          email: dbAdmin.email,
+          password: dbAdmin.password
+        }
+        jwt.sign(
+          payload,
+          "success",
+          {expiresIn:86400},
+          (err,token)=>{
+            if(err) return res.json({message: err})
+            return res.json({
+              message:"Success",
+              type:"Admin",
+              token:"Bearer"+token
+            })
+          }
+        )
       }
       else{
-        res.status(200).send("success");
+        return res.json({
+          message:"Invalid Username or Password"
+        })
       }
-    });
-  },userAuthenticate: async function(user,pass,res){
+      
+    })
+  },
+  userAuthenticate: async function(user,pass,res){
     const valid = await User.exists({user:user,pass:pass},async(err,result)=>{
       if(err) res.status(500).send("Connection error");
       if(result==null){
@@ -246,16 +266,15 @@ signUp:async function(user,res){
       else{
         //res.status(200).send("success");
         const accessToken= generateAccessToken(user);
-    const refreshToken= jwt.sign(user,process.env.REFRESH_TOKEN_SECRET);
-    refreshTokens.push(refreshToken);
-    res.json({ accessToken: accessToken, refreshToken: refreshToken })
+        const refreshToken= jwt.sign(user,process.env.REFRESH_TOKEN_SECRET);
+        refreshTokens.push(refreshToken);
+        console.log(refreshToken);
+
+        res.json({ accessToken: accessToken, refreshToken: refreshToken });
       }
     });
-    
-   
-     
-  
-    },
+    }
+,
     checkToken:async function(req,res){
       const refreshToken = req.body.token;
       if (refreshToken == null) return res.sendStatus(404);

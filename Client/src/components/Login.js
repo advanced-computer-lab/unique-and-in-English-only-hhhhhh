@@ -22,6 +22,7 @@ import { render } from 'react-dom';
 
 
 
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -64,8 +65,14 @@ const handleSubmit = async (event) => {
     .then(res => {
       console.log(res);
       if(res.data.message == "Success"){
-        //setLogged(true);
+        localStorage.setItem('username', user.userName);
+        localStorage.setItem('user token', res.data.token);
+        
+      
         setFinish(true);
+        // setLogged(true);
+        // setUsername(user.userName);
+        
         //setMessage( {isVisible: true , message: res.data+ ""} );
       }
         
@@ -78,7 +85,7 @@ const handleSubmit = async (event) => {
     setMessage( {isVisible: true , message: "success"} );
     setLogged(true);
     setFinish(true);
-    console.log(5);
+    //console.log(5);
     return(
       <>
       <App  isLogged={true} userName={ username }/>
@@ -179,6 +186,7 @@ else {
       <Redirect
       to={{
       pathname: "/",
+      isLogged: logged
     }}
   /> : <></>
       }

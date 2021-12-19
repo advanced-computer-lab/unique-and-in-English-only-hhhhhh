@@ -26,6 +26,8 @@ import ReservationSummaryParent from './components/ReservationSummaryParent'
 
 
 function App(props) {
+  console.log(localStorage.getItem('username'));
+   console.log(localStorage.getItem('user token'));
   return (
    <Router>
    {   <Header  isLogged={props.isLogged}  userName={props.userName}/>   }
