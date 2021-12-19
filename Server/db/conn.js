@@ -402,7 +402,7 @@ signUp:async function(user,res){
           })
         }
         bcrypt.compare(password,dbUser.password)
-        .then(isCorrect =>{
+        .then(async isCorrect =>{
           if(isCorrect){
             if(update.password!=""){
               update.password = bcrypt(update.password,10);
