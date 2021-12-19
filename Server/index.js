@@ -14,11 +14,13 @@ app.use(express.json());
 const dbo = require("./db/conn.js");
 const adminRouter = require("./routes/adminRoutes");
 const userRouter = require("./routes/userRoutes");
+const guestRouter = require("./routes/guestRoutes");
 
 
 
 app.use('/admin',adminRouter);
 app.use('/user',userRouter);
+app.use('/guest',guestRouter);
 
  
 app.listen(port, () => {

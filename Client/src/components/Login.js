@@ -39,9 +39,12 @@ function Copyright(props) {
 const theme = createTheme();
 
  const Login = (props) => {
-const [details , setDetails] = React.useState({email:"" ,password:"" });
-const [message , setMessage] = React.useState({isVisible: false , message: "I am here"});
-const [logged , setLogged ] = React.useState( props.isLogged );
+  const [username,setUsername] = React.useState("");
+  const [password,setPassword] = React.useState("");
+  const [message , setMessage] = React.useState({isVisible: false , message: "I am here"});
+  const [logged , setLogged ] = React.useState( props.isLogged );
+  const [error , setError] = React.useState(false);
+  const [finish, setFinish] = React.useState(false);
 
 const adminUser = {
   email:"hello@me" ,
@@ -50,23 +53,35 @@ const adminUser = {
 
 const handleSubmit = async (event) => {
   event.preventDefault();
+  if(username == "" || password == "" ){
+    setError(true);}
+  else{
     const user = {
-      email:   details.email ,
-      password:   details.password 
+      userName:   username ,
+      password:   password 
     }
-    await axios.post('http://localhost:8000/admin/login' , user)
+    await axios.post('http://localhost:8000/user/login' , user)
     .then(res => {
-      setMessage( {isVisible: true , message: res.data+ ""} );
+      console.log(res);
+      if(res.data.message == "Success"){
+        //setLogged(true);
+        setFinish(true);
+        //setMessage( {isVisible: true , message: res.data+ ""} );
+      }
+        
     }).catch(err => {
       alert("Connection Error with the server");
   });
-
+  }
+  //console.log(message);
   if (message.message.valueOf() == "success".valueOf()  ){
     setMessage( {isVisible: true , message: "success"} );
     setLogged(true);
+    setFinish(true);
+    console.log(5);
     return(
       <>
-      <App  isLogged={true} userName={ details.email.toString() }/>
+      <App  isLogged={true} userName={ username }/>
       <Link href="/login" variant="body2">
                   Go Back To Home Page
       </Link>
@@ -81,7 +96,7 @@ if ( logged == true ) {
 
   return (
     <div>
-    <App isLogged={true} userName={ details.email.toString() }/>
+    <App isLogged={true} userName={username}/>
     <Link href="/" variant="body2">
                   Go Back To Home Page
       </Link>
@@ -90,6 +105,7 @@ if ( logged == true ) {
 }
 else {
   return (
+    <>
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -114,12 +130,12 @@ else {
                 <TextField
                   required
                   fullWidth
-                  type="email"
-                  id="email"
-                  label="Email Address"
-                  name="email"
+                  id="username"
+                  label="Username"
+                  name="usename"
                   autoComplete="email"
-                  onChange={ e => { setDetails({...details , email: e.target.value}); setMessage({isVisible:false, message:""});}}
+                  error = {error && username == ""}
+                  onChange={ e => { setUsername(e.target.value); setMessage({isVisible:false, message:""});}}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -131,7 +147,7 @@ else {
                   type="password"
                   id="password"
                   autoComplete="new-password"
-                  onChange={ e => { setDetails({...details , password: e.target.value}); setMessage({isVisible:false, message:""});}}
+                  onChange={ e => { setPassword(e.target.value); setMessage({isVisible:false, message:""});}}
                 />
               </Grid>
             </Grid>
@@ -159,9 +175,16 @@ else {
         <Copyright sx={{ mt: 5 }}  />
       </Container>
     </ThemeProvider>
+    { finish ?
+      <Redirect
+      to={{
+      pathname: "/",
+    }}
+  /> : <></>
+      }
+      </>
   );
 }
-
 
 
 

@@ -84,7 +84,7 @@ module.exports={// this wil be edited
         await DB.updateSensitiveUserInfo(req.body.userName,req.body.password,{ $set: req.body.update},res);
     },
     login: async function(req,res){
-        await DB.login(req,res);
+        await DB.login(req.body,res);
     },
     viewSummary: async function(req,res){
         await DB.viewSummary(req,res);

@@ -12,7 +12,9 @@ const Db = process.env.ATLAS_URI;
 const mail=process.env.GMAIL_USERNAME;
 const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt");
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 let refreshTokens = [];
 
@@ -151,6 +153,69 @@ module.exports = {
          console.log(err.stack);
      }
 },
+//register
+signUp:async function(user,res){
+  const takenUsername = await User.findOne({userName:user.username});
+  const takenEmail = await User.findOne({email:user.email});
+  if(takenUsername || takenEmail){
+    res.json({message:"Username or email has already been taken"})
+  }
+  else{
+    user.password = await bcrypt.hash(user.password,10)
+    const dbUser = new User({
+      userName:user.userName,
+      password:user.password,
+      firstName:user.firstName.toLowerCase(),
+      lastName:user.lastName.toLowerCase(),
+      gender:user.gender.toLowerCase(),
+      country:user.country.toLowerCase(),
+      telephoneNumber:user.telephoneNumber.toLowerCase(),
+      email:user.email.toLowerCase(),
+      passportNumber: user.passportNumber.toLowerCase(),
+      dateOfBirth: user.dateOfBirth
+    })
+    dbUser.save();
+    res.json({message:"Success"});
+  }
+      },
+  
+      //login
+     login:async function(userLoggingIn,res){
+       User.findOne({userName:userLoggingIn.userName})
+       .then(dbUser => {
+         if(!dbUser){
+           return res.json({
+             message:"Invalid Username or Password"
+           })
+         }
+         bcrypt.compare(userLoggingIn.password,dbUser.password)
+         .then(isCorrect =>{
+           if(isCorrect){
+           const payload = {
+             userName: dbUser.userName,
+             password: dbUser.password
+           }
+           jwt.sign(
+             payload,
+             "success",
+             {expiresIn:86400},
+             (err,token)=>{
+               if(err) return res.json({message: err})
+               return res.json({
+                 message:"Success",
+                 token:"Bearer"+token
+               })
+             }
+           )
+          }else{
+            return res.json({
+              message:"Invalid Username or Password"
+            })
+          }
+         })
+       })
+      }
+      ,
 
   authenticate: async function(email,password,res){
     const valid = await Admin.exists({email:email,password:password},async(err,result)=>{
@@ -186,7 +251,8 @@ module.exports = {
    
      
   
-    },checkToken:async function(req,res){
+    },
+    checkToken:async function(req,res){
       const refreshToken = req.body.token;
       if (refreshToken == null) return res.sendStatus(404);
       if (!refreshTokens.includes(refreshToken)) return res.sendStatus(402);
@@ -328,12 +394,33 @@ module.exports = {
     try{
       const db = client.db("AirlineDB");
       const col = db.collection("users");
-      const p = await col.updateOne({"userName": userName,"password": password}, update,(err,result)=>{
-        console.log(result);
-        if(result.modifiedCount ==0)
-          res.status(200).send("incorrect username or password");
-        else
-          res.status(200).send("User updated");
+      User.findOne({userName:userName})
+      .then(dbUser => {
+        if(!dbUser){
+          return res.json({
+            message:"Invalid Username or Password"
+          })
+        }
+        bcrypt.compare(password,dbUser.password)
+        .then(isCorrect =>{
+          if(isCorrect){
+            if(update.password!=""){
+              update.password = bcrypt(update.password,10);
+          }
+          const p = await col.updateOne({"userName": userName,"password": password}, update,(err,result)=>{
+            console.log(result);
+            if(result.modifiedCount ==0)
+              res.status(200).send("incorrect username or password");
+            else
+              res.status(200).send("User updated");
+          })
+        }else{
+           return res.json({
+             message:"Invalid Username or Password"
+           })
+         }
+
+      })
       });
     }
     catch(err){
