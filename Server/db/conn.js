@@ -241,6 +241,7 @@ signUp:async function(user,res){
             return res.json({
               message:"Success",
               type:"Admin",
+              username: dbAdmin.username,
               token:"Bearer"+token
             })
           }
@@ -458,7 +459,7 @@ signUp:async function(user,res){
     const departureFlightId = reservation.departureFlightId;
     const returnFlightId = reservation.returnFlightId;
     const cabinClass = reservation.cabinClass;
-    const totalPrice = 0;
+    var totalPrice = 0;
     if(cabinClass=="business"){
       const departureBusinessSeatPrice = await Flight.findOne({id:departureFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
       const returnBusinessSeatPrice = await Flight.findOne({id:returnFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
@@ -470,18 +471,18 @@ signUp:async function(user,res){
       totalPrice = (departureSeats.length*departureEconomicSeatPrice)+(returnSeats.length*returnEconomicSeatPrice);
     }
     
-    const session = await stripe.checkout.session.create({
-      payment_method_types:['card'],
-      mode:"payment",
-      line_items:{
-        departureSeatsNumber:departureSeats,
-        returnSeatsNumber:returnSeats,
-        price:totalPrice
-      },
-      success_url:"success",
-      cancel_url:"cancel",
-    });
-    res.status(200).send(session.url);
+    // const session = await stripe.checkout.session.create({
+    //   payment_method_types:['card'],
+    //   mode:"payment",
+    //   line_items:{
+    //     departureSeatsNumber:departureSeats,
+    //     returnSeatsNumber:returnSeats,
+    //     price:totalPrice
+    //   },
+    //   success_url:"success",
+    //   cancel_url:"cancel",
+    // });
+    res.status(200).send("session.url");
   },
   reserve: async function(reservation, res){
     try{
@@ -646,6 +647,21 @@ signUp:async function(user,res){
       try{
         const user = await User.find({userName: userName});
         res.status(200).send(user[0]);
+      }
+      catch(err){
+        console.log(err);
+      }
+    },
+    updateReservation: async function(_id,update,res){
+      try{
+        const db = client.db("AirlineDB");
+        const col = db.collection("reservations");
+        const p = await col.updateOne({_id: mongoose.Types.ObjectId(_id)}, update,(err,result)=>{
+        if (err)
+          res.status(500).send(err);
+        console.log(result);
+        res.status(200).send("reservation updated");
+        });
       }
       catch(err){
         console.log(err);

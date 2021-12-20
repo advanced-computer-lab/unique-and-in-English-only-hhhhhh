@@ -74,7 +74,8 @@ if (!isLogged){
         <ul>
           <Button endIcon={<LoginIcon />}  className="links" onClick={event =>  window.location.href='/login'}>Login</Button>
           <Button endIcon={<LockOpenIcon />} className="links" onClick={event =>  window.location.href='/signup'}>SignUP</Button>
-          <Button endIcon={<SupervisorAccountIcon />} className="links" onClick={event =>  window.location.href='/admin'}>I'm an ADMIN</Button>
+          {//<Button endIcon={<SupervisorAccountIcon />} className="links" onClick={event =>  window.location.href='/admin'}>I'm an ADMIN</Button>
+          }
         </ul>
       </nav>
       
@@ -131,25 +132,27 @@ else{
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
+
         <MenuItem onClick={event =>  window.location.href='/test3'}>
           <Avatar /> Profile
         </MenuItem>
-        <MenuItem>
-          <Avatar /> My account
-        </MenuItem>
         <Divider />
-        <MenuItem onClick={event =>  window.location.href='/search'} >
-          <ListItemIcon>
-            <SearchIcon fontSize="small" />
-          </ListItemIcon>
-          Search Flight
-        </MenuItem>
-        <MenuItem onClick={event =>  window.location.href='/createFlight'} >
-          <ListItemIcon>
-            <AddIcon fontSize="small" />
-          </ListItemIcon>
-          Create Flight
-        </MenuItem>
+        {localStorage.getItem('type')=="Admin"?
+        <><MenuItem onClick={event =>  window.location.href='/search'} >
+        <ListItemIcon>
+          <SearchIcon fontSize="small" />
+        </ListItemIcon>
+        Search Flight
+      </MenuItem>
+      <MenuItem onClick={event =>  window.location.href='/createFlight'} >
+        <ListItemIcon>
+          <AddIcon fontSize="small" />
+        </ListItemIcon>
+        Create Flight
+      </MenuItem></>
+        :<></>
+        }
+        
         
         <MenuItem onClick={event =>  window.location.href='/signup'}>
           <ListItemIcon>
@@ -157,15 +160,11 @@ else{
           </ListItemIcon>
           Add another account
         </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
+        
         <MenuItem onClick={event =>  {
           localStorage.removeItem("username");
           localStorage.removeItem("user token");
+          localStorage.removeItem("type");
           window.location.href='/'
           }}>
             

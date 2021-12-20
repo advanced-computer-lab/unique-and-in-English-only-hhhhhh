@@ -55,6 +55,9 @@ module.exports = {
     },
     checkout: async function(req,res){
         userModel.checkout(req,res);
+    },
+    updateReservation: async function(req,res){
+        userModel.updateReservation(req,res);
     }
     
 }

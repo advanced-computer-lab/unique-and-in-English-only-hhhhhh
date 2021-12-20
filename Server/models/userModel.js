@@ -112,5 +112,8 @@ module.exports={// this wil be edited
     },
     checkout: async function(req,res){
         DB.checkout(req.body,res);
-    }
+    },
+    updateReservation: async function(req,res){
+        await DB.updateReservation(req.body._id,{ $set: req.body.update},res);
+    },
 }

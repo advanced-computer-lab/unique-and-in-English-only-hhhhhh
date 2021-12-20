@@ -12,6 +12,7 @@ router.route('/login')
     // res.status(200).send(result);
 });
 
+
 router.route('/createFlight')
 .post((req,res)=>{
     adminController.createFlight(req,res);

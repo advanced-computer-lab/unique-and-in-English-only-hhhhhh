@@ -23,9 +23,9 @@ const ReservationSummaryParent = (props) => {
             returnSeats: props.history.location.state.reservation.returnSeats,
             totalPrice: props.history.location.state.reservation.totalPrice
             };
-         await axios.post('http://localhost:8000/user/checkout', body)
+         await axios.post('http://localhost:8000/user/reserve', body)
                    .then(result => {
-                       setcheckoutURL(result.url);
+                      // setcheckoutURL(result.url);
                     setNotify({
                         isOpen: true,
                         message: 'Reservation Successfully',

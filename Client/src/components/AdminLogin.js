@@ -39,37 +39,37 @@ function Copyright(props) {
 
 const theme = createTheme();
 
- const Login = (props) => {
+ const AdminLogin = (props) => {
   const [username,setUsername] = React.useState("");
+  const [email,setEmail] = React.useState("");
   const [password,setPassword] = React.useState("");
   const [message , setMessage] = React.useState({isVisible: false , message: "I am here"});
   const [logged , setLogged ] = React.useState( props.isLogged );
   const [error , setError] = React.useState(false);
   const [finish, setFinish] = React.useState(false);
 
-const adminUser = {
-  email:"hello@me" ,
-  password:"123" 
-};
+
 
 const handleSubmit = async (event) => {
   event.preventDefault();
-  if(username == "" || password == "" ){
+  if(email == "" || password == "" ){
     setError(true);}
   else{
     const user = {
-      userName:   username ,
+      email:   email ,
       password:   password 
     }
-    await axios.post('http://localhost:8000/user/login' , user)
+    await axios.post('http://localhost:8000/admin/login' , user)
     .then(res => {
       console.log(res);
       if(res.data.message == "Success"){
-        localStorage.setItem('username', user.userName);
+        localStorage.setItem('username', res.data.username);
+        localStorage.setItem('adminEmail', user.email);
         localStorage.setItem('user token', res.data.token);
         localStorage.setItem('type', res.data.type);
         setLogged(true);
-        setUsername(user.userName);
+        setEmail(user.email);
+        setUsername(res.data.username);
         setFinish(true);
         
         
@@ -81,33 +81,13 @@ const handleSubmit = async (event) => {
   });
   }
   //console.log(message);
-  if (message.message.valueOf() == "success".valueOf()  ){
-    setMessage( {isVisible: true , message: "success"} );
-    setLogged(true);
-    setFinish(true);
-    //console.log(5);
-    return(
-      <>
-      <App  isLogged={true} userName={ username }/>
-      <Link href="/login" variant="body2">
-                  Go Back To Home Page
-      </Link>
-</>
-
-    )
-    
-  }
+  
 
 };
 if ( logged == true ) {
 
   return (
-    <div>
-    <App isLogged={true} userName={username}/>
-    <Link href="/" variant="body2">
-                  Go Back To Home Page
-      </Link>
-      </div>
+    window.location.href='/'
 )
 }
 else {
@@ -128,7 +108,7 @@ else {
             <FlightTakeoffOutlined  />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Login
+            AdminLogin
           </Typography>
           
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -137,12 +117,12 @@ else {
                 <TextField
                   required
                   fullWidth
-                  id="username"
-                  label="Username"
-                  name="usename"
+                  id="email"
+                  label="email"
+                  name="email"
                   autoComplete="email"
-                  error = {error && username == ""}
-                  onChange={ e => { setUsername(e.target.value); setMessage({isVisible:false, message:""});}}
+                  error = {error && email == ""}
+                  onChange={ e => { setEmail(e.target.value); setMessage({isVisible:false, message:""});}}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -172,9 +152,9 @@ else {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/signup" variant="body2">
+                {/* <Link href="/signup" variant="body2">
                   Don't Have an account? Sign Up !!
-                </Link>
+                </Link> */}
               </Grid>
             </Grid>
           </Box>
@@ -182,14 +162,7 @@ else {
         <Copyright sx={{ mt: 5 }}  />
       </Container>
     </ThemeProvider>
-    { finish ?
-      <Redirect
-            to={{
-            pathname: "/",
-            state: { isLogged  : logged, username : username }
-          }}
-        /> : <></>
-      }
+    
       </>
   );
 }
@@ -201,5 +174,5 @@ else {
 }
 
 
-export default Login ;
+export default AdminLogin ;
 

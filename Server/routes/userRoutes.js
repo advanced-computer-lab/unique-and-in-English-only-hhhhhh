@@ -80,5 +80,9 @@ router.route('/test').get(async (req,res)=>{
   router.route('/logout').delete ((req, res) => {
     userController.deleteToken(req,res);
   })
+router.route('/updateReservation').
+post(async (req,res)=>{
+    userController.updateReservation(req,res);
+})
 
 module.exports = router;

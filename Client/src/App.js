@@ -14,6 +14,8 @@ import UserSearch from './components/UserSearch';
 import EditFlight from './components/EditFlight';
 import Combine from './components/Combine';
 import Profile from './components/Profile/Profile';
+import AdminProfile from './components/AdminProfile/Profile';
+
 import UserFlightCard from './components/UserFlightCard';
 import UserSeachFlight from './components/UserSearchFlight'
 import Seat from './components/Seat';
@@ -21,17 +23,17 @@ import UserFlightTicket from './components/UserFlightTicket';
 import UserSearchResult from './components/UserSearchResult';
 import SeatParent from './components/SeatParent';
 import Ticket from './components/Ticket';
-import ReservationSummaryParent from './components/ReservationSummaryParent'
-
+import ReservationSummaryParent from './components/ReservationSummaryParent';
+import AdminLogin from './components/AdminLogin';
 
 
 function App(props) {
-  console.log(localStorage.getItem('username'));
-   console.log(localStorage.getItem('user token'));
+  //console.log(localStorage.getItem('username'));
+   //console.log(localStorage.getItem('user token'));
   return (
    <Router>   
    {   <Header  isLogged={props.isLogged}  userName={props.userName}/>   }
-   <div className="mt-14" />
+   <div className="mt-10" />
      <Switch>
 <Route exact path="/">
 <Showcase />
@@ -42,6 +44,7 @@ function App(props) {
 <Route path="/login">
   <Login/>
 </Route>
+
 
 <Route path="/signup">
   <SignUp2 />
@@ -62,16 +65,23 @@ function App(props) {
    <Ticket></Ticket>
 </Route>
 <Route path="/test3">
+  {localStorage.getItem('type')=="Admin"?
+  <AdminProfile/>:
   <Profile />
+  }
+  
 </Route>
 <Route path="/test4">
   <SeatParent />
 </Route>
 <Route path="/test5" render={(props) => <UserSearchResult {...props}/>}/>
-
+<Route path="/adminLogin">
+   <AdminLogin></AdminLogin>
+</Route>
 
 <Route path="/edit">
-  <EditFlight />
+  {localStorage.getItem('type')=="Admin"?<Combine />:<Error />}
+  
 </Route>
 
 <Route path="/*">
