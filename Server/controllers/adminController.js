@@ -3,8 +3,8 @@ const adminModel = require('../models/AdminModel');
 let users;
 
 module.exports = {
-    authenticate: async function(req,res){
-        return adminModel.authenticate(req,res);
+    login: async function(req,res){
+        return adminModel.login(req,res);
     },
     createFlight: async function(req,res){
         await adminModel.createFlight(req,res);
