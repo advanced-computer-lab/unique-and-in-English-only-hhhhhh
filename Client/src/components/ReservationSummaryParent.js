@@ -10,7 +10,7 @@ const ReservationSummaryParent = (props) => {
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [ reDirect , setReDirect ] = React.useState( false );
     const [ alert , setAlert ] = React.useState( false );
-    const [ checkoutURL,setcheckoutURL] = react.useState("/");
+    const [ checkoutURL,setcheckoutURL] = React.useState("/");
 
 
     const Reservation = async ()=>{
