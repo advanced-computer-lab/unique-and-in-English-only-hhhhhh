@@ -10,6 +10,7 @@ const ReservationSummaryParent = (props) => {
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [ reDirect , setReDirect ] = React.useState( false );
     const [ alert , setAlert ] = React.useState( false );
+    const [ checkoutURL,setcheckoutURL] = react.useState("/");
 
 
     const Reservation = async ()=>{
@@ -22,8 +23,9 @@ const ReservationSummaryParent = (props) => {
             returnSeats: props.history.location.state.reservation.returnSeats,
             totalPrice: props.history.location.state.reservation.totalPrice
             };
-         await axios.post('http://localhost:8000/user/reserve', body)
+         await axios.post('http://localhost:8000/user/checkout', body)
                    .then(result => {
+                       setcheckoutURL(result.url);
                     setNotify({
                         isOpen: true,
                         message: 'Reservation Successfully',
@@ -34,7 +36,7 @@ const ReservationSummaryParent = (props) => {
                      });
                      setAlert(true);
 
-            window.setTimeout( () => {setReDirect(true)}, 5000);
+            window.setTimeout( () => {setReDirect(true)}, 2000);
                   
     };
 
@@ -104,7 +106,7 @@ const ReservationSummaryParent = (props) => {
             reDirect ? 
             <Redirect
             to={{
-            pathname: "/",
+            pathname: checkoutURL,
           }}
         /> :
         <></>

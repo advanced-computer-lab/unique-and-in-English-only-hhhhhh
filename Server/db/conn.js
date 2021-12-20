@@ -410,9 +410,8 @@ signUp:async function(user,res){
         bcrypt.compare(password,dbUser.password)
         .then(async isCorrect =>{
           if(isCorrect){
-            if(update.password!=""){
-              console.log(update.$set);
-              update.$set.password = await bcrypt.hash(update.$set.password,10);
+            if(update.$set.password!=""){
+              update.$set.password = bcrypt.hash(update.$set.password,10);
           }
           const p = await col.updateOne({"userName": userName}, update,(err,result)=>{
             console.log(err);
@@ -433,6 +432,37 @@ signUp:async function(user,res){
     catch(err){
       console.log(err);
     }
+  },
+  checkout: async function(reservation, res){
+    const departureSeats = reservation.departureSeats;
+    const returnSeats = reservation.returnSeats;
+    const departureFlightId = reservation.departureFlightId;
+    const returnFlightId = reservation.returnFlightId;
+    const cabinClass = reservation.cabinClass;
+    const totalPrice = 0;
+    if(cabinClass=="business"){
+      const departureBusinessSeatPrice = await Flight.findOne({id:departureFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
+      const returnBusinessSeatPrice = await Flight.findOne({id:returnFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
+      totalPrice = (departureSeats.length*departureBusinessSeatPrice)+(returnSeats.length*returnBusinessSeatPrice);
+    }
+    else{
+      const departureEconomicSeatPrice = await Flight.findOne({id:departureFlightId}).select(['economicSeatPrice'])['economicSeatPrice'];
+      const returnEconomicSeatPrice = await Flight.findOne({id:returnFlightId}).select(['economicSeatPrice'])['economicSeatPrice'];
+      totalPrice = (departureSeats.length*departureEconomicSeatPrice)+(returnSeats.length*returnEconomicSeatPrice);
+    }
+    
+    const session = await stripe.checkout.session.create({
+      payment_method_types:['card'],
+      mode:"payment",
+      line_items:{
+        departureSeatsNumber:departureSeats,
+        returnSeatsNumber:returnSeats,
+        price:totalPrice
+      },
+      success_url:"success",
+      cancel_url:"cancel",
+    });
+    res.status(200).send(session.url);
   },
   reserve: async function(reservation, res){
     try{

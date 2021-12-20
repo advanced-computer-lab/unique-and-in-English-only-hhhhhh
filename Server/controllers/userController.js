@@ -52,6 +52,9 @@ module.exports = {
     },
     viewUserInfo: async function(req,res){
         userModel.viewUserInfo(req,res);
+    },
+    checkout: async function(req,res){
+        userModel.checkout(req,res);
     }
     
 }

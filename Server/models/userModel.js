@@ -109,5 +109,8 @@ module.exports={// this wil be edited
     },
     viewUserInfo: async function(req,res){
         DB.viewUserInfo(req.body.userName,res);
+    },
+    checkout: async function(req,res){
+        DB.checkout(req.body,res);
     }
 }
