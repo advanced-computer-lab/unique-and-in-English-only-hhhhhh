@@ -36,7 +36,7 @@ const client = new MongoClient(Db, {
     from: mail,
     to: email,
     subject: 'Payment Confirmed',
-    text: `The Payment Has Been Confirmed Successfully , AmountRefunded:${paidValue}`,
+    text: `The Payment Has Been Confirmed Successfully , AmountPaid:${paidValue}`,
     attachments: [{
       filename: 'confirmed.jpg',
       path: "./db/confirmed.jpg",
