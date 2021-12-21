@@ -19,9 +19,12 @@ const Showcase = () => {
            </div>
            
        </section>
+       {localStorage.getItem('type')=="Admin"?
+       <></>:
        <div className="ml-32 -mt-60">
        <UserSearch />
-       </div>
+       </div>}
+       
        </div>
 
           </Grow>

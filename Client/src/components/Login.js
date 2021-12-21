@@ -102,12 +102,14 @@ const handleSubmit = async (event) => {
 if ( logged == true ) {
 
   return (
-    <div>
-    <App isLogged={true} userName={username}/>
-    <Link href="/" variant="body2">
-                  Go Back To Home Page
-      </Link>
-      </div>
+    window.location.href='/'
+
+    // <div>
+    // <App isLogged={true} userName={username}/>
+    // <Link href="/" variant="body2">
+    //               Go Back To Home Page
+    //   </Link>
+    //   </div>
 )
 }
 else {

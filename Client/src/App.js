@@ -28,7 +28,7 @@ import AdminLogin from './components/AdminLogin';
 
 
 function App(props) {
-  //console.log(localStorage.getItem('username'));
+  console.log(localStorage.getItem('type'));
    //console.log(localStorage.getItem('user token'));
   return (
    <Router>   
@@ -41,16 +41,9 @@ function App(props) {
 <Advertisement />
 </Route>
 
-<Route path="/login">
-  <Login/>
-</Route>
 
-
-<Route path="/signup">
-  <SignUp2 />
-</Route>
-
-
+{localStorage.getItem('type')=="Admin"?
+<>
 <Route path="/createFlight">
   <CreateFlight />
 </Route>
@@ -58,31 +51,57 @@ function App(props) {
 <Route path="/search">
   <Combine />
 </Route>
-
+<Route path="/test3">
+  <AdminProfile/>:
+</Route>
+<Route path="/edit">
+  {/* {localStorage.getItem('type')=="Admin"?<Combine />:<Error />} */}
+</Route>
+</>
+:localStorage.getItem('type')=="User"?
+<>
+<Route path="/test3">
+  <Profile />
+</Route>
 <Route path="/test1" render={(props) => <ReservationSummaryParent {...props}/>}/> 
-
 <Route path="/test2">
    <Ticket></Ticket>
 </Route>
-<Route path="/test3">
-  {localStorage.getItem('type')=="Admin"?
-  <AdminProfile/>:
-  <Profile />
-  }
-  
-</Route>
+<Route path="/test5" render={(props) => <UserSearchResult {...props}/>}/>
 <Route path="/test4">
   <SeatParent />
 </Route>
-<Route path="/test5" render={(props) => <UserSearchResult {...props}/>}/>
+</>
+:
+<>
+<Route path="/login">
+  <Login/>
+</Route>
 <Route path="/adminLogin">
    <AdminLogin></AdminLogin>
 </Route>
-
-<Route path="/edit">
-  {localStorage.getItem('type')=="Admin"?<Combine />:<Error />}
-  
+<Route path="/signup">
+  <SignUp2 />
 </Route>
+
+</>
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <Route path="/*">
   <Error />

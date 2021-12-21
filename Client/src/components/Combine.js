@@ -78,7 +78,7 @@ const Combine = () => {
           
 
       });
-      console.log(test);
+      //console.log(test);
       } ;
 
 
