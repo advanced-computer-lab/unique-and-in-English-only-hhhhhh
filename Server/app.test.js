@@ -11,7 +11,7 @@ describe("create user", () => {
         .expect("Content-Type", /json/)
         .send(
             {
-                "userName":"ssksoraka",
+                "userName":"kosadas",
                 "password":"www",
                 "firstName":"Mahmoud",
                 "lastName":"Abdelkhaleq",
@@ -19,12 +19,13 @@ describe("create user", () => {
                 "country":"Egypt",
                 "telephoneNumber": "01122313",
                 "passportNumber": "123",
-                "email":"yassssuo@gmail.com"
+                "email":"yassssoooo@gmail.com"
             }
         )
         .expect(200)
         .expect((res) => {
          // res.body.data.length = 1;
+         console.log(res.body);
           res.body.message = "Success";
         })
         .end((err, res) => {

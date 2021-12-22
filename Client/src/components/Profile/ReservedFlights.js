@@ -17,7 +17,7 @@ const ReservedFlights = () => {
              }).catch(err => {
                 alert("Error with The Server " + err );
            });
-       } );
+       } , [] );
 
     return (
         <div>

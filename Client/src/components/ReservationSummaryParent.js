@@ -3,7 +3,7 @@ import React from 'react'
 import { Redirect } from 'react-router';
 import ReservationSummary from './ReservationSummary'
 import Notification from './Notification';
-import CreditCard2 from './CreditCard2'
+import CreditCard from './CreditCard/CreditCard'
 import axios from 'axios';
 import { Grid } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -23,7 +23,19 @@ const ReservationSummaryParent = (props) => {
     const [ cvv,setCvv] = React.useState("");
     const [error, setError] = React.useState(false);
 
+    React.useEffect( () => {
+        console.log(cardNumber);
+        console.log(expMonth);
+        console.log(expYear);
+        console.log(cvv);
+    } , [cardNumber , expMonth , expYear , cvv]);
+/*
+const submit = () =>{
 
+};
+*/ 
+
+    
     const Reservation = async ()=>{
         const body = {
             username:props.history.location.state.reservation.username,
@@ -103,8 +115,16 @@ const ReservationSummaryParent = (props) => {
         <></>
         }
 
-        <div className=" flex justify-center mt-5">
-              <CreditCard2></CreditCard2>
+        <div className="flex justify-center mt-5 ">
+            <div className="flex justify-center w-3/6">
+                <CreditCard  
+                setCardNumber={setCardNumber}
+                setCvv={setCvv}
+                setExpMonth={setExpMonth}
+                setExpYear={setExpYear}
+                />
+            </div>
+              
         </div>
         <div className=" flex justify-center mt-5">
             <Button color="error" variant="contained" sx={{ marginX : "20px"}}  onClick={()=> {setReDirect(true)}}>

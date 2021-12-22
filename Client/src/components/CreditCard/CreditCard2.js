@@ -11,12 +11,17 @@ export default function PaymentInputs() {
     getCVCProps
   } = usePaymentInputs();
 
+  // props.cardNumber(300)
+
   return (
+    <>
     <PaymentInputsWrapper {...wrapperProps}>
       <svg {...getCardImageProps({ images })} />
       <input {...getCardNumberProps()} />
       <input {...getExpiryDateProps()} />
       <input type = "password" {...getCVCProps()} />
     </PaymentInputsWrapper>
+    <h1>{getCardNumberProps()}</h1>
+    </>
   );
 }

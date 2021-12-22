@@ -22,6 +22,7 @@ import UserSearchResult from './components/UserSearchResult';
 import SeatParent from './components/SeatParent';
 import Ticket from './components/Ticket';
 import ReservationSummaryParent from './components/ReservationSummaryParent'
+import  CreditCard  from './components/CreditCard/CreditCard.js';
 
 
 
@@ -52,6 +53,10 @@ function App(props) {
 
 <Route path="/search">
   <Combine />
+</Route>
+
+<Route path="/credit">
+  <CreditCard />
 </Route>
 
 <Route path="/test1" render={(props) => <ReservationSummaryParent {...props}/>}/> 
