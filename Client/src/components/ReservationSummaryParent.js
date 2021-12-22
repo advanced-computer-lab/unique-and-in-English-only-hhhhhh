@@ -3,16 +3,39 @@ import React from 'react'
 import { Redirect } from 'react-router';
 import ReservationSummary from './ReservationSummary'
 import Notification from './Notification';
+import CreditCard from './CreditCard/CreditCard'
 import axios from 'axios';
+import { Grid } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import { Box, width } from '@mui/system';
+//import { Stripe } from 'stripe';
+//const stripe = Stripe('sk_test_51K8BiHG054ddwxBHZyts7mX5bzlw7jhJKQeDsWxe8116DDafIdVwUVh3EZgL9LAIMe3xwN4BXTTrbpNYNYjttL7D00flyxYQBR')
 
 
 const ReservationSummaryParent = (props) => {
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [ reDirect , setReDirect ] = React.useState( false );
     const [ alert , setAlert ] = React.useState( false );
-    const [ checkoutURL,setcheckoutURL] = react.useState("/");
+    const [ checkoutURL,setcheckoutURL] = React.useState("/");
+    const [ cardNumber,setCardNumber] = React.useState("");
+    const [ expMonth,setExpMonth] = React.useState("");
+    const [ expYear,setExpYear] = React.useState("");
+    const [ cvv,setCvv] = React.useState("");
+    const [error, setError] = React.useState(false);
 
+    React.useEffect( () => {
+        console.log(cardNumber);
+        console.log(expMonth);
+        console.log(expYear);
+        console.log(cvv);
+    } , [cardNumber , expMonth , expYear , cvv]);
+/*
+const submit = () =>{
 
+};
+*/ 
+
+    
     const Reservation = async ()=>{
         const body = {
             username:props.history.location.state.reservation.username,
@@ -37,7 +60,6 @@ const ReservationSummaryParent = (props) => {
                      setAlert(true);
 
             window.setTimeout( () => {setReDirect(true)}, 2000);
-                  
     };
 
     return (
@@ -81,7 +103,7 @@ const ReservationSummaryParent = (props) => {
         type = "Return Flight"
         passengerName = 'Konar'
         />
-         <Typography sx={{ display: "flex",justifyContent: "center" , width: "100%" , marginY: "5px" , color:"blue"}}  variant="h3">
+         <Typography sx={{ display: "flex",justifyContent: "center" , width: "100%" , marginY: "5px" , color:"black"}}  variant="h3">
               Total Price: { props.history.location.state.reservation.totalPrice } EGP </Typography>
 
 {
@@ -93,6 +115,17 @@ const ReservationSummaryParent = (props) => {
         <></>
         }
 
+        <div className="flex justify-center mt-5 ">
+            <div className="flex justify-center w-3/6">
+                <CreditCard  
+                setCardNumber={setCardNumber}
+                setCvv={setCvv}
+                setExpMonth={setExpMonth}
+                setExpYear={setExpYear}
+                />
+            </div>
+              
+        </div>
         <div className=" flex justify-center mt-5">
             <Button color="error" variant="contained" sx={{ marginX : "20px"}}  onClick={()=> {setReDirect(true)}}>
                 Cancel The Reservation
@@ -102,7 +135,7 @@ const ReservationSummaryParent = (props) => {
             </Button>
         </div>
 
-        {
+        {/* {
             reDirect ? 
             <Redirect
             to={{
@@ -110,7 +143,7 @@ const ReservationSummaryParent = (props) => {
           }}
         /> :
         <></>
-        }
+        } */}
 
 
 

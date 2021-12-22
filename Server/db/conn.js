@@ -7,6 +7,7 @@ const Reservation = require("../schemas/Reservation");
 const User = require ("../schemas/User");
 const FlightSeats = require("../schemas/FlightSeats");
 const Seat = require("../schemas/Seat");
+//const config = require("config");
 
 const Db = process.env.ATLAS_URI;
 const mail=process.env.GMAIL_USERNAME;
@@ -15,7 +16,7 @@ console.log(Db);
 const bcrypt = require("bcrypt");
 const Stripe = require("../stripe/stripe");
 
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 let refreshTokens = [];
 //add the stripe folder
 
@@ -130,7 +131,6 @@ async function cancellationMail(email,refundValue){
       else{
         ecoSeats[parseInt(seats[i])-1-businessSeats.length]['isReserved'] = true;
       }
-      console.log(seats[i]);
     }
     var reservedEco = seats.length-reservedBusiness;
     allFlightSeats['ecoSeats'] = ecoSeats;
@@ -480,7 +480,7 @@ else{
           res.status(500).send("connection error");
           else
           //console.log(result)
-          res.status(200).send(user.userName);
+          res.status(200).send("user created successfully");
         });
     }
     catch(err){
@@ -547,30 +547,30 @@ else{
     const departureFlightId = reservation.departureFlightId;
     const returnFlightId = reservation.returnFlightId;
     const cabinClass = reservation.cabinClass;
-    const totalPrice = 0;
+    var totalPrice = 0;
     if(cabinClass=="business"){
-      const departureBusinessSeatPrice = await Flight.findOne({id:departureFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
-      const returnBusinessSeatPrice = await Flight.findOne({id:returnFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
+      const departureBusinessSeatPrice = await Flight.findOne({_id:departureFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
+      const returnBusinessSeatPrice = await Flight.findOne({_id:returnFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
       totalPrice = (departureSeats.length*departureBusinessSeatPrice)+(returnSeats.length*returnBusinessSeatPrice);
     }
     else{
-      const departureEconomicSeatPrice = await Flight.findOne({id:departureFlightId}).select(['economicSeatPrice'])['economicSeatPrice'];
-      const returnEconomicSeatPrice = await Flight.findOne({id:returnFlightId}).select(['economicSeatPrice'])['economicSeatPrice'];
+      const departureEconomicSeatPrice = (await Flight.findOne({_id:departureFlightId}).select(['economicSeatPrice']))['economicSeatPrice'];
+      const returnEconomicSeatPrice = (await Flight.findOne({_id:returnFlightId}).select(['economicSeatPrice']))['economicSeatPrice'];
       totalPrice = (departureSeats.length*departureEconomicSeatPrice)+(returnSeats.length*returnEconomicSeatPrice);
     }
-    
-    const session = await stripe.checkout.session.create({
-      payment_method_types:['card'],
-      mode:"payment",
-      line_items:{
-        departureSeatsNumber:departureSeats,
-        returnSeatsNumber:returnSeats,
-        price:totalPrice
-      },
-      success_url:"success",
-      cancel_url:"cancel",
+    console.log(totalPrice)
+    try{
+    const charges = await stripe.charges.create({
+      amount: totalPrice*100,
+      currency: 'usd',
+      source: "tok_visa",
+      receipt_email: reservation.username+"@gmail.com"
     });
-    res.status(200).send(session.url);
+  }
+    catch(e){
+      console.log(e);
+      console.log("payment failed");
+    }
   },
   reserve: async function(reservation, res){
     try{
