@@ -15,9 +15,9 @@ const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
-const stripe = require("stripe")('sk_test_51K8BiHG054ddwxBHZyts7mX5bzlw7jhJKQeDsWxe8116DDafIdVwUVh3EZgL9LAIMe3xwN4BXTTrbpNYNYjttL7D00flyxYQBR');
-//console.log(stripe);
+const Stripe = require("../stripe/stripe");
 
+const jwt = require('jsonwebtoken');
 let refreshTokens = [];
 
 require('dotenv').config();
