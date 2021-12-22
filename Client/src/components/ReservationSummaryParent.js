@@ -8,6 +8,7 @@ import axios from 'axios';
 import { Grid } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { Box, width } from '@mui/system';
+import CreditCard from './CreditCard/CreditCard'
 //import { Stripe } from 'stripe';
 //const stripe = Stripe('sk_test_51K8BiHG054ddwxBHZyts7mX5bzlw7jhJKQeDsWxe8116DDafIdVwUVh3EZgL9LAIMe3xwN4BXTTrbpNYNYjttL7D00flyxYQBR')
 
@@ -103,10 +104,24 @@ const ReservationSummaryParent = (props) => {
         <></>
         }
 
-        <div className=" flex justify-center mt-5">
-              <CreditCard2></CreditCard2>
-        </div>
-        <div className=" flex justify-center mt-5">
+ <div className="flex justify-center mt-5  ">
+    
+            <div className="flex justify-center w-3/6 bg-blue-100 pb-16 pl-16 rounded-full">
+                <CreditCard  
+                setCardNumber={setCardNumber}
+                setCvv={setCvv}
+                setExpMonth={setExpMonth}
+                setExpYear={setExpYear}
+                />
+            
+            </div>
+    </div> 
+
+
+
+
+
+        <div className=" flex justify-center mt-5 ">
             <Button color="error" variant="contained" sx={{ marginX : "20px"}}  onClick={()=> {setReDirect(true)}}>
                 Cancel The Reservation
             </Button>
