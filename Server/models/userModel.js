@@ -112,5 +112,12 @@ module.exports={// this wil be edited
     },
     checkout: async function(req,res){
         DB.checkout(req.body,res);
+    },
+    createToken:async function(req,res){
+        DB.createToken(req,res);
+    }
+    ,
+    createCharge:async function(req,res){
+        DB.createCharge(req,res);
     }
 }

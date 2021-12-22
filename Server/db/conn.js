@@ -13,10 +13,9 @@ const mail=process.env.GMAIL_USERNAME;
 const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
 const bcrypt = require("bcrypt");
-const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+const Stripe = require("../stripe/stripe");
 
 const jwt = require('jsonwebtoken')
-const bcrypt=require("bcrypt");
 let refreshTokens = [];
 //add the stripe folder
 
