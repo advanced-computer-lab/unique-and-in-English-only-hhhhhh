@@ -42,3 +42,4 @@ app.get('/a',async (req,res)=>{
         res.send(err)
     }
 });
+module.exports = app;

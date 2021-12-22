@@ -3,14 +3,25 @@ import React from 'react'
 import { Redirect } from 'react-router';
 import ReservationSummary from './ReservationSummary'
 import Notification from './Notification';
+import CreditCard2 from './CreditCard2'
 import axios from 'axios';
+import { Grid } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import { Box, width } from '@mui/system';
+//import { Stripe } from 'stripe';
+//const stripe = Stripe('sk_test_51K8BiHG054ddwxBHZyts7mX5bzlw7jhJKQeDsWxe8116DDafIdVwUVh3EZgL9LAIMe3xwN4BXTTrbpNYNYjttL7D00flyxYQBR')
 
 
 const ReservationSummaryParent = (props) => {
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [ reDirect , setReDirect ] = React.useState( false );
     const [ alert , setAlert ] = React.useState( false );
-    const [ checkoutURL,setcheckoutURL] = react.useState("/");
+    const [ checkoutURL,setcheckoutURL] = React.useState("/");
+    const [ cardNumber,setCardNumber] = React.useState("");
+    const [ expMonth,setExpMonth] = React.useState("");
+    const [ expYear,setExpYear] = React.useState("");
+    const [ cvv,setCvv] = React.useState("");
+    const [error, setError] = React.useState(false);
 
 
     const Reservation = async ()=>{
@@ -37,7 +48,6 @@ const ReservationSummaryParent = (props) => {
                      setAlert(true);
 
             window.setTimeout( () => {setReDirect(true)}, 2000);
-                  
     };
 
     return (
@@ -81,7 +91,7 @@ const ReservationSummaryParent = (props) => {
         type = "Return Flight"
         passengerName = 'Konar'
         />
-         <Typography sx={{ display: "flex",justifyContent: "center" , width: "100%" , marginY: "5px" , color:"blue"}}  variant="h3">
+         <Typography sx={{ display: "flex",justifyContent: "center" , width: "100%" , marginY: "5px" , color:"black"}}  variant="h3">
               Total Price: { props.history.location.state.reservation.totalPrice } EGP </Typography>
 
 {
@@ -94,6 +104,9 @@ const ReservationSummaryParent = (props) => {
         }
 
         <div className=" flex justify-center mt-5">
+              <CreditCard2></CreditCard2>
+        </div>
+        <div className=" flex justify-center mt-5">
             <Button color="error" variant="contained" sx={{ marginX : "20px"}}  onClick={()=> {setReDirect(true)}}>
                 Cancel The Reservation
             </Button>
@@ -102,7 +115,7 @@ const ReservationSummaryParent = (props) => {
             </Button>
         </div>
 
-        {
+        {/* {
             reDirect ? 
             <Redirect
             to={{
@@ -110,7 +123,7 @@ const ReservationSummaryParent = (props) => {
           }}
         /> :
         <></>
-        }
+        } */}
 
 
 
