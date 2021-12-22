@@ -8,6 +8,9 @@ module.exports = {
         return userModel.authenticate(req,res);
     
     },
+    register: async function(req,res){
+        return userModel.register(req,res);
+    },
     token: async function(req,res){
         return userModel.tokenCheck(req,res);
     },
@@ -55,6 +58,12 @@ module.exports = {
     },
     checkout: async function(req,res){
         userModel.checkout(req,res);
+    },
+    createToken: async function(req,res){
+        userModel.createToken(req,res)
+    },
+    createCharge: async function(req,res){
+        userModel.createCharge(req,res)
     }
     
 }
