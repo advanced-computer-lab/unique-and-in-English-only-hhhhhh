@@ -8,7 +8,6 @@ router.route('/login')
    
     userController.login(req,res);
 });
-
 router.route('/reserve')
 .post((req,res)=>{
     userController.reserve(req,res);
@@ -88,5 +87,11 @@ router.route('/token').post( (req, res) => {
   router.route('/logout').delete ((req, res) => {
     userController.deleteToken(req,res);
   })
+  router.route('/createToken').post((req,res) => {
+      userController.createToken(req,res);
+  })
+  router.route('/createCharge').post((req,res) => {
+    userController.createCharge(req,res);
+})
 
 module.exports = router;

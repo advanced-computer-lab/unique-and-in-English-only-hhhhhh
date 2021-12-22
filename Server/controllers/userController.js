@@ -8,6 +8,9 @@ module.exports = {
         return userModel.authenticate(req,res);
     
     },
+    register: async function(req,res){
+        return userModel.register(req,res);
+    },
     token: async function(req,res){
         return userModel.tokenCheck(req,res);
     },

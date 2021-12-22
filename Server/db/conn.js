@@ -12,11 +12,12 @@ const Db = process.env.ATLAS_URI;
 const mail=process.env.GMAIL_USERNAME;
 const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
-const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
 const Stripe = require("../stripe/stripe");
 
+const jwt = require('jsonwebtoken')
 let refreshTokens = [];
+//add the stripe folder
 
 require('dotenv').config();
 const client = new MongoClient(Db, {
@@ -288,7 +289,95 @@ signUp:async function(user,res){
     deleteToken:async function(req,res){
       refreshTokens = refreshTokens.filter(token => token !== req.body.token)     
     },
- 
+
+    //register
+    register:async function(user,res){
+const takenUsername = await User.findOne({userName:user.username});
+const takenEmail = await User.findOne({email:user.email});
+if(takenUsername || takenEmail){
+  res.json({message:"Username or email has already been taken"})
+}
+else{
+  user.password = await bcrypt.hash(user.password,10)
+  const dbUser = new User({
+    userName:user.userName,
+    password:user.password,
+    firstName:user.firstName.toLowerCase(),
+    lastName:user.lastName.toLowerCase(),
+    gender:user.gender.toLowerCase(),
+    country:user.country.toLowerCase(),
+    telephoneNumber:user.telephoneNumber.toLowerCase(),
+    email:user.email.toLowerCase(),
+    passportNumber: user.passportNumber.toLowerCase()
+  })
+  dbUser.save();
+  res.json({message:"Success"});
+}
+    },
+    
+    //login
+   login:async function(userLoggingIn,res){
+     User.findOne({userName:userLoggingIn.userName})
+     .then(dbUser => {
+       if(!dbUser){
+         return res.json({
+           message:"Invalid Username or Password"
+         })
+       }
+       bcrypt.compare(userLoggingIn.password,dbUser.password)
+       .then(isCorrect =>{
+         if(isCorrect){
+         const payload = {
+           userName: dbUser.userName,
+           password: dbUser.password
+         }
+         jwt.sign(
+           payload,
+           "sucess",
+           {expiresIn:86400},
+           (err,token)=>{
+             if(err) return res.json({message: err})
+             return res.json({
+               message:"Success",
+               token:"Bearer"+token
+             })
+           }
+         )
+        }else{
+          return res.json({
+            message:"Invalid Username or Password"
+          })
+        }
+       })
+     })
+    }
+    ,
+    //Stripe
+    createToken:async function(req,res){
+      Stripe._createToken(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Token Created Successfully",
+          "data": result
+        });
+      })
+    }
+ ,
+    //charge
+    createCharge:async function(req,res){
+      Stripe._createCharge(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Charged Successfully",
+          "data": result
+        });
+      })
+    }
+    ,
   readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
     // search with parameters
     const requestedFlights = await Flight.find({flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
