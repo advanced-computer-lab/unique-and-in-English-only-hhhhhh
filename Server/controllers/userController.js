@@ -55,6 +55,12 @@ module.exports = {
     },
     checkout: async function(req,res){
         userModel.checkout(req,res);
+    },
+    createToken: async function(req,res){
+        userModel.createToken(req,res)
+    },
+    createCharge: async function(req,res){
+        userModel.createCharge(req,res)
     }
     
 }

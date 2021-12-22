@@ -14,7 +14,7 @@ const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
-const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+const Stripe = require("../stripe/stripe");
 
 let refreshTokens = [];
 
@@ -651,6 +651,31 @@ signUp:async function(user,res){
         console.log(err);
       }
     },
+    createToken:async function(req,res){
+      Stripe._createToken(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Token Created Successfully",
+          "data": result
+        });
+      })
+    }
+ ,
+    //charge
+    createCharge:async function(req,res){
+      Stripe._createCharge(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Charged Successfully",
+          "data": result
+        });
+      })
+    }
+    ,
     
     
 };
