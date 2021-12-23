@@ -14,6 +14,7 @@ const ReservedFlights = () => {
          await axios.post('http://localhost:8000/user/viewMyReservation', user)
              .then(result => {
                setFlights(result.data);
+               console.log(result.data);
              }).catch(err => {
                 alert("Error with The Server " + err );
            });

@@ -11,12 +11,12 @@ const Profile = () => {
     useEffect( async () => {
 
             const username = { 
-                userName : 'konar'
+                userName : localStorage.getItem('username')
             };
 
           await axios.post('http://localhost:8000/user/viewUserInfo' , username)
           .then(result => {
-            console.log( result.data );
+            // console.log( result.data );
             setUser(result.data);
           }).catch(err => {
             alert("Connection Error with the server  " + err);
