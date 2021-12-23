@@ -21,26 +21,11 @@ import axios from 'axios';
 const UserSearchFlight = (props) => {
   const [open , setOpen] = React.useState( false );
   const [ seats , setSeats] = React.useState('');
-  const [image_url , setImage_url] = React.useState('');
+  
  
   
 
-  React.useEffect( async() => {
-    const search = {
-      query : props.arrivalAirportTerminal
-    };
-
-    await axios.post("http://localhost:8000/user/searchImage" , search)
-    .then(res => {
-      console.log(res.data.image_url);
-      setImage_url(res.data.image_url);
-      }).catch(err => {
-        console.log(err);
-        console.log(props.arrivalAirportTerminal);
-      });
-
-    
-   } , [props.arrivalAirportTerminal] );
+  
 
 
   const durationTime = () => {
@@ -67,7 +52,7 @@ const UserSearchFlight = (props) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-             <img className="rounded-full w-36 h-36 h-16 mr-5" src={image_url} />
+            <img className="rounded-full w-36 h-16 h-16 mr-5" src={props.dep_img_url} />
             <div className=" w-full justify-center">
             <div className=" flex justify-between justify-items-center">
                   <Typography  variant="h4">
@@ -91,6 +76,7 @@ const UserSearchFlight = (props) => {
             </Typography>
             </div>
             </div>
+            <img className="rounded-full w-36 h-16 h-16 ml-5" src={props.arr_img_url} />
         </AccordionSummary>
         
         <AccordionDetails>
