@@ -64,6 +64,9 @@ module.exports = {
     },
     createCharge: async function(req,res){
         userModel.createCharge(req,res)
-    }
+    },
+    searchImage: async function(req,res){
+        userModel.searchImage(req,res)
+    },
     
 }

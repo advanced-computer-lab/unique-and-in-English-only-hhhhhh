@@ -92,5 +92,10 @@ router.route('/updateReservation').
 post(async (req,res)=>{
     userController.updateReservation(req,res);
 })
+router.route('/searchImage').
+post(async (req,res)=>{
+    // console.log(req.body.query);
+    userController.searchImage(req,res);
+})
 
 module.exports = router;
