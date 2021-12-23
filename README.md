@@ -26,7 +26,7 @@ Screenshots:![image](https://user-images.githubusercontent.com/82762206/14727089
 
 
 
-Tech/Framework used:
+Tech/Framework used:MERN Stack
 Features:
 Code Examples:
 Installation:1-install npm
