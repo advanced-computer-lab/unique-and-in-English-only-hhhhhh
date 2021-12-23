@@ -22,6 +22,7 @@ import UserSearchResult from './components/UserSearchResult';
 import SeatParent from './components/SeatParent';
 import Ticket from './components/Ticket';
 import ReservationSummaryParent from './components/ReservationSummaryParent'
+import Progress_Bar from './components/ProgressBar/Progress_Bar';
 
 
 
@@ -66,11 +67,6 @@ function App(props) {
   <SeatParent />
 </Route>
 <Route path="/test5" render={(props) => <UserSearchResult {...props}/>}/>
-
-
-<Route path="/edit">
-  <EditFlight />
-</Route>
 
 <Route path="/*">
   <Error />

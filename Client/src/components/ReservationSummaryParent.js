@@ -9,6 +9,7 @@ import { Grid } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { Box, width } from '@mui/system';
 import CreditCard from './CreditCard/CreditCard'
+import Progress_Bar from './ProgressBar/Progress_Bar'
 //import { Stripe } from 'stripe';
 //const stripe = Stripe('sk_test_51K8BiHG054ddwxBHZyts7mX5bzlw7jhJKQeDsWxe8116DDafIdVwUVh3EZgL9LAIMe3xwN4BXTTrbpNYNYjttL7D00flyxYQBR')
 
@@ -23,6 +24,7 @@ const ReservationSummaryParent = (props) => {
     const [ expYear,setExpYear] = React.useState("");
     const [ cvv,setCvv] = React.useState("");
     const [error, setError] = React.useState(false);
+    const [percent , setPercent ] = React.useState(67);
 
 
     const Reservation = async ()=>{
@@ -43,12 +45,12 @@ const ReservationSummaryParent = (props) => {
                         message: 'Reservation Successfully',
                         type: 'success'
                     });
+                    setAlert(true);
+                     window.setTimeout( () => {setReDirect(true)}, 5000);
                      }).catch(err => {
                      alert("Error with The Server " + err );
                      });
-                     setAlert(true);
-
-            window.setTimeout( () => {setReDirect(true)}, 2000);
+            
     };
 
     return (
@@ -95,14 +97,11 @@ const ReservationSummaryParent = (props) => {
          <Typography sx={{ display: "flex",justifyContent: "center" , width: "100%" , marginY: "5px" , color:"black"}}  variant="h3">
               Total Price: { props.history.location.state.reservation.totalPrice } EGP </Typography>
 
-{
-            alert ? 
-            <div className=" flex justify-center mt-5">
-            <Alert sx severity="success">Successful Reservation, You will be Redirected to the Home Page in 5 seconds!</Alert>
-            </div>
-             :
-        <></>
-        }
+
+<div className='my-16 ml-40'>
+    <Progress_Bar percent={percent}/>
+</div>
+
 
  <div className="flex justify-center mt-5  ">
     
@@ -125,10 +124,19 @@ const ReservationSummaryParent = (props) => {
             <Button color="error" variant="contained" sx={{ marginX : "20px"}}  onClick={()=> {setReDirect(true)}}>
                 Cancel The Reservation
             </Button>
-            <Button color="success" variant="contained" sx={{ marginX : "20px"}} onClick={()=> {Reservation();}}>
+            <Button color="success" variant="contained" sx={{ marginX : "20px"}} onClick={()=> {Reservation();setPercent(100);}}>
                 Confirm The Reservation
             </Button>
         </div>
+
+        {
+            alert ? 
+            <div className=" flex justify-center mt-5">
+            <Alert sx severity="success">Successful Reservation, You will be Redirected to the Home Page in 5 seconds!</Alert>
+            </div>
+             :
+        <></>
+        }
 
         {/* {
             reDirect ? 
