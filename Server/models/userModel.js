@@ -6,7 +6,7 @@ const Reservation = require('../schemas/Reservation');
 module.exports={// this wil be edited 
 
     reserve: async function(req,res){
-        const body = req.body;
+        const body = req.body.reservation;
         const newReservation = new Reservation({
             username:body.username,
             departureFlightId:body.departureFlightId,
@@ -18,7 +18,8 @@ module.exports={// this wil be edited
             cabinClass: body.cabinClass
 
         }); 
-        await DB.reserve(newReservation,res);
+        //console.log(req.body.charge);
+        await DB.reserve(newReservation,res,req.body.charge);
     },authenticate: async function(req,res){
     
         const username = req.body.username;
@@ -112,5 +113,13 @@ module.exports={// this wil be edited
     },
     checkout: async function(req,res){
         DB.checkout(req.body,res);
+    }
+    ,
+    createToken:async function(req,res){
+        DB.createToken(req,res);
+    }
+    ,
+    createCharge:async function(req,res){
+        DB.createCharge(req,res);
     }
 }

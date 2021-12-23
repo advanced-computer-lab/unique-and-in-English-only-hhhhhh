@@ -45,6 +45,7 @@ const UserSearchResult = (props) => {
       } , [ props.history.location.state.flights , props.history.location.state.Class ,  props.history.location.state.maxNumber ] );
 
     const sendTheReservation = async() => {
+        //await axios.post('http://localhost:8000/user/checkout')
         setBody({
             username:"konar",
             cabinClass:  props.history.location.state.Class ,

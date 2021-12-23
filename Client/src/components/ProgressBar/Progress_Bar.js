@@ -53,7 +53,7 @@ const Progress_Bar = (props) => {
               <img
                 style={{ filter: `grayscale(${accomplished ? 0 : 80}%)` }}
                 width="30"
-                src="https://orig00.deviantart.net/493a/f/2017/095/5/4/raichu_icon_by_pokemonshuffle_icons-db4ryym.png"
+                src="https://www.kindpng.com/picc/m/11-115502_dollar-sign-icon-png-yellow-dollar-sign-youtube.png"
               />
 
             )}

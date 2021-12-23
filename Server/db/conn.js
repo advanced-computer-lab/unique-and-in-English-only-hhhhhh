@@ -7,7 +7,6 @@ const Reservation = require("../schemas/Reservation");
 const User = require ("../schemas/User");
 const FlightSeats = require("../schemas/FlightSeats");
 const Seat = require("../schemas/Seat");
-//const config = require("config");
 
 const Db = process.env.ATLAS_URI;
 const mail=process.env.GMAIL_USERNAME;
@@ -15,8 +14,7 @@ const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
-const stripe = require("stripe")('sk_test_51K8BiHG054ddwxBHZyts7mX5bzlw7jhJKQeDsWxe8116DDafIdVwUVh3EZgL9LAIMe3xwN4BXTTrbpNYNYjttL7D00flyxYQBR');
-//console.log(stripe);
+const Stripe = require("../stripe/stripe");
 
 let refreshTokens = [];
 
@@ -60,7 +58,6 @@ async function cancellationMail(email,refundValue){
     var availableEcoSeatsCount = flightSeats[0]['availableEcoSeatsCount'];
     var availableBusinessSeatsCount = flightSeats[0]['availableBusinessSeatsCount'];
 
-    console.log("b4 the loop");
     console.log(seats);
 
     for(var seat in seats){
@@ -112,13 +109,49 @@ async function cancellationMail(email,refundValue){
           }
           return resultArray;
    }
+   async function token(cardInfo,tokenData){
+    //console.log(1);
+    await Stripe._createToken(cardInfo,function(err,result){
+      // console.log(2);
+      //console.log(err);
+       console.log(result);
+      if(err){
+        tokenData = {
+          "message":"failed",
+          "data": null
+      };
+    }
+    else{
+      tokenData = {
+        "message":"Token Created Successfully",
+        "data": result
+      };
+    }
+    }
+      );
+    }
+
+    async function charge(paymentInfo){
+      await Stripe._createCharge(paymentInfo,function(err,result){
+        if(err)
+          return {
+            "message":"failed",
+            "data": null
+          };
+        return{
+          "message":"Charged Successfully",
+          "data": result
+        };
+      })
+    }
+
 
    async function reserveFlightSeats (flightId,seats){
     //seats= seats[0].split(",");
     var allFlightSeats = await FlightSeats.find({flightId:flightId}).select(['availableEcoSeatsCount','availableBusinessSeatsCount','ecoSeats','businessSeats']);
     allFlightSeats = allFlightSeats[0];
     var ecoSeats = allFlightSeats['ecoSeats'];
-    console.log(ecoSeats);
+    //console.log(ecoSeats);
     var businessSeats = allFlightSeats['businessSeats'];
     var ecoSeatsCount = allFlightSeats['availableEcoSeatsCount'];
     var businessSeatsCount = allFlightSeats['availableBusinessSeatsCount'];
@@ -131,6 +164,7 @@ async function cancellationMail(email,refundValue){
       else{
         ecoSeats[parseInt(seats[i])-1-businessSeats.length]['isReserved'] = true;
       }
+      console.log(seats[i]);
     }
     var reservedEco = seats.length-reservedBusiness;
     allFlightSeats['ecoSeats'] = ecoSeats;
@@ -184,15 +218,11 @@ signUp:async function(user,res){
      login:async function(userLoggingIn,res){
        User.findOne({userName:userLoggingIn.userName})
        .then(dbUser => {
-         console.log(dbUser);
          if(!dbUser){
            return res.json({
              message:"Invalid Username or Password"
            })
          }
-        //  console.log("asdasdas");
-        //  console.log( bcrypt.hash(userLoggingIn.password,10));
-        //  console.log(dbUser.password);
          bcrypt.compare(userLoggingIn.password,dbUser.password)
          .then(isCorrect =>{
            if(isCorrect){
@@ -208,6 +238,7 @@ signUp:async function(user,res){
                if(err) return res.json({message: err})
                return res.json({
                  message:"Success",
+                 type: "User",
                  token:"Bearer"+token
                })
              }
@@ -222,20 +253,43 @@ signUp:async function(user,res){
       }
       ,
 
-  authenticate: async function(email,password,res){
-    const valid = await Admin.exists({email:email,password:password},async(err,result)=>{
-      if(err) res.status(500).send("Connection error");
-      if(result==null){
-        await Admin.exists({email:email},(err1,result1)=>{
-          if(result1 == null) res.status(200).send("email doesn't exist");
-          else res.status(200).send("wrong password");
-        });
+  adminLogin: async function(email,password,res){
+    Admin.findOne({email:email})
+    .then(dbAdmin => {
+      if(!dbAdmin){
+        return res.json({
+          message:"Invalid Username or Password"
+        })
+      }
+      var isCorrect = (password.localeCompare(dbAdmin.password)==0);
+      if(isCorrect){
+        const payload = {
+          email: dbAdmin.email,
+          password: dbAdmin.password
+        }
+        jwt.sign(
+          payload,
+          "success",
+          {expiresIn:86400},
+          (err,token)=>{
+            if(err) return res.json({message: err})
+            return res.json({
+              message:"Success",
+              type:"Admin",
+              token:"Bearer"+token
+            })
+          }
+        )
       }
       else{
-        res.status(200).send("success");
+        return res.json({
+          message:"Invalid Username or Password"
+        })
       }
-    });
-  },userAuthenticate: async function(user,pass,res){
+      
+    })
+  },
+  userAuthenticate: async function(user,pass,res){
     const valid = await User.exists({user:user,pass:pass},async(err,result)=>{
       if(err) res.status(500).send("Connection error");
       if(result==null){
@@ -247,16 +301,15 @@ signUp:async function(user,res){
       else{
         //res.status(200).send("success");
         const accessToken= generateAccessToken(user);
-    const refreshToken= jwt.sign(user,process.env.REFRESH_TOKEN_SECRET);
-    refreshTokens.push(refreshToken);
-    res.json({ accessToken: accessToken, refreshToken: refreshToken })
+        const refreshToken= jwt.sign(user,process.env.REFRESH_TOKEN_SECRET);
+        refreshTokens.push(refreshToken);
+        console.log(refreshToken);
+
+        res.json({ accessToken: accessToken, refreshToken: refreshToken });
       }
     });
-    
-   
-     
-  
-    },
+    }
+,
     checkToken:async function(req,res){
       const refreshToken = req.body.token;
       if (refreshToken == null) return res.sendStatus(404);
@@ -373,7 +426,7 @@ signUp:async function(user,res){
           res.status(500).send("connection error");
           else
           //console.log(result)
-          res.status(200).send("user created successfully");
+          res.status(200).send(user.userName);
         });
     }
     catch(err){
@@ -440,41 +493,76 @@ signUp:async function(user,res){
     const departureFlightId = reservation.departureFlightId;
     const returnFlightId = reservation.returnFlightId;
     const cabinClass = reservation.cabinClass;
-    var totalPrice = 0;
+    const totalPrice = 0;
     if(cabinClass=="business"){
-      const departureBusinessSeatPrice = await Flight.findOne({_id:departureFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
-      const returnBusinessSeatPrice = await Flight.findOne({_id:returnFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
+      const departureBusinessSeatPrice = await Flight.findOne({id:departureFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
+      const returnBusinessSeatPrice = await Flight.findOne({id:returnFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
       totalPrice = (departureSeats.length*departureBusinessSeatPrice)+(returnSeats.length*returnBusinessSeatPrice);
     }
     else{
-      const departureEconomicSeatPrice = (await Flight.findOne({_id:departureFlightId}).select(['economicSeatPrice']))['economicSeatPrice'];
-      const returnEconomicSeatPrice = (await Flight.findOne({_id:returnFlightId}).select(['economicSeatPrice']))['economicSeatPrice'];
+      const departureEconomicSeatPrice = await Flight.findOne({id:departureFlightId}).select(['economicSeatPrice'])['economicSeatPrice'];
+      const returnEconomicSeatPrice = await Flight.findOne({id:returnFlightId}).select(['economicSeatPrice'])['economicSeatPrice'];
       totalPrice = (departureSeats.length*departureEconomicSeatPrice)+(returnSeats.length*returnEconomicSeatPrice);
     }
-    console.log(totalPrice)
-    try{
-    const charges = await stripe.charges.create({
-      amount: totalPrice*100,
-      currency: 'usd',
-      source: "tok_visa",
-      receipt_email: reservation.username+"@gmail.com"
-    });
-  }
-    catch(e){
-      console.log(e);
-      console.log("payment failed");
-    }
+    res.status(200).send(session.url);
   },
-  reserve: async function(reservation, res){
+  reserve: async function(reservation, res, cardInfo){
     try{
       const db = client.db("AirlineDB");
       const col = db.collection("reservations");
-      await col.insertOne(reservation,(err,result)=>{
+      await col.insertOne(reservation,async (err,result)=>{
         if (err)    
         res.status(500).send(err);
-        else
+        else{
         //console.log(result)
-        res.status(200).send(reservation._id);
+        await Stripe._createToken(cardInfo,function(err,result){
+          // console.log(2);
+          //console.log(err);
+           console.log(result);
+          if(err){
+            tokenData = {
+              "message":"failed",
+              "data": null
+          };
+        }
+        else{
+          tokenData = {
+            "message":"Token Created Successfully",
+            "data": result
+          };
+        }
+        console.log(tokenData);
+          if(tokenData.message == "failed"){
+            res.status(500).send("You are broke");
+            return;
+          }
+          const chargeData = {
+            "amount": reservation.totalPrice,
+            "currency":"usd",
+            "token":tokenData.data.id,
+            "description": "reservation " + reservation._id
+          }
+          var chargeRes;
+          Stripe._createCharge(chargeData,function(err,result){
+            if(err)
+              chargeRes = {
+                "message":"failed",
+                "data": null
+              };
+              else{
+              chargeRes = {
+                "message":"Charged Successfully",
+                "data": result
+            };
+            if(chargeRes.message == "failed"){
+              res.status(500).send("You are broke");
+              return;
+            }
+          }
+          })
+          res.status(200).send(reservation._id);
+        });
+      }
       });
       // find the desired flightSeats
       //make the seats busy
@@ -633,6 +721,31 @@ signUp:async function(user,res){
         console.log(err);
       }
     },
+    createToken:async function(req,res){
+      Stripe._createToken(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Token Created Successfully",
+          "data": result
+        });
+      })
+    }
+ ,
+    //charge
+    createCharge:async function(req,res){
+      Stripe._createCharge(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Charged Successfully",
+          "data": result
+        });
+      })
+    }
+    ,
     
     
 };

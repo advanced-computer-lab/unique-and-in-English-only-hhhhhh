@@ -25,19 +25,39 @@ const ReservationSummaryParent = (props) => {
     const [ cvv,setCvv] = React.useState("");
     const [error, setError] = React.useState(false);
     const [percent , setPercent ] = React.useState(67);
+    const [message, setMessage] = React.useState("");
+    const [severity,setSeverity] = React.useState("");
+    //const [] 
 
 
     const Reservation = async ()=>{
+        if(cardNumber.length!=16 || expMonth == "" || expYear == "" || cvv.length!=3){
+            setError(true);
+            if(cvv.length!=3)setMessage("cvv must be 3 digits");
+            if(expYear == "")setMessage("expiry year is required");
+            if(expMonth == "")setMessage("expiry month is required");
+            if(cardNumber.length!=16)setMessage("Card number must be 16 digits");
+            setSeverity('error');
+        }
+        else{
         const body = {
-            username:props.history.location.state.reservation.username,
-            cabinClass:  props.history.location.state.reservation.cabinClass ,
-            departureFlightId: props.history.location.state.reservation.departureFlightId,
-            departureSeats: props.history.location.state.reservation.departureSeats,
-            returnFlightId: props.history.location.state.reservation.returnFlightId,
-            returnSeats: props.history.location.state.reservation.returnSeats,
-            totalPrice: props.history.location.state.reservation.totalPrice
+            charge:{
+                number:parseInt(cardNumber),
+                exp_month:parseInt(expMonth),
+                exp_year:parseInt("20"+expYear),
+                cvc:parseInt(cvv)
+            },
+            reservation:{
+                username:props.history.location.state.reservation.username,
+                cabinClass:  props.history.location.state.reservation.cabinClass ,
+                departureFlightId: props.history.location.state.reservation.departureFlightId,
+                departureSeats: props.history.location.state.reservation.departureSeats,
+                returnFlightId: props.history.location.state.reservation.returnFlightId,
+                returnSeats: props.history.location.state.reservation.returnSeats,
+                totalPrice: props.history.location.state.reservation.totalPrice
+            }
             };
-         await axios.post('http://localhost:8000/user/checkout', body)
+         await axios.post('http://localhost:8000/user/reserve', body)
                    .then(result => {
                        setcheckoutURL(result.url);
                     setNotify({
@@ -46,11 +66,17 @@ const ReservationSummaryParent = (props) => {
                         type: 'success'
                     });
                     setAlert(true);
+                    setMessage("Successful Reservation, You will be Redirected to the Home Page in 5 seconds!");
+                    setSeverity('success');
+                    setPercent(100);
                      window.setTimeout( () => {setReDirect(true)}, 5000);
                      }).catch(err => {
+                        setError(true);
+                        setMessage("error connecting to the server");
+                        setSeverity("error");
                      alert("Error with The Server " + err );
                      });
-            
+                    }
     };
 
     return (
@@ -124,21 +150,21 @@ const ReservationSummaryParent = (props) => {
             <Button color="error" variant="contained" sx={{ marginX : "20px"}}  onClick={()=> {setReDirect(true)}}>
                 Cancel The Reservation
             </Button>
-            <Button color="success" variant="contained" sx={{ marginX : "20px"}} onClick={()=> {Reservation();setPercent(100);}}>
+            <Button color="success" variant="contained" sx={{ marginX : "20px"}} disabled = {alert} onClick={()=> {Reservation();}}>
                 Confirm The Reservation
             </Button>
         </div>
 
         {
-            alert ? 
+            alert || error? 
             <div className=" flex justify-center mt-5">
-            <Alert sx severity="success">Successful Reservation, You will be Redirected to the Home Page in 5 seconds!</Alert>
+            <Alert sx severity={severity}>{message}</Alert>
             </div>
              :
         <></>
         }
 
-        {/* {
+        {
             reDirect ? 
             <Redirect
             to={{
@@ -146,7 +172,7 @@ const ReservationSummaryParent = (props) => {
           }}
         /> :
         <></>
-        } */}
+        }
 
 
 

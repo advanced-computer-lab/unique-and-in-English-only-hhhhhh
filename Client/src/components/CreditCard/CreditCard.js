@@ -13,6 +13,7 @@ const CreditCard = (props) => {
   let [expiry, SetExpiry] = useState("");
   const [cvc, SetCvc] = useState("");
   const [focus, SetFocus] = useState("");
+  const [error, setError] = React.useState(false);
   const handleDate = (e) => {
     props.setExpMonth(e.target.value);
     SetMonth(e.target.value)
