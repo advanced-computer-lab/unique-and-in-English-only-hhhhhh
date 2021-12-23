@@ -15,16 +15,32 @@ import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
 import LuggageIcon from '@mui/icons-material/Luggage';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import SeatParent from './SeatParent';
-
+import axios from 'axios';
+// "https://media.istockphoto.com/photos/commercial-jet-flying-over-clouds-picture-id155380716?b=1&k=20&m=155380716&s=170667a&w=0&h=LjalFiyrKtBye-26dufNMHkbU_k_KrJ1-UYnbTpaxtM="
 
 const UserSearchFlight = (props) => {
   const [open , setOpen] = React.useState( false );
   const [ seats , setSeats] = React.useState('');
+  const [image_url , setImage_url] = React.useState('');
+ 
+  
 
-  // React.useEffect( () => {
+  React.useEffect( async() => {
+    const search = {
+      query : props.arrivalAirportTerminal
+    };
 
-     
-  //  } , [ ]  );
+    await axios.post("http://localhost:8000/user/searchImage" , search)
+    .then(res => {
+      console.log(res.data.image_url);
+      setImage_url(res.data.image_url);
+      }).catch(err => {
+        console.log(err);
+        console.log(props.arrivalAirportTerminal);
+      });
+
+    
+   } , [props.arrivalAirportTerminal] );
 
 
   const durationTime = () => {
@@ -51,7 +67,7 @@ const UserSearchFlight = (props) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-             <img className="rounded-full w-36 h-16 mr-5" src="https://media.istockphoto.com/photos/commercial-jet-flying-over-clouds-picture-id155380716?b=1&k=20&m=155380716&s=170667a&w=0&h=LjalFiyrKtBye-26dufNMHkbU_k_KrJ1-UYnbTpaxtM=" />
+             <img className="rounded-full w-36 h-36 h-16 mr-5" src={image_url} />
             <div className=" w-full justify-center">
             <div className=" flex justify-between justify-items-center">
                   <Typography  variant="h4">
