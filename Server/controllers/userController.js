@@ -57,7 +57,13 @@ module.exports = {
         userModel.checkout(req,res);
     },
     updateReservation: async function(req,res){
-        userModel.updateReservation(req,res);
+        userModel.updateReservation(req,res);}
+    ,
+    createToken: async function(req,res){
+        userModel.createToken(req,res)
+    },
+    createCharge: async function(req,res){
+        userModel.createCharge(req,res)
     }
     
 }

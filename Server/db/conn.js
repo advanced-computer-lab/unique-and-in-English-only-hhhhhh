@@ -14,7 +14,7 @@ const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
-const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+const Stripe = require("../stripe/stripe");
 
 let refreshTokens = [];
 
@@ -58,7 +58,6 @@ async function cancellationMail(email,refundValue){
     var availableEcoSeatsCount = flightSeats[0]['availableEcoSeatsCount'];
     var availableBusinessSeatsCount = flightSeats[0]['availableBusinessSeatsCount'];
 
-    console.log("b4 the loop");
     console.log(seats);
 
     for(var seat in seats){
@@ -110,13 +109,49 @@ async function cancellationMail(email,refundValue){
           }
           return resultArray;
    }
+   async function token(cardInfo,tokenData){
+    //console.log(1);
+    await Stripe._createToken(cardInfo,function(err,result){
+      // console.log(2);
+      //console.log(err);
+       console.log(result);
+      if(err){
+        tokenData = {
+          "message":"failed",
+          "data": null
+      };
+    }
+    else{
+      tokenData = {
+        "message":"Token Created Successfully",
+        "data": result
+      };
+    }
+    }
+      );
+    }
+
+    async function charge(paymentInfo){
+      await Stripe._createCharge(paymentInfo,function(err,result){
+        if(err)
+          return {
+            "message":"failed",
+            "data": null
+          };
+        return{
+          "message":"Charged Successfully",
+          "data": result
+        };
+      })
+    }
+
 
    async function reserveFlightSeats (flightId,seats){
     //seats= seats[0].split(",");
     var allFlightSeats = await FlightSeats.find({flightId:flightId}).select(['availableEcoSeatsCount','availableBusinessSeatsCount','ecoSeats','businessSeats']);
     allFlightSeats = allFlightSeats[0];
     var ecoSeats = allFlightSeats['ecoSeats'];
-    console.log(ecoSeats);
+    //console.log(ecoSeats);
     var businessSeats = allFlightSeats['businessSeats'];
     var ecoSeatsCount = allFlightSeats['availableEcoSeatsCount'];
     var businessSeatsCount = allFlightSeats['availableBusinessSeatsCount'];
@@ -470,30 +505,65 @@ signUp:async function(user,res){
       const returnEconomicSeatPrice = await Flight.findOne({id:returnFlightId}).select(['economicSeatPrice'])['economicSeatPrice'];
       totalPrice = (departureSeats.length*departureEconomicSeatPrice)+(returnSeats.length*returnEconomicSeatPrice);
     }
-    
-    // const session = await stripe.checkout.session.create({
-    //   payment_method_types:['card'],
-    //   mode:"payment",
-    //   line_items:{
-    //     departureSeatsNumber:departureSeats,
-    //     returnSeatsNumber:returnSeats,
-    //     price:totalPrice
-    //   },
-    //   success_url:"success",
-    //   cancel_url:"cancel",
-    // });
-    res.status(200).send("session.url");
+    res.status(200).send(session.url);
   },
-  reserve: async function(reservation, res){
+  reserve: async function(reservation, res, cardInfo){
     try{
       const db = client.db("AirlineDB");
       const col = db.collection("reservations");
-      await col.insertOne(reservation,(err,result)=>{
+      await col.insertOne(reservation,async (err,result)=>{
         if (err)    
         res.status(500).send(err);
-        else
+        else{
         //console.log(result)
-        res.status(200).send(reservation._id);
+        await Stripe._createToken(cardInfo,function(err,result){
+          // console.log(2);
+          //console.log(err);
+           console.log(result);
+          if(err){
+            tokenData = {
+              "message":"failed",
+              "data": null
+          };
+        }
+        else{
+          tokenData = {
+            "message":"Token Created Successfully",
+            "data": result
+          };
+        }
+        console.log(tokenData);
+          if(tokenData.message == "failed"){
+            res.status(500).send("You are broke");
+            return;
+          }
+          const chargeData = {
+            "amount": reservation.totalPrice,
+            "currency":"usd",
+            "token":tokenData.data.id,
+            "description": "reservation " + reservation._id
+          }
+          var chargeRes;
+          Stripe._createCharge(chargeData,function(err,result){
+            if(err)
+              chargeRes = {
+                "message":"failed",
+                "data": null
+              };
+              else{
+              chargeRes = {
+                "message":"Charged Successfully",
+                "data": result
+            };
+            if(chargeRes.message == "failed"){
+              res.status(500).send("You are broke");
+              return;
+            }
+          }
+          })
+          res.status(200).send(reservation._id);
+        });
+      }
       });
       // find the desired flightSeats
       //make the seats busy
@@ -667,6 +737,31 @@ signUp:async function(user,res){
         console.log(err);
       }
     },
+    createToken:async function(req,res){
+      Stripe._createToken(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Token Created Successfully",
+          "data": result
+        });
+      })
+    }
+ ,
+    //charge
+    createCharge:async function(req,res){
+      Stripe._createCharge(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Charged Successfully",
+          "data": result
+        });
+      })
+    }
+    ,
     
     
 };

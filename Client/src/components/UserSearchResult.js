@@ -8,6 +8,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Button, IconButton } from '@mui/material';
 import axios from 'axios';
 import { Redirect } from 'react-router';
+import Progress_Bar from'./ProgressBar/Progress_Bar'
 
 
 
@@ -26,6 +27,7 @@ const UserSearchResult = (props) => {
     const [body , setBody] = React.useState();
     const [ departureFlight , setDepartureFlight ] = React.useState();
     const [ returnFlight , setReturnFlight ] = React.useState();
+    const [ percent,setPercent] = React.useState(0);
 
            
     React.useEffect(() => {
@@ -43,6 +45,7 @@ const UserSearchResult = (props) => {
       } , [ props.history.location.state.flights , props.history.location.state.Class ,  props.history.location.state.maxNumber ] );
 
     const sendTheReservation = async() => {
+        //await axios.post('http://localhost:8000/user/checkout')
         setBody({
             username:"konar",
             cabinClass:  props.history.location.state.Class ,
@@ -94,7 +97,7 @@ const UserSearchResult = (props) => {
              <div className="w-full flex justify-between justify-items-end  mb-8 text-opacity-25">
                     <div/>
                     <Typography sx={{opacity: 0.7}}  variant="h3">Departure Flights  </Typography>
-                    <IconButton color="primary" onClick={() => {setChoseDeparture(true);}} disabled= { (departureSeats === '') }>
+                    <IconButton color="primary" onClick={() => {setChoseDeparture(true); setPercent(34);}} disabled= { (departureSeats === '') }>
                     <ArrowForwardIcon sx={{fontSize: 50, opacity: 0.7}} />
                     </IconButton>
 
@@ -103,7 +106,7 @@ const UserSearchResult = (props) => {
              </div>
               :
              <div className="w-full flex justify-between justify-items-start mb-8 text-opacity-25">
-                    <IconButton color="primary" onClick={() => {setChoseDeparture(false); }} disabled= { false  }>
+                    <IconButton color="primary" onClick={() => {setChoseDeparture(false); setPercent(0);}} disabled= { false  }>
                     <ArrowBackIcon sx={{fontSize: 50, opacity: 0.7}} />  
                     </IconButton>
                     
@@ -111,6 +114,10 @@ const UserSearchResult = (props) => {
                     <div/>
              </div>
             }
+
+<div className='my-16 ml-40'>
+    <Progress_Bar percent={percent}/>
+</div>
 
 { !choseDeparture ? 
     (props.history.location.state.flights.departureFlights).map((oneElement) =>

@@ -25,6 +25,8 @@ import SeatParent from './components/SeatParent';
 import Ticket from './components/Ticket';
 import ReservationSummaryParent from './components/ReservationSummaryParent';
 import AdminLogin from './components/AdminLogin';
+import Progress_Bar from './components/ProgressBar/Progress_Bar';
+
 
 
 function App(props) {
