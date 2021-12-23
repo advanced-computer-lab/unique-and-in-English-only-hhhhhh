@@ -18,7 +18,13 @@ Build Status:The Project is working perfectly without any errors
 
 
 Code Style:The Model-View-Controller style was used in the project's backend side. Their is a folder dedicated for each category(Model-View-Controller) for each category of users.
+
+
+
+
 Screenshots:![image](https://user-images.githubusercontent.com/82762206/147270894-edd4a470-5180-48d3-a146-64c7dcdcc8a8.png)
+
+
 
 Tech/Framework used:
 Features:
@@ -42,8 +48,15 @@ npm i bcrypt
 5-install stripe
 
 npm i stripe
+
+
+
 API reference:https://nodemailer.com/about/
 Tests:
+
+
+
+
 How to Use:The project is split to two parts frontend and backend.
 Both parts must be run to see the full functionality of the flight reservation system.
 ################################################################
