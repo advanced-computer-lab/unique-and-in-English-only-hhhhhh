@@ -60,14 +60,14 @@ async function cancellationMail(email,refundValue){
     var availableEcoSeatsCount = flightSeats[0]['availableEcoSeatsCount'];
     var availableBusinessSeatsCount = flightSeats[0]['availableBusinessSeatsCount'];
 
-    console.log(seats);
+    // console.log(seats);
 
     for(var seat in seats){
-      console.log("still inside the loop");
+      // console.log("still inside the loop");
       
       var seatNumber = parseInt(seats[seat]);
-      console.log(seatNumber);
-      console.log(ecoSeatsStart);
+      // console.log(seatNumber);
+      // console.log(ecoSeatsStart);
       if(seatNumber<ecoSeatsStart){
         businessSeats[seatNumber-1].isReserved = false;
         availableBusinessSeatsCount ++;
@@ -77,11 +77,11 @@ async function cancellationMail(email,refundValue){
         availableEcoSeatsCount++;
       }
     }
-    console.log(flightSeats);
-    console.log("---");
-    console.log(businessSeats);
-    console.log("__");
-    console.log(ecoSeats);
+    // console.log(flightSeats);
+    // console.log("---");
+    // console.log(businessSeats);
+    // console.log("__");
+    // console.log(ecoSeats);
     await FlightSeats.updateOne({flightId:flightId},{
        ecoSeats:ecoSeats,
        businessSeats:businessSeats,
@@ -152,6 +152,7 @@ async function cancellationMail(email,refundValue){
     //seats= seats[0].split(",");
     var allFlightSeats = await FlightSeats.find({flightId:flightId}).select(['availableEcoSeatsCount','availableBusinessSeatsCount','ecoSeats','businessSeats']);
     allFlightSeats = allFlightSeats[0];
+    console.log(flightId);
     var ecoSeats = allFlightSeats['ecoSeats'];
     //console.log(ecoSeats);
     var businessSeats = allFlightSeats['businessSeats'];
@@ -166,7 +167,7 @@ async function cancellationMail(email,refundValue){
       else{
         ecoSeats[parseInt(seats[i])-1-businessSeats.length]['isReserved'] = true;
       }
-      console.log(seats[i]);
+      // console.log(seats[i]);
     }
     var reservedEco = seats.length-reservedBusiness;
     allFlightSeats['ecoSeats'] = ecoSeats;
@@ -669,7 +670,7 @@ signUp:async function(user,res){
   readFlightSeats: async function (_id, reservedSeats ,res){
     try{
       var flightSeats = [];
-      console.log(mongoose.Types.ObjectId(_id));
+      // console.log(mongoose.Types.ObjectId(_id));
       var ecoSeats = await FlightSeats.find({flightId:mongoose.Types.ObjectId(_id)}).select('ecoSeats').exec();
         //res.status(200).send(flightSeats);
       console.log(ecoSeats[0]['ecoSeats']);
@@ -749,11 +750,66 @@ signUp:async function(user,res){
       try{
         const db = client.db("AirlineDB");
         const col = db.collection("reservations");
-        const p = await col.updateOne({_id: mongoose.Types.ObjectId(_id)}, update,(err,result)=>{
+        // console.log(mongoose.Types.ObjectId(_id));
+        const oldReservation = await Reservation.findOne({_id: mongoose.Types.ObjectId(_id)});
+        // console.log("old: "+ oldReservation);
+        const oldDepartureSeats = oldReservation.departureSeats;
+        const oldReturnSeats = oldReservation.returnSeats;
+        const oldTotalPrice = oldReservation.totalPrice;
+        var newTotalPrice = oldTotalPrice;
+        // console.log(newTotalPrice);
+        const returnFlightId = (update.returnFlightId=="" ? oldReservation.returnFlightId:update.returnFlightId);
+        const departureFlightId = (update.departureFlightId=="" ? oldReservation.departureFlightId:update.departureFlightId);
+
+        if(update.departureSeats != ""){
+          unreserveSeats(oldReservation.departureFlightId,oldDepartureSeats);
+          // console.log("departureFlight ID: "+ departureFlightId);
+          // console.log(departureSeats);
+          // console.log();
+          reserveFlightSeats(departureFlightId,update.departureSeats);
+          // console.log(oldReservation.cabinClass=="economic");
+          const oldPrice = (oldReservation.cabinClass=="economic") ? 
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).economicSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).businessSeatPrice;
+          // console.log("old price: "+ oldPrice);
+          const newPrice = (update.cabinClass=="economic") ? 
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).economicSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice;
+          // console.log("new price: "+ newPrice);
+          newTotalPrice = newTotalPrice + update.departureSeats.length*newPrice - oldDepartureSeats.length*oldPrice;
+          // console.log("after dep price: "+ newTotalPrice);
+          update["departureFlightId"] = departureFlightId;
+
+        }
+        if(update.returnSeats != ""){
+          unreserveSeats(oldReservation.returnFlightId,oldReturnSeats);
+          // console.log("return id: "+ returnFlightId);
+          reserveFlightSeats(returnFlightId,update.returnSeats);
+          const oldPrice = (oldReservation.cabinClass=="economic") ? 
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.returnFlightId)})).economicSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.returnFlightId)})).businessSeatPrice;
+          // console.log("old p:" + oldPrice);
+          const newPrice = (update.cabinClass=="economic") ? 
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).economicSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).businessSeatPrice;
+          // console.log("new p:" + newPrice);
+          newTotalPrice = newTotalPrice + update.returnSeats.length*newPrice - oldReturnSeats.length*oldPrice;
+          // console.log(newTotalPrice );
+          // console.log("after ret price: "+ newTotalPrice);
+          update["returnFlightId"] = returnFlightId;
+
+        }
+        const difference = newTotalPrice - oldTotalPrice;
+
+        update["totalPrice"] = newTotalPrice;
+        // console.log("difference is: "+ difference);
+        // update.push({totalPrice:newTotalPrice});
+        const p = await col.updateOne({_id: mongoose.Types.ObjectId(_id)}, {$set: update},(err,result)=>{
         if (err)
           res.status(500).send(err);
-        console.log(result);
+        // console.log(result);
         res.status(200).send("reservation updated");
+        // pay price difference with stripe 
         });
       }
       catch(err){
