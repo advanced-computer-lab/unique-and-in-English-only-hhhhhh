@@ -27,8 +27,11 @@ Screenshots:![image](https://user-images.githubusercontent.com/82762206/14727089
 
 
 Tech/Framework used:MERN Stack
+
 Features:
+
 Code Examples:
+
 Installation:1-install npm
 
 npm install
@@ -52,6 +55,8 @@ npm i stripe
 
 
 API reference:https://nodemailer.com/about/
+https://stripe.com/docs/api/authentication
+
 Tests:
 
 
