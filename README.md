@@ -28,6 +28,14 @@ Login Portal
 ![image](https://user-images.githubusercontent.com/82762206/147352812-873973a1-4410-4d75-b8d3-a9b8f04ecd2c.png)
 Signup Portal
 ![image](https://user-images.githubusercontent.com/82762206/147352950-2617e407-b2cb-470e-998d-d539cbd8cb47.png)
+Creating a new flight(exclusive for admins only)
+![image](https://user-images.githubusercontent.com/82762206/147359496-9e3e9c15-27d1-4466-89a1-f46310f6c584.png)
+
+Editing or deleting an existent flight(exclusive for admins only)
+![image](https://user-images.githubusercontent.com/82762206/147359684-38b58c1d-3fd7-4a27-a633-f5a80afd00d4.png)
+![image](https://user-images.githubusercontent.com/82762206/147359765-25bbcbc7-de76-401c-aaa6-446ead4ba5aa.png)
+
+
 
 
 
