@@ -773,10 +773,11 @@ signUp:async function(user,res){
           (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).businessSeatPrice;
           const newPrice = (update.cabinClass=="economic") ? 
           (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).economicSeatPrice:
-          (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice;
+          ((update.cabinClass == "business")?(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).oldReservation.cabinClass);
+          console.log(newPrice);
           newTotalPrice = newTotalPrice + update.departureSeats.length*newPrice - oldDepartureSeats.length*oldPrice;
-          update["departureFlightId"] = departureFlightId;
-
+          console.log(newTotalPrice);
         }
         if(update.returnSeats != "" && update.returnSeats){
           unreserveSeats(oldReservation.returnFlightId,oldReturnSeats);
@@ -788,12 +789,14 @@ signUp:async function(user,res){
           (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).economicSeatPrice:
           (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).businessSeatPrice;
           newTotalPrice = newTotalPrice + update.returnSeats.length*newPrice - oldReturnSeats.length*oldPrice;
-          update["returnFlightId"] = returnFlightId;
-
         }
-        const difference = newTotalPrice - oldTotalPrice;
-
+        update["departureFlightId"] = departureFlightId;
+        update["returnFlightId"] = returnFlightId;
+        update["cabinClass"] = (update["cabinClass"]=="" || !update["cabinClass"])? oldReservation.cabinClass:update["cabinClass"];
+        update["returnSeats"] = (update["returnSeats"].length==0 || !update["returnSeats"])? oldReservation.returnSeats:update["returnSeats"];
+        update["departureSeats"] = (update["departureSeats"].length==0 || !update["departureSeats"])? oldReservation.departureSeats:update["departureSeats"];
         update["totalPrice"] = newTotalPrice;
+        const difference = newTotalPrice - oldTotalPrice;
         console.log(update);
         const p = await col.updateOne({_id: mongoose.Types.ObjectId(_id)}, {$set: update},(err,result)=>{
         if (err)
