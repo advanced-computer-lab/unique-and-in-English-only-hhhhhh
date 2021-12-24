@@ -8,6 +8,7 @@ const ReservedFlights = () => {
     
     const [ flights , setFlights ] = React.useState([]);
     const [ user , setUser ]= React.useState({username: "konar"});
+    const [ reload , setReload ] = React.useState( false );
 
     React.useEffect( async() => {
 
@@ -18,7 +19,10 @@ const ReservedFlights = () => {
              }).catch(err => {
                 alert("Error with The Server " + err );
            });
-       },[] );
+           console.log(reload)
+       },[reload] );
+
+       
 
     return (
         <div>
@@ -39,6 +43,8 @@ const ReservedFlights = () => {
    returnSeats ={oneElement.returnSeats}
    cabinClass ={oneElement.cabinClass}
    totalPrice = {oneElement.totalPrice}
+   reload = { setReload }
+   reload1 = { reload }
    />
     </Grid>
     </div>

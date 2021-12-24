@@ -23,6 +23,8 @@ export default class Seat extends Component {
           rows={this.props.seat}
           maxReservableSeats={parseInt(this.props.maxNumber) }
           visible
+          selectedByDefault
+          loading={false}
         />
       </div>
     );

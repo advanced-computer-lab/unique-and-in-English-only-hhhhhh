@@ -37,10 +37,35 @@ const UserFlightCard = (props) => {
             onConfirm: () => { cancelReservation() }
         })
     };
-    const editReservation = () =>{
-      console.log(selected)
-      setOpenSeats(true);
+    const editReservation = async() =>{
+      console.log(selected);
+      const update = {
+        _id: props.reservationId ,
+        update: {
+            departureFlightId: "" ,
+            departureSeats: selected ,
+            cabinClass: "",
+            returnFlightId: "",
+            returnSeats: "",
+        }
+    }
+
+    await axios.post( 'http://localhost:8000/user/updateReservation' , update).then( res => {
+      console.log(res);
+      alert("reservation edited");
+      props.reload("val");
+    }).catch( err => {
+      alert("reservation edited failed");
+    });
+    
+
+    //props.reload("val");
+     
+
   };
+  const test1 = async() =>{
+    setOpenSeats(true);
+};
 
     const cancelReservation = async() => {
         setConfirmDialog({
@@ -55,6 +80,7 @@ const UserFlightCard = (props) => {
                 message: 'Deleted Successfully',
                 type: 'success'
             });
+            props.reload("val");
              }).catch(err => {
               setNotify({
                 isOpen: true,
@@ -165,8 +191,8 @@ const UserFlightCard = (props) => {
           
             
             <Button sx={{borderRadius: 5}} variant="contained" color="error" size="small" onClick={handleCancel}>Cancel Booking</Button>
-            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={editReservation}>Edit The Flight</Button>
-            
+            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={ test1 }>Edit The Flight</Button>
+            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={test1}>test</Button>
           </CardActions>
         </Card>
 
@@ -183,9 +209,9 @@ const UserFlightCard = (props) => {
           {  openSeats? <SeatParent
         open={openSeats}
         maxNumber = { 100000 }
-        close={ (boolean ) => {  setOpenSeats(boolean);} }
+        close={ (boolean ) => {  setOpenSeats(boolean); editReservation();} }
         toBeChanged = {selected}
-        //sendSeats = { (selected) => { handleReservation(selected); console.log(selected); } } 
+        sendSeats = { setSelected } 
         flightNumber = { props._id }
         Class = { chosenCabine } 
         /> : <></>}

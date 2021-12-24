@@ -30,7 +30,7 @@ const style = {
   const SeatParent = (props) => {
   const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
   const [ reRun , setReRun ] = React.useState(true);
-  const [selected, setSelected] = React.useState([]);
+  const [selected, setSelected] = React.useState( props.toBeChanged==null ? [] : props.toBeChanged.map((item) => {item = parseInt(item); return item;}) )
   const [reachedMax , setReachedMax ] = React.useState( false );
   const [seats , setSeats] = React.useState([]);
   const [index , setIndex ] = React.useState(0);
@@ -39,7 +39,7 @@ const style = {
   React.useEffect( async() => {
    const flight = {
     _id : props.flightNumber ,
-    reservedSeats : props.toBeChanged == null ? selected : props.toBeChanged , 
+    reservedSeats :selected , 
    };
    console.log(flight._id);
    console.log(props.toBeChanged);
@@ -62,28 +62,28 @@ const style = {
     console.log("reRun");
   } , [ reRun , selected , reachedMax , props.flightNumber ]   );
 
-  const checkAndEdit = () => {
-     setSeats( seats.map((row) => {
-      if ( row.length != 0)
-      row.map( (seat) => {
-        if (seat != null){ 
-        if ( props.toBeChanged.includes(seat["id"] + "" || seat["id"]) ){
-          console.log(seat);
-          seat["isReserved"] = false;
-          seat["isSelected"] = true;
-        }
-      }
-      return seat ;
-      });
-      return row ;
-    })
-     )
-     console.log(seats);
-  };
+  // const checkAndEdit = () => {
+  //    setSeats( seats.map((row) => {
+  //     if ( row.length != 0)
+  //     row.map( (seat) => {
+  //       if (seat != null){ 
+  //       if ( props.toBeChanged.includes(seat["id"] + "" || seat["id"]) ){
+  //         console.log(seat);
+  //         seat["isReserved"] = false;
+  //         seat["isSelected"] = true;
+  //       }
+  //     }
+  //     return seat ;
+  //     });
+  //     return row ;
+  //   })
+  //    )
+  //    console.log(seats);
+  // };
 
 // , [ reRun , selected , reachedMax ] 
   const handleSeatReservation = () => {
-    if ( selected.length < props.maxNumber ){
+    if ( selected.length < props.maxNumber && props.toBeChanged == null ){
         setReachedMax(true);
     }
     else {
@@ -100,8 +100,6 @@ const style = {
         props.close(false );
         
     }
-    setReRun( !reRun );
-
   };
 
 
