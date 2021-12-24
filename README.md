@@ -22,11 +22,19 @@ Code Style:The Model-View-Controller style was used in the project's backend sid
 
 
 
-Screenshots:![image](https://user-images.githubusercontent.com/82762206/147270894-edd4a470-5180-48d3-a146-64c7dcdcc8a8.png)
+Screenshots:Search for your desired flight from the homepage directly.
+![image](https://user-images.githubusercontent.com/82762206/147351834-c9bdade3-eacc-44d8-a0e1-5f704596cfde.png)
+Login Portal
+![image](https://user-images.githubusercontent.com/82762206/147352812-873973a1-4410-4d75-b8d3-a9b8f04ecd2c.png)
+Signup Portal
+![image](https://user-images.githubusercontent.com/82762206/147352950-2617e407-b2cb-470e-998d-d539cbd8cb47.png)
 
 
 
-Tech/Framework used:MERN Stack
+
+
+
+Tech/Framework used:MongoDB-Express Routing-React Js-Node Js (MERN Stack)
 
 Features:
 
