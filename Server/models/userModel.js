@@ -115,7 +115,7 @@ module.exports={// this wil be edited
         DB.checkout(req.body,res);
     },
     updateReservation: async function(req,res){
-        await DB.updateReservation(req.body._id,{ $set: req.body.update},res);
+        await DB.updateReservation(req.body._id,req.body.update,res);
     },
     createToken:async function(req,res){
         DB.createToken(req,res);
