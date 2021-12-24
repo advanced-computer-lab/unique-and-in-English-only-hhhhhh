@@ -123,5 +123,8 @@ module.exports={// this wil be edited
     ,
     createCharge:async function(req,res){
         DB.createCharge(req,res);
+    },
+    searchImage:async function(req,res){
+        DB.searchImage(req.body.query,res);
     }
 }

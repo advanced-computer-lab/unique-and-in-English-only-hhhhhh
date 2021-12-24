@@ -7,6 +7,8 @@ const Reservation = require("../schemas/Reservation");
 const User = require ("../schemas/User");
 const FlightSeats = require("../schemas/FlightSeats");
 const Seat = require("../schemas/Seat");
+const https = require('https');
+
 
 const Db = process.env.ATLAS_URI;
 const mail=process.env.GMAIL_USERNAME;
@@ -188,6 +190,24 @@ module.exports = {
         } catch (err) {
          console.log(err.stack);
      }
+},
+searchImage: async function(query,res) {
+  
+    
+     
+    const axios = require('axios');
+
+    axios.get(`https://api.unsplash.com/search/photos?query=${query}&client_id=${process.env.UNSPLASH_KEY}`)
+      .then(response => {
+        res.status(200).send({total: response.data.total, image_URL:(response.data.total==0)?
+          "https://media.gemini.media/img/large/2021/7/15/2021_7_15_23_59_18_304.jpg" 
+           : response.data.results[0].urls.regular });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  
+     
 },
 //register
 signUp:async function(user,res){

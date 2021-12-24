@@ -28,6 +28,8 @@ const UserSearchResult = (props) => {
     const [ departureFlight , setDepartureFlight ] = React.useState();
     const [ returnFlight , setReturnFlight ] = React.useState();
     const [ percent,setPercent] = React.useState(0);
+    const [image_url_dep , setImage_url_dep] = React.useState('');
+    const [image_url_arr , setImage_url_arr] = React.useState('');
 
            
     React.useEffect(() => {
@@ -42,7 +44,33 @@ const UserSearchResult = (props) => {
         setBody();
         setDepartureFlight();
         setReturnFlight();
+        
       } , [ props.history.location.state.flights , props.history.location.state.Class ,  props.history.location.state.maxNumber ] );
+
+      React.useEffect( async() => {
+        const search_arr = {
+          query : props.history.location.state.flights.departureFlights[0].arrivalAirportTerminal
+        };
+        const search_dep = {
+          query : props.history.location.state.flights.departureFlights[0].departureAirportTerminal
+        };
+        await axios.post("http://localhost:8000/user/searchImage" , search_dep)
+        .then(res => {
+          console.log(res.data.image_URL);
+          setImage_url_dep(res.data.image_URL);
+          }).catch(err => {
+            console.log(err);
+          });
+    
+          await axios.post("http://localhost:8000/user/searchImage" , search_arr)
+        .then(res => {
+          console.log(res.data.image_URL);
+          setImage_url_arr(res.data.image_URL);
+          }).catch(err => {
+            console.log(err);
+          });
+        
+       } , [props.history.location.state.flights]  );
 
     const sendTheReservation = async() => {
         //await axios.post('http://localhost:8000/user/checkout')
@@ -137,6 +165,8 @@ const UserSearchResult = (props) => {
    setId = { setDepartureId }
    setSeats = { setDepartureSeats }
    setPrice = { setDeparturePrice }
+   dep_img_url= {image_url_dep}
+   arr_img_url= {image_url_arr}
    />
     )
     :
@@ -157,6 +187,8 @@ const UserSearchResult = (props) => {
    setId = { setReturnId }
    setSeats = { setReturnSeats }
    setPrice = { setReturnPrice }
+   dep_img_url= {image_url_arr}
+   arr_img_url= {image_url_dep}
    />
     )
 }

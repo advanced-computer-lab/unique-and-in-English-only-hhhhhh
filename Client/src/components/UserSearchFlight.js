@@ -15,16 +15,17 @@ import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
 import LuggageIcon from '@mui/icons-material/Luggage';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import SeatParent from './SeatParent';
-
+import axios from 'axios';
+// "https://media.istockphoto.com/photos/commercial-jet-flying-over-clouds-picture-id155380716?b=1&k=20&m=155380716&s=170667a&w=0&h=LjalFiyrKtBye-26dufNMHkbU_k_KrJ1-UYnbTpaxtM="
 
 const UserSearchFlight = (props) => {
   const [open , setOpen] = React.useState( false );
   const [ seats , setSeats] = React.useState('');
+  
+ 
+  
 
-  // React.useEffect( () => {
-
-     
-  //  } , [ ]  );
+  
 
 
   const durationTime = () => {
@@ -51,7 +52,7 @@ const UserSearchFlight = (props) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-             <img className="rounded-full w-36 h-16 mr-5" src="https://media.istockphoto.com/photos/commercial-jet-flying-over-clouds-picture-id155380716?b=1&k=20&m=155380716&s=170667a&w=0&h=LjalFiyrKtBye-26dufNMHkbU_k_KrJ1-UYnbTpaxtM=" />
+            <img className="rounded-full w-36 h-16 h-16 mr-5" src={props.dep_img_url} />
             <div className=" w-full justify-center">
             <div className=" flex justify-between justify-items-center">
                   <Typography  variant="h4">
@@ -75,6 +76,7 @@ const UserSearchFlight = (props) => {
             </Typography>
             </div>
             </div>
+            <img className="rounded-full w-36 h-16 h-16 ml-5" src={props.arr_img_url} />
         </AccordionSummary>
         
         <AccordionDetails>
