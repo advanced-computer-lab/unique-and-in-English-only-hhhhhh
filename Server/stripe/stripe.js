@@ -32,6 +32,22 @@ module.exports = {
         StripeModule.charges.create(charge,function(err,data){
             res(err,data);
         })
+    },
+    _createRefund : function(req,res){
+        var refund={
+            charge:req.charge
+        }
+        StripeModule.refunds.create(refund,function(err,data){
+            res(err,data);
+        })
+    },
+    _listCharges : function(req,res){
+        var charges ={
+            limit:req.limit
+        }
+        StripeModule.charges.list(charges,function(err,data){
+            res(err,data);
+        })
     }
     
 }

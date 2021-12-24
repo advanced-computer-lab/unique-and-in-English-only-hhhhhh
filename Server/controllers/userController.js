@@ -64,6 +64,12 @@ module.exports = {
     },
     createCharge: async function(req,res){
         userModel.createCharge(req,res)
+    },
+    createRefund: async function(req,res){
+        userModel.createRefund(req,res)
+    },
+    listCharges: async function(req,res){
+        userModel.listCharges(req,res)
     }
     
 }

@@ -119,5 +119,11 @@ module.exports={// this wil be edited
     ,
     createCharge:async function(req,res){
         DB.createCharge(req,res);
+    },
+    createRefund:async function(req,res){
+        DB.createRefund(req,res);
+    },
+    listCharges:async function(req,res){
+        DB.listCharges(req,res);
     }
 }

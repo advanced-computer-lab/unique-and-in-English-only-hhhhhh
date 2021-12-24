@@ -378,6 +378,29 @@ else{
       })
     }
     ,
+    createRefund: async function(req,res){
+      Stripe._createRefund(req.body,function(err,result){
+        if(err)
+        res.send(err);
+        else
+        res.send({
+          "message":"Refunded Successfully",
+          "data":result
+        });
+      })
+    },
+    listCharges: async function(req,res){
+      Stripe._listCharges(req.body,function(err,result){
+        if(err)
+        res.send(err);
+        else
+        res.send({
+          "message":"Listed Successfully",
+          "data":result
+        });
+      })
+
+    },
   readFlight:async function(flightNumber,ecoSeatsCount,businessSeatsCount,arrivalAirportTerminal,departureAirportTerminal,arrivalDate,departureDate,res){
     // search with parameters
     const requestedFlights = await Flight.find({flightNumber:new RegExp(flightNumber,'i'),departureAirportTerminal:new RegExp(departureAirportTerminal,'i'),arrivalAirportTerminal:new RegExp(arrivalAirportTerminal,'i')})
