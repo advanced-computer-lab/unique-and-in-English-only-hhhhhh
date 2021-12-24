@@ -22,6 +22,32 @@ const client = new MongoClient(Db, {
   useUnifiedTopology: true,
 });
  //nodemailer
+ async function confirmPaymentMail(email,paidValue){
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: mail,
+      pass: mailpass
+    }
+  })
+  var mailOptions = {
+    from: mail,
+    to: email,
+    subject: 'Payment Confirmed',
+    text: `The Reservation Has Been Confirmed Successfully , Amountpaid:${paidValue}`,
+    attachments: [{
+      filename: 'confirmed.jpg',
+      path: "./db/confirmed.jpg",
+      cid: 'unique@cid'
+  }]
+  }
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  })}
 async function cancellationMail(email,refundValue){
   var transporter = nodemailer.createTransport({
     service: 'gmail',
