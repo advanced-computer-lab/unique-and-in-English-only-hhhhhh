@@ -31,8 +31,8 @@ import FacebookLogin from './components/FacebookLogin';
 
 
 function App(props) {
-  console.log(localStorage.getItem('type'));
-  console.log(localStorage.getItem('username'));
+  console.log("type "+ localStorage.getItem('type'));
+  console.log("username "+ localStorage.getItem('username'));
    //console.log(localStorage.getItem('user token'));
   return (
    <Router>   

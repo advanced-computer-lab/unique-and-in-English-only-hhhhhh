@@ -14,13 +14,15 @@ function Facebook() {
   const responseFacebook = (response) => {
     console.log(response);
     setData(response);
+    console.log(response.name);
     setPicture(response.picture.data.url);
+
       localStorage.setItem('username', response.name);
       localStorage.setItem('user token', response.accessToken);
       localStorage.setItem('type', "User");
       setLogged(true);
       setUsername(response.name);
-      setFinish(true);
+      //setFinish(true);
     if (response.accessToken) {
       setLogin(true);
     } else {
