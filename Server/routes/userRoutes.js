@@ -71,6 +71,13 @@ router.route('/checkout').
 post(async (req,res)=>{
     userController.checkout(req,res);
 })
+router.route('/createToken').post((req,res) => {
+    userController.createToken(req,res);
+})
+router.route('/createCharge').post((req,res) => {
+  userController.createCharge(req,res);
+})
+
 router.route('/test').get(async (req,res)=>{
     userController.test(req,res);
 });

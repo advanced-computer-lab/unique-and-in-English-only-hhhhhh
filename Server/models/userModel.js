@@ -38,7 +38,12 @@ module.exports={// this wil be edited
         }
        DB.userAuthenticate(user,pass,res);
     
-    },tokenCheck: async function(req,res){
+    },
+    register: async function(req,res){
+const user=req.body;
+DB.register(user,res);
+    }
+    ,tokenCheck: async function(req,res){
        DB.checkToken(req,res);
     },deleteToken:async function(req,res){
         DB.deleteToken(req,res);
@@ -84,7 +89,8 @@ module.exports={// this wil be edited
         await DB.updateSensitiveUserInfo(req.body.userName,req.body.password,{ $set: req.body.update},res);
     },
     login: async function(req,res){
-        await DB.login(req.body,res);
+        const userLoggingIn=req.body;
+        await DB.login(userLoggingIn,res);
     },
     viewSummary: async function(req,res){
         await DB.viewSummary(req,res);
@@ -113,11 +119,10 @@ module.exports={// this wil be edited
     checkout: async function(req,res){
         DB.checkout(req.body,res);
     },
-    createToken:async function(req,res){
+    createToken: async function(req,res){
         DB.createToken(req,res);
-    }
-    ,
-    createCharge:async function(req,res){
+    },
+    createCharge: async function(req,res){
         DB.createCharge(req,res);
     },
     createRefund:async function(req,res){
@@ -126,4 +131,5 @@ module.exports={// this wil be edited
     listCharges:async function(req,res){
         DB.listCharges(req,res);
     }
+    
 }

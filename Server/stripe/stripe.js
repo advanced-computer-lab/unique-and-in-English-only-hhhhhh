@@ -1,4 +1,4 @@
-const StripeModule = require('stripe')('sk_test_51K9UegHIfMEdH3Ly57sMBqK371yyzEQDPhJMH5OzQuSxNS2bHZeT5NmKwbARtAbnWKfAwVTveThrBQPqTMfwyYfU009WIdQbc7');
+const StripeModule = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 module.exports = {
     //create a token function
     _createToken : function(req,res){
@@ -49,5 +49,5 @@ module.exports = {
             res(err,data);
         })
     }
-    
-}
+
+} 
