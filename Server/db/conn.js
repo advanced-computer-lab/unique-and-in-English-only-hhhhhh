@@ -666,7 +666,7 @@ signUp:async function(user,res){
       console.log(err);
     }
   },
-  readFlightSeats: async function (_id,res){
+  readFlightSeats: async function (_id, reservedSeats ,res){
     try{
       var flightSeats = [];
       console.log(mongoose.Types.ObjectId(_id));
@@ -690,7 +690,9 @@ signUp:async function(user,res){
         var seatObject = {
           id : businessSeats[0]['businessSeats'][i]['id'],
           number:  businessSeats[0]['businessSeats'][i]['id'],
-          isReserved : businessSeats[0]['businessSeats'][i]['isReserved']
+          isReserved : reservedSeats.includes(businessSeats[0]['businessSeats'][i]['id'] + "") ? false : businessSeats[0]['businessSeats'][i]['isReserved'],
+          isSelected : reservedSeats.includes(businessSeats[0]['businessSeats'][i]['id'] + "") ? true : false
+
         }
         row.push(seatObject);
       }
@@ -715,7 +717,8 @@ signUp:async function(user,res){
         var seatObject = {
           id : ecoSeats[0]['ecoSeats'][i]['id'],
           number : ecoSeats[0]['ecoSeats'][i]['id'],
-          isReserved : ecoSeats[0]['ecoSeats'][i]['isReserved']
+          isReserved : reservedSeats.includes(ecoSeats[0]['ecoSeats'][i]['id']+"") ? false : ecoSeats[0]['ecoSeats'][i]['isReserved'],
+          isSelected : reservedSeats.includes(ecoSeats[0]['ecoSeats'][i]['id']+"") ? true : false
         }
         row.push(seatObject);
       }

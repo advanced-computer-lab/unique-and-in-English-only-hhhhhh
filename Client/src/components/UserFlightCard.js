@@ -10,12 +10,24 @@ import AirplaneTicketRoundedIcon from '@mui/icons-material/AirplaneTicketRounded
 import SendIcon from '@mui/icons-material/Send';
 import ConfirmDialog from './ConfirmDialog'
 import Notification from './Notification'
+import SeatParent from './SeatParent';
 import axios from 'axios';
 
 
 const UserFlightCard = (props) => {
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
+    const [ openSeats , setOpenSeats ]= React.useState(false);
+    const [selected , setSelected ]= React.useState(props.seats);
+    const [chosenCabine , setChosenCabine ] = React.useState( props.cabinClass);
+    const [ triggerEditSeats , setTriggerEditSeats ] = React.useState(false)
+
+    React.useEffect( () => {
+      setSelected(props.seats);
+      setChosenCabine(props.cabinClass);
+      console.log(selected);
+      console.log(chosenCabine);
+    } , [props.seats , props.cabinClass] );
 
     const handleCancel = () =>{
         setConfirmDialog({
@@ -25,6 +37,11 @@ const UserFlightCard = (props) => {
             onConfirm: () => { cancelReservation() }
         })
     };
+    const editReservation = () =>{
+      console.log(selected)
+      setOpenSeats(true);
+  };
+
     const cancelReservation = async() => {
         setConfirmDialog({
             ...confirmDialog,
@@ -139,13 +156,17 @@ const UserFlightCard = (props) => {
             </Typography>
             </div>
             </div>
-          </CardContent>
-          
-          <CardActions className="flex justify-between mr-2 mb-2">
-          <Typography  variant="caption" color="text.secondary">
+            <Typography  variant="caption" color="text.secondary">
           { (props.cabinClass === 'business')? "2*32KG" : "1*23KG" }
             </Typography>
+          </CardContent>
+          
+          <CardActions className="flex justify-between mx-2 mb-2">
+          
+            
             <Button sx={{borderRadius: 5}} variant="contained" color="error" size="small" onClick={handleCancel}>Cancel Booking</Button>
+            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={editReservation}>Edit The Flight</Button>
+            
           </CardActions>
         </Card>
 
@@ -158,6 +179,16 @@ const UserFlightCard = (props) => {
                 notify={notify}
                 setNotify={setNotify}
             />
+
+          {  openSeats? <SeatParent
+        open={openSeats}
+        maxNumber = { 100000 }
+        close={ (boolean ) => {  setOpenSeats(boolean);} }
+        toBeChanged = {selected}
+        //sendSeats = { (selected) => { handleReservation(selected); console.log(selected); } } 
+        flightNumber = { props._id }
+        Class = { chosenCabine } 
+        /> : <></>}
         </div>
       );
 }

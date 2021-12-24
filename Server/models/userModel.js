@@ -96,7 +96,7 @@ module.exports={// this wil be edited
 
     },
     readFlightSeats: async function(req,res){
-        await DB.readFlightSeats(req.body._id,res);
+        await DB.readFlightSeats(req.body._id, req.body.reservedSeats ,res);
     },
     viewMyReservations: async function(req,res){
         

@@ -34,15 +34,21 @@ const style = {
   const [reachedMax , setReachedMax ] = React.useState( false );
   const [seats , setSeats] = React.useState([]);
   const [index , setIndex ] = React.useState(0);
+  const[ reachedSeats , setReachedSeats] = React.useState( false );
 
   React.useEffect( async() => {
    const flight = {
-    _id : props.flightNumber
+    _id : props.flightNumber ,
+    reservedSeats : props.toBeChanged == null ? selected : props.toBeChanged , 
    };
+   console.log(flight._id);
+   console.log(props.toBeChanged);
     await axios.post('http://localhost:8000/user/readFlightSeats', flight)
         .then(result => {
           setSeats(result.data.flightSeats);
           setIndex(result.data.index)
+          console.log(result.data.flightSeats);
+          setReachedSeats(true);
         }).catch(err => {
            setNotify({
             isOpen: true,
@@ -50,8 +56,30 @@ const style = {
             type: 'error'
         });
       });
+      console.log(seats);
+      
+    
     console.log("reRun");
   } , [ reRun , selected , reachedMax , props.flightNumber ]   );
+
+  const checkAndEdit = () => {
+     setSeats( seats.map((row) => {
+      if ( row.length != 0)
+      row.map( (seat) => {
+        if (seat != null){ 
+        if ( props.toBeChanged.includes(seat["id"] + "" || seat["id"]) ){
+          console.log(seat);
+          seat["isReserved"] = false;
+          seat["isSelected"] = true;
+        }
+      }
+      return seat ;
+      });
+      return row ;
+    })
+     )
+     console.log(seats);
+  };
 
 // , [ reRun , selected , reachedMax ] 
   const handleSeatReservation = () => {
@@ -103,7 +131,14 @@ const style = {
          <Box sx={style}>
     <div className="w-1/2">
         <div className="w-full flex justify-center my-16">
-      <Seat setSelected={setSelected} maxNumber={props.maxNumber} seat={(props.Class=='economic')?seats.slice(index , seats.length) : seats.slice(0,index) }/>
+          {
+            reachedSeats?
+            <Seat setSelected={setSelected} maxNumber={props.maxNumber}
+      seat={  (props.Class=='economic')?  seats.slice(index , seats.length) : seats.slice(0,index) }
+/>
+: <></>
+          }
+    
         </div>
       <div className="">
         <div className="w-full flex justify-center"> 
