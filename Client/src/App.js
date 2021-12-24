@@ -26,11 +26,13 @@ import Ticket from './components/Ticket';
 import ReservationSummaryParent from './components/ReservationSummaryParent';
 import AdminLogin from './components/AdminLogin';
 import Progress_Bar from './components/ProgressBar/Progress_Bar';
+import FacebookLogin from './components/FacebookLogin';
 
 
 
 function App(props) {
   console.log(localStorage.getItem('type'));
+  console.log(localStorage.getItem('username'));
    //console.log(localStorage.getItem('user token'));
   return (
    <Router>   
@@ -76,7 +78,12 @@ function App(props) {
 </>
 :
 <>
+<Route path="/loginfacebook">
+
+  
+</Route>
 <Route path="/login">
+
   <Login/>
 </Route>
 <Route path="/adminLogin">

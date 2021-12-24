@@ -19,6 +19,9 @@ import { Alert } from '@mui/material';
 import App from '../App';
 import { Redirect } from 'react-router';
 import { render } from 'react-dom';
+import FacebookLogin from './FacebookLogin';
+
+         
 
 
 
@@ -172,6 +175,7 @@ else {
             >
               Log In
             </Button>
+            <FacebookLogin/>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="/signup" variant="body2">
