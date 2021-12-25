@@ -47,7 +47,7 @@ export default function SignUp2() {
       setError(true);}
     else{
       if(password != confirmPassword){
-        alert("dopasidug");
+        alert("not equal");
       }
       else{
       const newUser = {
