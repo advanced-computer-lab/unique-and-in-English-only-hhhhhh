@@ -612,6 +612,8 @@ signUp:async function(user,res){
               "message":"failed",
               "data": null
           };
+          res.status(500).send("u r broke");
+          return;
         }
         else{
           tokenData = {
@@ -632,11 +634,14 @@ signUp:async function(user,res){
           }
           var chargeRes;
           Stripe._createCharge(chargeData,function(err,result){
-            if(err)
+            if(err){
               chargeRes = {
                 "message":"failed",
                 "data": null
               };
+              res.status(500).send("u r broke");
+              return;
+            }
               else{
               chargeRes = {
                 "message":"Charged Successfully",
@@ -656,6 +661,7 @@ signUp:async function(user,res){
       //make the seats busy
       reserveFlightSeats(reservation.departureFlightId,reservation.departureSeats);
       reserveFlightSeats(reservation.returnFlightId,reservation.returnSeats);
+      console.log(reservation.username);
       const email = (await User.findOne({userName:reservation.username})).email;
       console.log("email"+email);
       const reservationEmail = {
@@ -674,6 +680,8 @@ signUp:async function(user,res){
       confirmPaymentMail(email,reservation.totalPrice,reservationEmail,"pay",0);
   }
   catch(err){
+    unreserveSeats(reservation.departureFlightId,reservation.departureSeats);
+    unreserveSeats(reservation.returnFlightId,reservation.returnSeats);
     console.log(err);
   }
   },

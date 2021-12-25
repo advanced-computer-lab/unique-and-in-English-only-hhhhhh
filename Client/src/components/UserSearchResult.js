@@ -75,7 +75,7 @@ const UserSearchResult = (props) => {
     const sendTheReservation = async() => {
         //await axios.post('http://localhost:8000/user/checkout')
         setBody({
-            username:"konar",
+            username:localStorage.getItem('username'),
             cabinClass:  props.history.location.state.Class ,
             departureFlightId: departureId,
             departureSeats: departureSeats.split(','),

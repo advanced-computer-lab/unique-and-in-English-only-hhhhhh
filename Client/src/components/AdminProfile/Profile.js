@@ -11,7 +11,7 @@ const Profile = () => {
     useEffect( async () => {
 
             const username = { 
-                userName : 'konar'
+                userName : localStorage.getItem('username')
             };
 
           await axios.post('http://localhost:8000/user/viewUserInfo' , username)

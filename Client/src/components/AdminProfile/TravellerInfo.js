@@ -33,7 +33,7 @@ const TravellerInfo = ( props ) => {
      const handleSubmit = async (event) => {
       event.preventDefault();
        const user = {
-        userName: "konar",
+        userName: localStorage.getItem('username'),
         update:{
             firstName: firstName,
             lastName: lastName,

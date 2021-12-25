@@ -7,7 +7,7 @@ import Ticket from '../Ticket'
 const ReservedFlights = () => {
     
     const [ flights , setFlights ] = React.useState([]);
-    const [ user , setUser ]= React.useState({username: "konar"});
+    const [ user , setUser ]= React.useState({username: localStorage.getItem('username')});
 
     React.useEffect( async() => {
 

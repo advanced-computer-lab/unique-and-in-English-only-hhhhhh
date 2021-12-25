@@ -99,7 +99,7 @@ const ReservationSummaryParent = (props) => {
         totalPrice = {props.history.location.state.reservation.totalPrice}
         seatsCount = { props.history.location.state.reservation.departureSeats.length}
         type = "Departure Flight"
-        passengerName = 'Konar'
+        passengerName = {localStorage.getItem('username')}
         />
         <Typography sx={{ display: "flex",justifyContent: "center" , width: "100%" , marginY: "5px"}} variant="h3"> Return Flight </Typography>
         <ReservationSummary
@@ -118,7 +118,7 @@ const ReservationSummaryParent = (props) => {
         totalPrice = {props.history.location.state.reservation.totalPrice}
         seatsCount = { props.history.location.state.reservation.returnSeats.length}
         type = "Return Flight"
-        passengerName = 'Konar'
+        passengerName = {localStorage.getItem('username')}
         />
          <Typography sx={{ display: "flex",justifyContent: "center" , width: "100%" , marginY: "5px" , color:"black"}}  variant="h3">
               Total Price: { props.history.location.state.reservation.totalPrice } EGP </Typography>

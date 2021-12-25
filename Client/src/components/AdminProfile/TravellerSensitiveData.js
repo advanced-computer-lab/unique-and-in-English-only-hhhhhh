@@ -24,7 +24,7 @@ const TravellerSensitiveData = (props) => {
     event.preventDefault();
     var match = true ;
      const user = {
-      userName: "konar",
+      userName: localStorage.getItem('username'),
       password: oldPassword,
       update:{
         password: newPassword,
