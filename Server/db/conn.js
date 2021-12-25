@@ -766,38 +766,32 @@ signUp:async function(user,res){
         // console.log("before" + update.departureSeats);
         // console.log("oldReservation.departureFlightId" + oldReservation.departureFlightId)
         // console.log("oldDepartureSeats"+oldDepartureSeats);
-        if(update.departureSeats != "" && update.departureSeats){
-          unreserveSeats(oldReservation.departureFlightId,oldDepartureSeats);
-          reserveFlightSeats(departureFlightId,update.departureSeats);
-          if(oldReservation.cabinClass=="economic"){
-
-          }else if(oldReservation.cabinClass=="business"){
-
-          }else{
-
-          }
-          const oldPrice = (oldReservation.cabinClass=="economic") ? 
+        const oldPrice = (oldReservation.cabinClass=="economic") ? 
           (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).economicSeatPrice:
           (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).businessSeatPrice;
-          const newPrice = (update.cabinClass=="economic") ? 
-          (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).economicSeatPrice:
-          ((update.cabinClass == "business")?(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice:
-          (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).oldReservation.cabinClass);
-          console.log(newPrice);
-          newTotalPrice = newTotalPrice + update.departureSeats.length*newPrice - oldDepartureSeats.length*oldPrice;
-          console.log(newTotalPrice);
+        var newPrice;
+        if(update.cabinClass=="economic"){
+          newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).economicSeatPrice;
         }
-        if(update.returnSeats != "" && update.returnSeats){
-          unreserveSeats(oldReservation.returnFlightId,oldReturnSeats);
-          reserveFlightSeats(returnFlightId,update.returnSeats);
-          const oldPrice = (oldReservation.cabinClass=="economic") ? 
-          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.returnFlightId)})).economicSeatPrice:
-          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.returnFlightId)})).businessSeatPrice;
-          const newPrice = (update.cabinClass=="economic") ? 
-          (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).economicSeatPrice:
-          (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).businessSeatPrice;
-          newTotalPrice = newTotalPrice + update.returnSeats.length*newPrice - oldReturnSeats.length*oldPrice;
+        else{
+          if(update.cabinClass == "business"){
+            newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice;
+          }
+          else{
+            if(oldReservation.cabinClass=="economic"){
+              newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).economicSeatPrice;
+            }
+            else{
+              newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice;
+            }
+
+          }
+
         }
+        newTotalPrice = newTotalPrice + update.departureSeats.length*newPrice - oldDepartureSeats.length*oldPrice;
+
+       
+          
         update["departureFlightId"] = departureFlightId;
         update["returnFlightId"] = returnFlightId;
         update["cabinClass"] = (update["cabinClass"]=="" || !update["cabinClass"])? oldReservation.cabinClass:update["cabinClass"];
@@ -810,7 +804,7 @@ signUp:async function(user,res){
         if (err)
           res.status(500).send(err);
         // console.log(result);
-        res.status(200).send(difference);});
+        res.status(200).send({difference: difference});});
       }
       catch(err){
         console.log(err);
