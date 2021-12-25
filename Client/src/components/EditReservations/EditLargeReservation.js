@@ -106,40 +106,30 @@ React.useEffect( async()=>{
                 returnSeats: type == "Departure Flight"? "" : seats.split(',').map( item => item = parseInt(item)),
             }
         }
-        await axios.post( 'http://localhost:8000/user/updateReservation' , update).then( res => {
-            console.log(res);
-            alert("reservation edited");
-          }).catch( err => {
-            alert("reservation edited failed");
-          });
+        props.theUpdate(update);
+        props.isComp(true);
+        
           setTerminateUseEffect(true);
     }
 } )
-const triggerCredit = () => {
-    props.showCredit( !credit); 
-    setCredit( !credit);
-}
-
-
-
 
     return (
         <>
         <div className='my-32'>
 
-<div className='flex justify-center'>
+{/* <div className='flex justify-center'>
                 <Button 
                 variant="contained"
                 color="success"
                 sx={{ marginX: 3}} 
-                onClick={ triggerCredit }>
+                >
                     Confirm The Edit
                 </Button>
 
                 <Button variant="contained"  color="error" sx={{ marginX: 3}}>
                     Cancel
                 </Button>
-            </div>
+            </div> */}
 
             
 <div className='flex justify-center my-12'>

@@ -12,7 +12,9 @@ import SeatParent from './SeatParent';
 import axios from 'axios';
 import { Box } from '@mui/system';
 import EditLargeReservation from './EditReservations/EditLargeReservation'
+import EditSmallReservation from './EditReservations/EditSmallReservation'
 import CreditCard from './CreditCard/CreditCard'
+import GeneralEditReservation from './EditReservations/GeneralEditReservation'
 import { Typography , Button, Alert } from '@mui/material'
 
 
@@ -33,6 +35,8 @@ const UserFlightCard = (props) => {
     const [severity,setSeverity] = React.useState("");
     const [error, setError] = React.useState(false);
     const [ alert , setAlert ] = React.useState( false );
+    const [ isCompelet , setIsCompelet ] = React.useState( false );
+
 
     const style = {
       display: 'flex',
@@ -112,12 +116,30 @@ const UserFlightCard = (props) => {
      
 
   };
-  const test1 = async() =>{
-    setOpenSeats(true);
+  const sendEmail = async () =>{
+
+    const reservation = {
+      reservationId : props.reservationId 
+    }
+    await axios.post( 'http://localhost:8000/user/emailreservation' , reservation).then( res => {
+      console.log(res);
+      setNotify({
+        isOpen: true,
+        message: 'Email Sent ',
+        type: 'success'
+    });
+    }).catch( err => {
+      setNotify({
+        isOpen: true,
+        message: 'Error with Sending E-mail ',
+        type: 'error'
+    });
+    });
 };
 
 const test2 = () => {
   setOpenEditFlight( true );
+  setIsCompelet(false);
 }
 const handleClose = () =>{
 setOpenEditFlight(false);
@@ -247,8 +269,8 @@ setOpenEditFlight(false);
           
             
             <Button sx={{borderRadius: 5}} variant="contained" color="error" size="small" onClick={handleCancel}>Cancel Booking</Button>
-            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={ test1 }>Edit The Flight</Button>
-            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={test2}>test</Button>
+            <Button sx={{borderRadius: 5}} variant="contained" color="info" size="small" onClick={ sendEmail }>Send Me E-Mail</Button>
+            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={ test2 }>Edit The Flight</Button>
           </CardActions>
         </Card>
 
@@ -278,8 +300,9 @@ setOpenEditFlight(false);
         aria-describedby="transition-modal-description"
         className="modal"
         {...props}
-        open={openEditFlight}
+        open={ openEditFlight }
         onClose= {handleClose}
+
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -288,16 +311,27 @@ setOpenEditFlight(false);
       >
          <Fade in={openEditFlight}>
          <Box sx={style}>
-          <EditLargeReservation
-          reservationId = { props.reservationId }
-          _id = {props._id}
-          departure = {props.departureAirportTerminal}
-          return = {props.arrivalAirportTerminal}
-          departureDate={props.travelDate}
-          returnDate={props.returnDate}
-          cabinClass = {props.cabinClass}
-          type = {props.type}
-          showCredit = {(boolean) => setCreditTrigger( boolean) }
+           <GeneralEditReservation
+           // for small reservation " Seats "
+           seats = { props.seats }
+           cabinClass = { props.cabinClass}
+           type = { props.type }
+           _id = { props._id }
+           reservationId = { props.reservationId }
+
+          // for Large reservation " Whole flight "
+           reload = { (val) => props.reload(val)}
+           openwind = { creditTrigger }
+           reservationId = { props.reservationId }
+           //_id = {props._id}
+           departure = {props.departureAirportTerminal}
+           return = {props.arrivalAirportTerminal}
+           departureDate={props.travelDate}
+           returnDate={props.returnDate}
+           //cabinClass = {props.cabinClass}
+           //type = {props.type}
+           showCredit = {(boolean) => setCreditTrigger( boolean) }
+           isComp = { (boolean) => {setIsCompelet(boolean)}}
            />
 {
   creditTrigger ? 

@@ -754,6 +754,8 @@ signUp:async function(user,res){
         const db = client.db("AirlineDB");
         const col = db.collection("reservations");
         const oldReservation = await Reservation.findOne({_id: mongoose.Types.ObjectId(_id)});
+        // console.log( oldReservation.departureSeats );
+        // console.log( oldReservation );
         const oldDepartureSeats = oldReservation.departureSeats;
         const oldReturnSeats = oldReservation.returnSeats;
         const oldTotalPrice = oldReservation.totalPrice;

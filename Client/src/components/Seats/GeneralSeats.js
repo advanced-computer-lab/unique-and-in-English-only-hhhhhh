@@ -3,8 +3,8 @@ import { Alert, Button, Typography, Modal , Fade, Backdrop } from "@mui/material
 import { Box } from "@mui/system";
 import axios from "axios";
 import React from "react";
-import Notification from "./Notification";
-import Seat from "./Seat";
+import Notification from "../Notification";
+import Seat from "../Seat";
 
 const style = {
   display: 'flex',
@@ -37,6 +37,7 @@ const style = {
   const[ reachedSeats , setReachedSeats] = React.useState( false );
 
   React.useEffect( async() => {
+    console.log( props.Class);
    const flight = {
     _id : props.flightNumber ,
     reservedSeats :selected , 
@@ -58,7 +59,7 @@ const style = {
       });
     
     console.log("reRun");
-  } , [ reRun  , reachedMax , props.flightNumber ]   );
+  } , [ reRun  , reachedMax , props.flightNumber , props.Class , props.toBeChanged]   );
 
   const handleSeatReservation = () => {
     if ( selected.length < props.maxNumber && props.toBeChanged == null ){
@@ -86,7 +87,6 @@ const style = {
   // ( props.Class === 'business' )? seats.slice(0,index) : seats.slice(index+1 , seats.length)
   return (
     <>
-         <Box sx={style}>
     <div className="w-1/2">
         <div className="w-full flex justify-center my-16">
           {
@@ -107,7 +107,6 @@ const style = {
         </div>
       </div>
     </div>
-    </Box>
     <Notification
                 notify={notify}
                 setNotify={setNotify}
