@@ -44,3 +44,30 @@
 #Ali Helmy#
 - handling the delete functionality- backend
 - sending email to the user upon reservation cancel
+
+##sprint 3##
+
+#Zeyad Elsaed# 
+- editing reservation- front end
+- payment with Stripe- front end
+
+#Mohamed Mahmoud Abdulatif# 
+- Functionality seperation between different users- front end
+- calculating the refund amount when updating reservation- back end
+- password encryption- back end
+
+
+#Mahmoud Ahmed Abdelkhaleq#
+- editing reservation - back end
+- front end error handeling 
+- password encryption- back end
+
+#Omar Osama#
+- Sending email to user upon confirming, editing & on demand- back end
+- User & admin authentication- back end
+- readme documentation
+ 
+#Ali Helmy#
+- Stripe API- back end
+- Login with Facebook- front & back end
+
