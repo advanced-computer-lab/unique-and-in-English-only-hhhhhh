@@ -98,7 +98,7 @@ post(async (req,res)=>{
     userController.searchImage(req,res);
 })
 router.route('/getUpdateDiff').
-get(async (req,res)=>{
+post(async (req,res)=>{
     // console.log(req.body.query);
     userController.getUpdateDiff(req,res);
 })
