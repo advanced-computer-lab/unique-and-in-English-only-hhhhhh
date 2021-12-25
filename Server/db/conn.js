@@ -675,7 +675,7 @@ signUp:async function(user,res){
         departureTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).departureAirportTerminal,
         departureTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).arrivalAirportTerminal,
         returnTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).departureAirportTerminal,
-        returnTerminal:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalAirportTerminal
+        returnTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalAirportTerminal
       }
       confirmPaymentMail(email,reservation.totalPrice,reservationEmail,"pay",0);
   }
