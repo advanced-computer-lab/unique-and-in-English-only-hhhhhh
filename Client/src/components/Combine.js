@@ -44,8 +44,10 @@ const Combine = () => {
 
       useEffect( async () => {
       if (flag) {
+        //console.log(allState);
         await axios.get('http://localhost:8000/admin/readFlight')
         .then(result => {
+          console.log(allState);
           console.log( result);
           setAllState(result.data);
         }).catch(err => {
@@ -61,8 +63,9 @@ const Combine = () => {
         console.log(newValue);
          await axios.post('http://localhost:8000/admin/readFlight' , newValue)
         .then((result) => {
-          console.log(result.data);
+          //console.log(result.data);
           setAllState(result.data);
+          console.log(allState);
           setNotify({
             isOpen: true,
             message: 'Search Successfully',
@@ -153,6 +156,7 @@ const Combine = () => {
 >
 { 
     allState.map((oneElement) =>
+    <div>
     <Grid key={oneElement.flightNumber}  item xs={4} sx={{minWidth: "450px"}}>
 
     <FlightCard
@@ -169,8 +173,7 @@ const Combine = () => {
    DeleteData={ (deleted) => handleDeleted(deleted) }
    />
     </Grid>
-
-
+    </div>
  )}
 </Grid>
 

@@ -152,6 +152,7 @@ else {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  error = {error && password == ""}
                   onChange={ e => { setPassword(e.target.value); setMessage({isVisible:false, message:""});}}
                 />
               </Grid>

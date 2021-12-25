@@ -88,9 +88,9 @@ function App(props) {
 <Route path="/signup">
   <SignUp2 />
 </Route>
-<Route path="/*">
+{/* <Route path="/*">
   <Error />
-</Route>
+</Route> */}
 
 </>
 
