@@ -68,5 +68,8 @@ module.exports = {
     searchImage: async function(req,res){
         userModel.searchImage(req,res)
     },
+    getUpdateDiff: async function(req,res){
+        userModel.getUpdateDiff(req,res);}
+    ,
     
 }

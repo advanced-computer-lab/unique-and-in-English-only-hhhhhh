@@ -126,5 +126,8 @@ module.exports={// this wil be edited
     },
     searchImage:async function(req,res){
         DB.searchImage(req.body.query,res);
-    }
+    },
+    getUpdateDiff: async function(req,res){
+        await DB.getUpdateDiff(req.body._id,req.body.update,res);
+    },
 }
