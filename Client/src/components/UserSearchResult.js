@@ -30,7 +30,7 @@ const UserSearchResult = (props) => {
     const [ percent,setPercent] = React.useState(0);
     const [image_url_dep , setImage_url_dep] = React.useState('');
     const [image_url_arr , setImage_url_arr] = React.useState('');
-
+    const [noFlights, setNoFlights] = React.useState(false);
            
     React.useEffect(() => {
         setFoundTheFlight(false);
@@ -48,6 +48,8 @@ const UserSearchResult = (props) => {
       } , [ props.history.location.state.flights , props.history.location.state.Class ,  props.history.location.state.maxNumber ] );
 
       React.useEffect( async() => {
+        console.log(localStorage.getItem("noFlight"));
+        if(!localStorage.getItem("noFlight")){
         const search_arr = {
           query : props.history.location.state.flights.departureFlights[0].arrivalAirportTerminal
         };
@@ -69,7 +71,7 @@ const UserSearchResult = (props) => {
           }).catch(err => {
             console.log(err);
           });
-        
+        }
        } , [props.history.location.state.flights]  );
 
     const sendTheReservation = async() => {
@@ -92,15 +94,18 @@ const UserSearchResult = (props) => {
             await axios.post('http://localhost:8000/user/readFlightById', departueF)
                    .then(result => {
                      setDepartureFlight(result.data);
+                     if(result.data.length==0)setNoFlights(true);
+                     console.log(noFlights);
                      }).catch(err => {
                      alert("Departure Successfully didn't Fetch " + err );
                      });
             await axios.post('http://localhost:8000/user/readFlightById', returnF)
                    .then(result => {
                      setReturnFlight(result.data);
+                     if(result.data.length==0)setNoFlights(true);
                      }).catch(err => {
                      alert("Return Successfully didn't Fetch " + err );
-                     });            
+                     });           
                      setFoundTheFlight(true);
                 };     
     
@@ -147,7 +152,8 @@ const UserSearchResult = (props) => {
     <Progress_Bar percent={percent}/>
 </div>
 
-{ !choseDeparture ? 
+{
+   !choseDeparture ? 
     (props.history.location.state.flights.departureFlights).map((oneElement) =>
     <UserSearchFlight
    _id = {oneElement._id}
@@ -192,6 +198,10 @@ const UserSearchResult = (props) => {
    />
     )
 }
+    {/* {
+      localStorage.getItem("noFlight") ? <h1 className = "w-full flex justify-center ml-3 mt-8">No Flights Found for desired criteria</h1>:<div></div>
+    } */}
+
 
 { foundTheFlight ?
             <Redirect
