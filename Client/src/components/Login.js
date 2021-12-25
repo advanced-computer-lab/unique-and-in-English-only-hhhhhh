@@ -106,13 +106,6 @@ if ( logged == true ) {
 
   return (
     window.location.href='/'
-
-    // <div>
-    // <App isLogged={true} userName={username}/>
-    // <Link href="/" variant="body2">
-    //               Go Back To Home Page
-    //   </Link>
-    //   </div>
 )
 }
 else {

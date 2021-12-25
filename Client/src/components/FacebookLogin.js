@@ -8,7 +8,7 @@ function Facebook() {
   const [login, setLogin] = useState(false);
   const [data, setData] = useState({});
   const [picture, setPicture] = useState('');
-  const [logged , setLogged ] = React.useState( true );
+  const [logged , setLogged ] = React.useState( false );
   const [finish, setFinish] = React.useState(false);
 
   const responseFacebook = (response) => {
@@ -22,14 +22,20 @@ function Facebook() {
       localStorage.setItem('type', "User");
       setLogged(true);
       setUsername(response.name);
-      //setFinish(true);
+      window.setTimeout( () => {setFinish(true)}, 5000);
+     
     if (response.accessToken) {
       setLogin(true);
     } else {
       setLogin(false);
     }
   }
+  if ( logged == true ) {
 
+    return (
+      window.location.href='/'
+  )}
+  else{
   return (
     <div class="container">
       <Card style={{ width: '600px' }}>
@@ -56,7 +62,7 @@ function Facebook() {
           </Card.Body>
         }
       </Card>
-      { finish ?
+      { finish?
       <Redirect
             to={{
             pathname: "/",
@@ -65,8 +71,8 @@ function Facebook() {
         /> : <></>
       }
     </div>
-    
-  );
+  
+  );}
 }
 
 export default Facebook;
