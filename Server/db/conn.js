@@ -26,6 +26,57 @@ const client = new MongoClient(Db, {
   useUnifiedTopology: true,
 });
  //nodemailer
+ async function confirmPaymentMail(email,paidValue, reservation, direction,diff){
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: mail,
+      pass: mailpass
+    }
+  })
+  const cabinClass = reservation.cabinClass;
+  const departureSeats = reservation.departureSeats;
+  const returnSeats = reservation.returnSeats;
+  const departureDate1 = reservation.departureDate1;
+  const departureDate2 = reservation.departureDate2;
+  const returnDate1 = reservation.returnDate1;
+  const returnDate2 = reservation.returnDate2;
+  const departureTerminal1 = reservation.departureTerminal1;
+  const departureTerminal2 = reservation.departureTerminal2;
+  const returnTerminal1 = reservation.returnTerminal1;
+  const returnTerminal2 = reservation.returnTerminal2;
+  var transaction = ""
+  if(direction=="refund"){
+    transaction = "Update effect \n Amount refunded: "+diff + "\n";
+  }
+  var mailOptions = {
+    from: mail,
+    to: email,
+    subject: 'Payment Confirmed',
+    text: `The Payment Has Been Confirmed Successfully , Amount Paid:${paidValue}\n ${transaction} Reservation Info\n
+    Class: ${cabinClass}\n
+    Departure Seats: ${departureSeats}\n
+    Return Seats:${returnSeats}\n 
+    Departure Flight \n 
+    Takes off on ${departureDate1} from ${departureTerminal1} Airport\n
+    Lands on ${departureDate2} on ${departureTerminal2} Airport \n
+    Return Flight \n
+    Takes off on ${returnDate1} from ${returnTerminal1} Airport \n
+    Lands on ${returnDate2} on ${returnTerminal2} Airport
+    `,
+    attachments: [{
+      filename: 'confirmed.jpg',
+      path: "./db/confirmed.jpg",
+      cid: 'unique@cid'
+  }]
+  }
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  })}
 async function cancellationMail(email,refundValue){
   var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -592,6 +643,22 @@ signUp:async function(user,res){
       //make the seats busy
       reserveFlightSeats(reservation.departureFlightId,reservation.departureSeats);
       reserveFlightSeats(reservation.returnFlightId,reservation.returnSeats);
+      const email = (await User.findOne({userName:reservation.username})).email;
+      console.log("email"+email);
+      const reservationEmail = {
+        cabinClass: reservation.cabinClass,
+        departureSeats: reservation.departureSeats,
+        returnSeats: reservation.returnSeats,
+        departureDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).departureDate,
+        departureDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).arrivalDate,
+        returnDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).departureDate,
+        returnDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalDate,
+        departureTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).departureAirportTerminal,
+        departureTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).arrivalAirportTerminal,
+        returnTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).departureAirportTerminal,
+        returnTerminal:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalAirportTerminal
+      }
+      confirmPaymentMail(email,reservation.totalPrice,reservationEmail,"pay",0);
   }
   catch(err){
     console.log(err);
@@ -795,8 +862,8 @@ signUp:async function(user,res){
           unreserveSeats(oldReservation.returnFlightId,oldReturnSeats);
           reserveFlightSeats(returnFlightId,update.returnSeats);
           const oldPrice = (oldReservation.cabinClass=="economic") ? 
-          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).economicSeatPrice:
-          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).businessSeatPrice;
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.returnFlightId)})).economicSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.returnFlightId)})).businessSeatPrice;
           if(update.cabinClass=="economic"){
             newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).economicSeatPrice;
           }
@@ -814,7 +881,9 @@ signUp:async function(user,res){
 
             }
           }
+          console.log(newPrice);
           newTotalPrice = newTotalPrice + update.returnSeats.length*newPrice - oldReturnSeats.length*oldPrice;
+          console.log(newTotalPrice);
         }
         update["departureFlightId"] = departureFlightId;
         update["returnFlightId"] = returnFlightId;
@@ -829,6 +898,28 @@ signUp:async function(user,res){
           res.status(500).send(err);
         // console.log(result);
         res.status(200).send("reservation updated");});
+        // email
+        const email = (await User.findOne({userName:oldReservation.username})).email;
+        console.log("email"+email);
+        const reservationEmail = {
+        cabinClass: update["cabinClass"],
+        departureSeats: update.departureSeats,
+        returnSeats: update.returnSeats,
+        departureDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).departureDate,
+        departureDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).arrivalDate,
+        returnDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).departureDate,
+        returnDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).arrivalDate,
+        departureTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).departureAirportTerminal,
+        departureTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).arrivalAirportTerminal,
+        returnTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).departureAirportTerminal,
+        returnTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).arrivalAirportTerminal
+      }
+      if(difference<0){
+        confirmPaymentMail(email,newTotalPrice,reservationEmail,"refund",-difference);
+      }
+      else{
+        confirmPaymentMail(email,newTotalPrice,reservationEmail,"pay",0);
+      }
       }
       catch(err){
         console.log(err);
@@ -935,6 +1026,26 @@ signUp:async function(user,res){
 
     },
     
+    emailReservation2:async function(reservationId,res){
+      const reservation = (await Reservation.findOne({_id:mongoose.Types.ObjectId(reservationId)}));
+        const email = (await User.findOne({userName:reservation.username})).email;
+        console.log("email"+email);
+        const reservationEmail = {
+        cabinClass: reservation["cabinClass"],
+        departureSeats: reservation.departureSeats,
+        returnSeats: reservation.returnSeats,
+        departureDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).departureDate,
+        departureDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).arrivalDate,
+        returnDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).departureDate,
+        returnDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalDate,
+        departureTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).departureAirportTerminal,
+        departureTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).arrivalAirportTerminal,
+        returnTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).departureAirportTerminal,
+        returnTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalAirportTerminal
+      }
+      confirmPaymentMail(email,reservation.totalPrice,reservationEmail,"pay",0);
+      res.status(200).send("email sent");
+    }
     
 };
 function generateAccessToken(user){

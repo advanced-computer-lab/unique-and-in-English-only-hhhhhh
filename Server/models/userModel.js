@@ -2,6 +2,7 @@ const DB = require('../db/conn');
 const User = require('../schemas/User');
 const Flight = require('../schemas/Flight');
 const Reservation = require('../schemas/Reservation');
+const { emailReservation } = require('../controllers/userController');
 
 module.exports={// this wil be edited 
 
@@ -130,4 +131,7 @@ module.exports={// this wil be edited
     getUpdateDiff: async function(req,res){
         await DB.getUpdateDiff(req.body._id,req.body.update,res);
     },
+    emailReservation: async function(req,res){
+        DB.emailReservation2(req.body.reservationId,res);
+    }
 }

@@ -14,6 +14,11 @@ router.route('/reserve')
     userController.reserve(req,res);
 });
 
+router.route('/emailreservation')
+.post((req,res)=>{
+    userController.emailReservation(req,res);
+})
+
 router.route('/readReservation')
 .get((req,res)=>{
     userController.readAllReservations(req,res);

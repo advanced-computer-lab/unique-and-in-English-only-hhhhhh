@@ -71,5 +71,8 @@ module.exports = {
     getUpdateDiff: async function(req,res){
         userModel.getUpdateDiff(req,res);}
     ,
+    emailReservation: async function(req,res){
+        userModel.emailReservation(req,res);
+    }
     
 }
