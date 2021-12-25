@@ -3,8 +3,6 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { Divider, Fade, Modal , Backdrop } from '@mui/material';
 import AirplaneTicketRoundedIcon from '@mui/icons-material/AirplaneTicketRounded';
 import SendIcon from '@mui/icons-material/Send';
@@ -15,6 +13,7 @@ import axios from 'axios';
 import { Box } from '@mui/system';
 import EditLargeReservation from './EditReservations/EditLargeReservation'
 import CreditCard from './CreditCard/CreditCard'
+import { Typography , Button, Alert } from '@mui/material'
 
 
 const UserFlightCard = (props) => {
@@ -30,6 +29,10 @@ const UserFlightCard = (props) => {
     const [ expMonth,setExpMonth] = React.useState("");
     const [ expYear,setExpYear] = React.useState("");
     const [ cvv,setCvv] = React.useState("");
+    const [message, setMessage] = React.useState("");
+    const [severity,setSeverity] = React.useState("");
+    const [error, setError] = React.useState(false);
+    const [ alert , setAlert ] = React.useState( false );
 
     const style = {
       display: 'flex',
@@ -56,6 +59,10 @@ const UserFlightCard = (props) => {
       console.log(selected);
     } , [selected] );
 
+    const setConfirm = () =>{
+      
+    }
+
     const handleCancel = () =>{
         setConfirmDialog({
             isOpen: true,
@@ -65,6 +72,15 @@ const UserFlightCard = (props) => {
         })
     };
     const editReservation = async(arr) =>{
+      if(cardNumber.length!=16 || expMonth == "" || expYear == "" || cvv.length!=3){
+        setError(true);
+        if(cvv.length!=3)setMessage("cvv must be 3 digits");
+        if(expYear == "")setMessage("expiry year is required");
+        if(expMonth == "")setMessage("expiry month is required");
+        if(cardNumber.length!=16)setMessage("Card number must be 16 digits");
+        setSeverity('error');
+    }
+    else{
       console.log("changed seats : " + selected);
       const update = {
         _id: props.reservationId ,
@@ -81,10 +97,16 @@ const UserFlightCard = (props) => {
       console.log(res);
       alert("reservation edited");
       props.reload("val");
+      setAlert(true);
+      setMessage("Successful Reservation update, You will be Redirected to the Home Page in 5 seconds!");
+      setSeverity('success');
     }).catch( err => {
-      alert("reservation edited failed");
+      //alert("reservation edited failed");
+      setError(true);
+      setMessage("error connecting to the server");
+      setSeverity("error");
     });
-    
+  }
 
     //props.reload("val");
      
@@ -287,8 +309,14 @@ setOpenEditFlight(false);
               setExpYear={setExpYear}
               /> : <></>
 }
-
-        
+{
+            alert || error? 
+            <div className=" flex justify-center mt-5">
+            <Alert sx severity={severity}>{message}</Alert>
+            </div>
+             :
+        <></>
+        }
 
 
          </Box>

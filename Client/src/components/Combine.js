@@ -53,7 +53,7 @@ const Combine = () => {
       });
        setFlag(false);
       }
-    } );
+    } ,[]);
 
     
      

@@ -774,7 +774,7 @@ signUp:async function(user,res){
           }else if(oldReservation.cabinClass=="business"){
 
           }else{
-            
+
           }
           const oldPrice = (oldReservation.cabinClass=="economic") ? 
           (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).economicSeatPrice:
@@ -810,7 +810,7 @@ signUp:async function(user,res){
         if (err)
           res.status(500).send(err);
         // console.log(result);
-        res.status(200).send("reservation updated");});
+        res.status(200).send(difference);});
       }
       catch(err){
         console.log(err);
