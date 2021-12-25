@@ -25,7 +25,7 @@ const GeneralEditReservation = (props) => {
   const [severity,setSeverity] = React.useState("");
   const [error, setError] = React.useState(false);
   const [ alert2 , setAlert2 ] = React.useState( false );
-  const [ diff , setDiff ] = React.useState(0);
+  const [ diff , setDiff ] = React.useState('');
   const [ credit , setCredit ] = React.useState(false);
 
   const pay = async() => {
@@ -58,14 +58,34 @@ const GeneralEditReservation = (props) => {
   }
 
   React.useEffect( async() => {
+    if(diff==="")
+      console.log("fddfgd");
+    
+
     if ( isCompelet ){
       console.log( diff );
       editReservation();
     }
     console.log(diff);
-    if ( diff != ''){
-      console.log( diff );
-      if ( diff > 0 ){
+    if ( diff !== ''){
+      if(diff ===0){
+        console.log("LOOOOOOOOOOOOOOOOOOOOOOOOOOOOL");
+        console.log( update );
+        await axios.post( 'http://localhost:8000/user/updateReservation' , update).then( res => {
+          console.log(res);
+          props.reload("val");
+          setAlert2(true);
+          setMessage("Successful Reservation update !");
+          setSeverity('success');
+        }).catch( err => {
+        console.log( "failed ")
+      
+        setError(true);
+        setMessage("error connecting to the server");
+        setSeverity("error");
+        });
+      }
+      else if ( diff > 0 ){
         setCredit(true);
         console.log( diff );
       }
@@ -95,7 +115,7 @@ const GeneralEditReservation = (props) => {
       console.log("here bitch "+ res.data.difference);
       setDiff(res.data.difference);
       console.log("here bitch2 "+ diff);
-      alert("I have Diff");
+      //alert("I have Diff");
     }).catch( err => {
       alert("I failed to have Diff");
     }); 
