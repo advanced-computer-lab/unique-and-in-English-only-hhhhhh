@@ -8,6 +8,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Button, IconButton } from '@mui/material';
 import axios from 'axios';
 import { Redirect } from 'react-router';
+import Progress_Bar from'./ProgressBar/Progress_Bar'
 
 
 
@@ -26,7 +27,10 @@ const UserSearchResult = (props) => {
     const [body , setBody] = React.useState();
     const [ departureFlight , setDepartureFlight ] = React.useState();
     const [ returnFlight , setReturnFlight ] = React.useState();
-
+    const [ percent,setPercent] = React.useState(0);
+    const [image_url_dep , setImage_url_dep] = React.useState('');
+    const [image_url_arr , setImage_url_arr] = React.useState('');
+    const [noFlights, setNoFlights] = React.useState(false);
            
     React.useEffect(() => {
         setFoundTheFlight(false);
@@ -40,11 +44,40 @@ const UserSearchResult = (props) => {
         setBody();
         setDepartureFlight();
         setReturnFlight();
+        
       } , [ props.history.location.state.flights , props.history.location.state.Class ,  props.history.location.state.maxNumber ] );
 
+      React.useEffect( async() => {
+        console.log(localStorage.getItem("noFlight"));
+        if(!localStorage.getItem("noFlight")){
+        const search_arr = {
+          query : props.history.location.state.flights.departureFlights[0].arrivalAirportTerminal
+        };
+        const search_dep = {
+          query : props.history.location.state.flights.departureFlights[0].departureAirportTerminal
+        };
+        await axios.post("http://localhost:8000/user/searchImage" , search_dep)
+        .then(res => {
+          console.log(res.data.image_URL);
+          setImage_url_dep(res.data.image_URL);
+          }).catch(err => {
+            console.log(err);
+          });
+    
+          await axios.post("http://localhost:8000/user/searchImage" , search_arr)
+        .then(res => {
+          console.log(res.data.image_URL);
+          setImage_url_arr(res.data.image_URL);
+          }).catch(err => {
+            console.log(err);
+          });
+        }
+       } , [props.history.location.state.flights]  );
+
     const sendTheReservation = async() => {
+        //await axios.post('http://localhost:8000/user/checkout')
         setBody({
-            username:"konar",
+            username:localStorage.getItem('username'),
             cabinClass:  props.history.location.state.Class ,
             departureFlightId: departureId,
             departureSeats: departureSeats.split(','),
@@ -61,15 +94,18 @@ const UserSearchResult = (props) => {
             await axios.post('http://localhost:8000/user/readFlightById', departueF)
                    .then(result => {
                      setDepartureFlight(result.data);
+                     if(result.data.length==0)setNoFlights(true);
+                     console.log(noFlights);
                      }).catch(err => {
                      alert("Departure Successfully didn't Fetch " + err );
                      });
             await axios.post('http://localhost:8000/user/readFlightById', returnF)
                    .then(result => {
                      setReturnFlight(result.data);
+                     if(result.data.length==0)setNoFlights(true);
                      }).catch(err => {
                      alert("Return Successfully didn't Fetch " + err );
-                     });            
+                     });           
                      setFoundTheFlight(true);
                 };     
     
@@ -94,7 +130,7 @@ const UserSearchResult = (props) => {
              <div className="w-full flex justify-between justify-items-end  mb-8 text-opacity-25">
                     <div/>
                     <Typography sx={{opacity: 0.7}}  variant="h3">Departure Flights  </Typography>
-                    <IconButton color="primary" onClick={() => {setChoseDeparture(true);}} disabled= { (departureSeats === '') }>
+                    <IconButton color="primary" onClick={() => {setChoseDeparture(true); setPercent(34);}} disabled= { (departureSeats === '') }>
                     <ArrowForwardIcon sx={{fontSize: 50, opacity: 0.7}} />
                     </IconButton>
 
@@ -103,7 +139,7 @@ const UserSearchResult = (props) => {
              </div>
               :
              <div className="w-full flex justify-between justify-items-start mb-8 text-opacity-25">
-                    <IconButton color="primary" onClick={() => {setChoseDeparture(false); }} disabled= { false  }>
+                    <IconButton color="primary" onClick={() => {setChoseDeparture(false); setPercent(0);}} disabled= { false  }>
                     <ArrowBackIcon sx={{fontSize: 50, opacity: 0.7}} />  
                     </IconButton>
                     
@@ -112,7 +148,12 @@ const UserSearchResult = (props) => {
              </div>
             }
 
-{ !choseDeparture ? 
+<div className='my-16 ml-40'>
+    <Progress_Bar percent={percent}/>
+</div>
+
+{
+   !choseDeparture ? 
     (props.history.location.state.flights.departureFlights).map((oneElement) =>
     <UserSearchFlight
    _id = {oneElement._id}
@@ -130,6 +171,8 @@ const UserSearchResult = (props) => {
    setId = { setDepartureId }
    setSeats = { setDepartureSeats }
    setPrice = { setDeparturePrice }
+   dep_img_url= {image_url_dep}
+   arr_img_url= {image_url_arr}
    />
     )
     :
@@ -150,9 +193,15 @@ const UserSearchResult = (props) => {
    setId = { setReturnId }
    setSeats = { setReturnSeats }
    setPrice = { setReturnPrice }
+   dep_img_url= {image_url_arr}
+   arr_img_url= {image_url_dep}
    />
     )
 }
+    {/* {
+      localStorage.getItem("noFlight") ? <h1 className = "w-full flex justify-center ml-3 mt-8">No Flights Found for desired criteria</h1>:<div></div>
+    } */}
+
 
 { foundTheFlight ?
             <Redirect

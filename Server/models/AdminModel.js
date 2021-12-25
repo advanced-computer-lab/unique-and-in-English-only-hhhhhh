@@ -3,7 +3,7 @@ const Flight = require('../schemas/Flight');
 
 module.exports={
    
-    authenticate: async function(req,res){
+    login: async function(req,res){
         const email = req.body.email;
         const password = req.body.password;
         var message ="";
@@ -17,7 +17,7 @@ module.exports={
             res.status(200).send(message);
             return;
         }
-      await DB.authenticate(email,password,res);
+      await DB.adminLogin(email,password,res);
 
     },
     createFlight: async function(req,res){

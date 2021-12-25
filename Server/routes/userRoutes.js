@@ -6,13 +6,18 @@ const userController = require('../controllers/userController');
 router.route('/login')
 .post((req,res)=>{
    
-    userController.authenticate(req,res);
+    userController.login(req,res);
 });
 
 router.route('/reserve')
 .post((req,res)=>{
     userController.reserve(req,res);
 });
+
+router.route('/emailreservation')
+.post((req,res)=>{
+    userController.emailReservation(req,res);
+})
 
 router.route('/readReservation')
 .get((req,res)=>{
@@ -68,13 +73,39 @@ router.route('/readFlightById').
 post(async (req,res)=>{
     userController.readFlightById(req,res);
 })
+router.route('/checkout').
+post(async (req,res)=>{
+    userController.checkout(req,res);
+})
+router.route('/createToken').post((req,res) => {
+    userController.createToken(req,res);
+})
+router.route('/createCharge').post((req,res) => {
+  userController.createCharge(req,res);
+})
+
 router.route('/test').get(async (req,res)=>{
     userController.test(req,res);
-});router.route('/token').post( (req, res) => {
+});
+router.route('/token').post( (req, res) => {
     userController.token(req,res);
   })
   router.route('/logout').delete ((req, res) => {
     userController.deleteToken(req,res);
   })
+router.route('/updateReservation').
+post(async (req,res)=>{
+    userController.updateReservation(req,res);
+})
+router.route('/searchImage').
+post(async (req,res)=>{
+    // console.log(req.body.query);
+    userController.searchImage(req,res);
+})
+router.route('/getUpdateDiff').
+post(async (req,res)=>{
+    // console.log(req.body.query);
+    userController.getUpdateDiff(req,res);
+})
 
 module.exports = router;

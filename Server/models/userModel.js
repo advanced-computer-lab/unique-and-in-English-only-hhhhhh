@@ -2,11 +2,12 @@ const DB = require('../db/conn');
 const User = require('../schemas/User');
 const Flight = require('../schemas/Flight');
 const Reservation = require('../schemas/Reservation');
+const { emailReservation } = require('../controllers/userController');
 
 module.exports={// this wil be edited 
 
     reserve: async function(req,res){
-        const body = req.body;
+        const body = req.body.reservation;
         const newReservation = new Reservation({
             username:body.username,
             departureFlightId:body.departureFlightId,
@@ -18,7 +19,8 @@ module.exports={// this wil be edited
             cabinClass: body.cabinClass
 
         }); 
-        await DB.reserve(newReservation,res);
+        //console.log(req.body.charge);
+        await DB.reserve(newReservation,res,req.body.charge);
     },authenticate: async function(req,res){
     
         const username = req.body.username;
@@ -84,7 +86,7 @@ module.exports={// this wil be edited
         await DB.updateSensitiveUserInfo(req.body.userName,req.body.password,{ $set: req.body.update},res);
     },
     login: async function(req,res){
-        await DB.login(req,res);
+        await DB.login(req.body,res);
     },
     viewSummary: async function(req,res){
         await DB.viewSummary(req,res);
@@ -95,7 +97,7 @@ module.exports={// this wil be edited
 
     },
     readFlightSeats: async function(req,res){
-        await DB.readFlightSeats(req.body._id,res);
+        await DB.readFlightSeats(req.body._id, req.body.reservedSeats ,res);
     },
     viewMyReservations: async function(req,res){
         
@@ -109,5 +111,27 @@ module.exports={// this wil be edited
     },
     viewUserInfo: async function(req,res){
         DB.viewUserInfo(req.body.userName,res);
+    },
+    checkout: async function(req,res){
+        DB.checkout(req.body,res);
+    },
+    updateReservation: async function(req,res){
+        await DB.updateReservation(req.body._id,req.body.update,res);
+    },
+    createToken:async function(req,res){
+        DB.createToken(req,res);
+    }
+    ,
+    createCharge:async function(req,res){
+        DB.createCharge(req,res);
+    },
+    searchImage:async function(req,res){
+        DB.searchImage(req.body.query,res);
+    },
+    getUpdateDiff: async function(req,res){
+        await DB.getUpdateDiff(req.body._id,req.body.update,res);
+    },
+    emailReservation: async function(req,res){
+        DB.emailReservation2(req.body.reservationId,res);
     }
 }

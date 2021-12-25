@@ -52,6 +52,27 @@ module.exports = {
     },
     viewUserInfo: async function(req,res){
         userModel.viewUserInfo(req,res);
+    },
+    checkout: async function(req,res){
+        userModel.checkout(req,res);
+    },
+    updateReservation: async function(req,res){
+        userModel.updateReservation(req,res);}
+    ,
+    createToken: async function(req,res){
+        userModel.createToken(req,res)
+    },
+    createCharge: async function(req,res){
+        userModel.createCharge(req,res)
+    },
+    searchImage: async function(req,res){
+        userModel.searchImage(req,res)
+    },
+    getUpdateDiff: async function(req,res){
+        userModel.getUpdateDiff(req,res);}
+    ,
+    emailReservation: async function(req,res){
+        userModel.emailReservation(req,res);
     }
     
 }

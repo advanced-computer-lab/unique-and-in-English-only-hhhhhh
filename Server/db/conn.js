@@ -7,12 +7,16 @@ const Reservation = require("../schemas/Reservation");
 const User = require ("../schemas/User");
 const FlightSeats = require("../schemas/FlightSeats");
 const Seat = require("../schemas/Seat");
+const https = require('https');
+
 
 const Db = process.env.ATLAS_URI;
 const mail=process.env.GMAIL_USERNAME;
 const mailpass=process.env.GMAIL_PASSWORD;
 console.log(Db);
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt");
+const Stripe = require("../stripe/stripe");
 
 let refreshTokens = [];
 
@@ -22,7 +26,7 @@ const client = new MongoClient(Db, {
   useUnifiedTopology: true,
 });
  //nodemailer
- async function confirmPaymentMail(email,paidValue){
+ async function confirmPaymentMail(email,paidValue, reservation, direction,diff){
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -30,11 +34,36 @@ const client = new MongoClient(Db, {
       pass: mailpass
     }
   })
+  const cabinClass = reservation.cabinClass;
+  const departureSeats = reservation.departureSeats;
+  const returnSeats = reservation.returnSeats;
+  const departureDate1 = reservation.departureDate1;
+  const departureDate2 = reservation.departureDate2;
+  const returnDate1 = reservation.returnDate1;
+  const returnDate2 = reservation.returnDate2;
+  const departureTerminal1 = reservation.departureTerminal1;
+  const departureTerminal2 = reservation.departureTerminal2;
+  const returnTerminal1 = reservation.returnTerminal1;
+  const returnTerminal2 = reservation.returnTerminal2;
+  var transaction = ""
+  if(direction=="refund"){
+    transaction = "Update effect \n Amount refunded: "+diff + "\n";
+  }
   var mailOptions = {
     from: mail,
     to: email,
     subject: 'Payment Confirmed',
-    text: `The Reservation Has Been Confirmed Successfully , Amountpaid:${paidValue}`,
+    text: `The Payment Has Been Confirmed Successfully , Amount Paid:${paidValue}\n ${transaction} Reservation Info\n
+    Class: ${cabinClass}\n
+    Departure Seats: ${departureSeats}\n
+    Return Seats:${returnSeats}\n 
+    Departure Flight \n 
+    Takes off on ${departureDate1} from ${departureTerminal1} Airport\n
+    Lands on ${departureDate2} on ${departureTerminal2} Airport \n
+    Return Flight \n
+    Takes off on ${returnDate1} from ${returnTerminal1} Airport \n
+    Lands on ${returnDate2} on ${returnTerminal2} Airport
+    `,
     attachments: [{
       filename: 'confirmed.jpg',
       path: "./db/confirmed.jpg",
@@ -82,15 +111,14 @@ async function cancellationMail(email,refundValue){
     var availableEcoSeatsCount = flightSeats[0]['availableEcoSeatsCount'];
     var availableBusinessSeatsCount = flightSeats[0]['availableBusinessSeatsCount'];
 
-    console.log("b4 the loop");
-    console.log(seats);
+    // console.log(seats);
 
     for(var seat in seats){
-      console.log("still inside the loop");
+      // console.log("still inside the loop");
       
       var seatNumber = parseInt(seats[seat]);
-      console.log(seatNumber);
-      console.log(ecoSeatsStart);
+      // console.log(seatNumber);
+      // console.log(ecoSeatsStart);
       if(seatNumber<ecoSeatsStart){
         businessSeats[seatNumber-1].isReserved = false;
         availableBusinessSeatsCount ++;
@@ -100,11 +128,11 @@ async function cancellationMail(email,refundValue){
         availableEcoSeatsCount++;
       }
     }
-    console.log(flightSeats);
-    console.log("---");
-    console.log(businessSeats);
-    console.log("__");
-    console.log(ecoSeats);
+    // console.log(flightSeats);
+    // console.log("---");
+    // console.log(businessSeats);
+    // console.log("__");
+    // console.log(ecoSeats);
     await FlightSeats.updateOne({flightId:flightId},{
        ecoSeats:ecoSeats,
        businessSeats:businessSeats,
@@ -134,13 +162,50 @@ async function cancellationMail(email,refundValue){
           }
           return resultArray;
    }
+   async function token(cardInfo,tokenData){
+    //console.log(1);
+    await Stripe._createToken(cardInfo,function(err,result){
+      // console.log(2);
+      //console.log(err);
+       console.log(result);
+      if(err){
+        tokenData = {
+          "message":"failed",
+          "data": null
+      };
+    }
+    else{
+      tokenData = {
+        "message":"Token Created Successfully",
+        "data": result
+      };
+    }
+    }
+      );
+    }
+
+    async function charge(paymentInfo){
+      await Stripe._createCharge(paymentInfo,function(err,result){
+        if(err)
+          return {
+            "message":"failed",
+            "data": null
+          };
+        return{
+          "message":"Charged Successfully",
+          "data": result
+        };
+      })
+    }
+
 
    async function reserveFlightSeats (flightId,seats){
     //seats= seats[0].split(",");
     var allFlightSeats = await FlightSeats.find({flightId:flightId}).select(['availableEcoSeatsCount','availableBusinessSeatsCount','ecoSeats','businessSeats']);
     allFlightSeats = allFlightSeats[0];
+    console.log(flightId);
     var ecoSeats = allFlightSeats['ecoSeats'];
-    console.log(ecoSeats);
+    //console.log(ecoSeats);
     var businessSeats = allFlightSeats['businessSeats'];
     var ecoSeatsCount = allFlightSeats['availableEcoSeatsCount'];
     var businessSeatsCount = allFlightSeats['availableBusinessSeatsCount'];
@@ -153,7 +218,7 @@ async function cancellationMail(email,refundValue){
       else{
         ecoSeats[parseInt(seats[i])-1-businessSeats.length]['isReserved'] = true;
       }
-      console.log(seats[i]);
+      // console.log(seats[i]);
     }
     var reservedEco = seats.length-reservedBusiness;
     allFlightSeats['ecoSeats'] = ecoSeats;
@@ -177,21 +242,127 @@ module.exports = {
          console.log(err.stack);
      }
 },
+searchImage: async function(query,res) {
+  
+    
+     
+    const axios = require('axios');
 
-  authenticate: async function(email,password,res){
-    const valid = await Admin.exists({email:email,password:password},async(err,result)=>{
-      if(err) res.status(500).send("Connection error");
-      if(result==null){
-        await Admin.exists({email:email},(err1,result1)=>{
-          if(result1 == null) res.status(200).send("email doesn't exist");
-          else res.status(200).send("wrong password");
-        });
+    axios.get(`https://api.unsplash.com/search/photos?query=${query}&client_id=${process.env.UNSPLASH_KEY}`)
+      .then(response => {
+        res.status(200).send({total: response.data.total, image_URL:(response.data.total==0)?
+          "https://media.gemini.media/img/large/2021/7/15/2021_7_15_23_59_18_304.jpg" 
+           : response.data.results[0].urls.regular });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  
+     
+},
+//register
+signUp:async function(user,res){
+  const takenUsername = await User.findOne({userName:user.username});
+  const takenEmail = await User.findOne({email:user.email});
+  if(takenUsername || takenEmail){
+    res.json({message:"Username or email has already been taken"})
+  }
+  else{
+    user.password = await bcrypt.hash(user.password,10)
+    const dbUser = new User({
+      userName:user.userName,
+      password:user.password,
+      firstName:user.firstName.toLowerCase(),
+      lastName:user.lastName.toLowerCase(),
+      gender:user.gender.toLowerCase(),
+      country:user.country.toLowerCase(),
+      telephoneNumber:user.telephoneNumber.toLowerCase(),
+      email:user.email.toLowerCase(),
+      passportNumber: user.passportNumber.toLowerCase(),
+      dateOfBirth: user.dateOfBirth
+    })
+    dbUser.save();
+    res.json({message:"Success"});
+  }
+      },
+  
+      //login
+     login:async function(userLoggingIn,res){
+       User.findOne({userName:userLoggingIn.userName})
+       .then(dbUser => {
+         if(!dbUser){
+           return res.json({
+             message:"Invalid Username or Password"
+           })
+         }
+         bcrypt.compare(userLoggingIn.password,dbUser.password)
+         .then(isCorrect =>{
+           if(isCorrect){
+           const payload = {
+             userName: dbUser.userName,
+             password: dbUser.password
+           }
+           jwt.sign(
+             payload,
+             "success",
+             {expiresIn:86400},
+             (err,token)=>{
+               if(err) return res.json({message: err})
+               return res.json({
+                 message:"Success",
+                 type: "User",
+                 token:"Bearer"+token
+               })
+             }
+           )
+          }else{
+            return res.json({
+              message:"Invalid Username or Password"
+            })
+          }
+         })
+       })
+      }
+      ,
+
+  adminLogin: async function(email,password,res){
+    Admin.findOne({email:email})
+    .then(dbAdmin => {
+      if(!dbAdmin){
+        return res.json({
+          message:"Invalid Username or Password"
+        })
+      }
+      var isCorrect = (password.localeCompare(dbAdmin.password)==0);
+      if(isCorrect){
+        const payload = {
+          email: dbAdmin.email,
+          password: dbAdmin.password
+        }
+        jwt.sign(
+          payload,
+          "success",
+          {expiresIn:86400},
+          (err,token)=>{
+            if(err) return res.json({message: err})
+            return res.json({
+              message:"Success",
+              type:"Admin",
+              username: dbAdmin.username,
+              token:"Bearer"+token
+            })
+          }
+        )
       }
       else{
-        res.status(200).send("success");
+        return res.json({
+          message:"Invalid Username or Password"
+        })
       }
-    });
-  },userAuthenticate: async function(user,pass,res){
+      
+    })
+  },
+  userAuthenticate: async function(user,pass,res){
     const valid = await User.exists({user:user,pass:pass},async(err,result)=>{
       if(err) res.status(500).send("Connection error");
       if(result==null){
@@ -203,16 +374,16 @@ module.exports = {
       else{
         //res.status(200).send("success");
         const accessToken= generateAccessToken(user);
-    const refreshToken= jwt.sign(user,process.env.REFRESH_TOKEN_SECRET);
-    refreshTokens.push(refreshToken);
-    res.json({ accessToken: accessToken, refreshToken: refreshToken })
+        const refreshToken= jwt.sign(user,process.env.REFRESH_TOKEN_SECRET);
+        refreshTokens.push(refreshToken);
+        console.log(refreshToken);
+
+        res.json({ accessToken: accessToken, refreshToken: refreshToken });
       }
     });
-    
-   
-     
-  
-    },checkToken:async function(req,res){
+    }
+,
+    checkToken:async function(req,res){
       const refreshToken = req.body.token;
       if (refreshToken == null) return res.sendStatus(404);
       if (!refreshTokens.includes(refreshToken)) return res.sendStatus(402);
@@ -320,6 +491,9 @@ module.exports = {
     try{
         const db = client.db("AirlineDB");
         const col = db.collection("users");
+        user.password = await bcrypt.hash(user.password, 10);
+
+        //console.log(user.password);
         await col.insertOne(user,(err,result)=>{
           if (err)
           res.status(500).send("connection error");
@@ -331,7 +505,6 @@ module.exports = {
     catch(err){
       console.log(err);
     }
-  
   },
   updateUserInfo: async function(userName, update, res){
     try{
@@ -354,35 +527,161 @@ module.exports = {
     try{
       const db = client.db("AirlineDB");
       const col = db.collection("users");
-      const p = await col.updateOne({"userName": userName,"password": password}, update,(err,result)=>{
-        console.log(result);
-        if(result.modifiedCount ==0)
-          res.status(200).send("incorrect username or password");
-        else
-          res.status(200).send("User updated");
+      console.log(userName);
+      User.findOne({userName:userName})
+      .then(dbUser => {
+        if(!dbUser){ 
+          return res.json({
+            message:"Invalid Username"
+          })
+        }
+        bcrypt.compare(password,dbUser.password)
+        .then(async isCorrect =>{
+          if(isCorrect){
+            if(update.$set.password!=""){
+              console.log(update);
+              update.$set.password = await bcrypt.hash(update.$set.password,10);
+              console.log(update);
+              await col.updateOne({"userName": userName}, update,(err,result)=>{
+                  console.log(err);
+      
+                  console.log(result);
+                  res.status(200).send({message: "User updated"});
+                });
+          }
+          else{
+        
+            console.log(update);
+            await col.updateOne({"userName": userName}, {$set:{email: update.$set.email} },(err,result)=>{
+                console.log(err);
+    
+                console.log(result);
+                res.status(200).send({message: "User updated"});
+              });
+          }
+          
+        }else{
+           return res.json({
+             message:"Invalid Username or Password"
+           })
+         }
+
+      })
       });
     }
     catch(err){
       console.log(err);
     }
   },
-  reserve: async function(reservation, res){
+  checkout: async function(reservation, res){
+    const departureSeats = reservation.departureSeats;
+    const returnSeats = reservation.returnSeats;
+    const departureFlightId = reservation.departureFlightId;
+    const returnFlightId = reservation.returnFlightId;
+    const cabinClass = reservation.cabinClass;
+    var totalPrice = 0;
+    if(cabinClass=="business"){
+      const departureBusinessSeatPrice = await Flight.findOne({id:departureFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
+      const returnBusinessSeatPrice = await Flight.findOne({id:returnFlightId}).select(['businessSeatPrice'])['businessSeatPrice'];
+      totalPrice = (departureSeats.length*departureBusinessSeatPrice)+(returnSeats.length*returnBusinessSeatPrice);
+    }
+    else{
+      const departureEconomicSeatPrice = await Flight.findOne({id:departureFlightId}).select(['economicSeatPrice'])['economicSeatPrice'];
+      const returnEconomicSeatPrice = await Flight.findOne({id:returnFlightId}).select(['economicSeatPrice'])['economicSeatPrice'];
+      totalPrice = (departureSeats.length*departureEconomicSeatPrice)+(returnSeats.length*returnEconomicSeatPrice);
+    }
+    res.status(200).send(session.url);
+  },
+  reserve: async function(reservation, res, cardInfo){
     try{
       const db = client.db("AirlineDB");
       const col = db.collection("reservations");
-      await col.insertOne(reservation,(err,result)=>{
+      reservation.departureSeats = reservation.departureSeats.map( reserv => {reserv = parseInt(reserv); return reserv;});
+      reservation.returnSeats = reservation.returnSeats.map( reserv => {reserv = parseInt(reserv); return reserv;});
+      await col.insertOne(reservation,async (err,result)=>{
         if (err)    
         res.status(500).send(err);
-        else
+        else{
         //console.log(result)
-        res.status(200).send(reservation._id);
+        await Stripe._createToken(cardInfo,function(err,result){
+          // console.log(2);
+          //console.log(err);
+           console.log(result);
+          if(err){
+            tokenData = {
+              "message":"failed",
+              "data": null
+          };
+          res.status(500).send("u r broke");
+          return;
+        }
+        else{
+          tokenData = {
+            "message":"Token Created Successfully",
+            "data": result
+          };
+        }
+        console.log(tokenData);
+          if(tokenData.message == "failed"){
+            res.status(500).send("You are broke");
+            return;
+          }
+          const chargeData = {
+            "amount": reservation.totalPrice,
+            "currency":"usd",
+            "token":tokenData.data.id,
+            "description": "reservation " + reservation._id
+          }
+          var chargeRes;
+          Stripe._createCharge(chargeData,function(err,result){
+            if(err){
+              chargeRes = {
+                "message":"failed",
+                "data": null
+              };
+              res.status(500).send("u r broke");
+              return;
+            }
+              else{
+              chargeRes = {
+                "message":"Charged Successfully",
+                "data": result
+            };
+            if(chargeRes.message == "failed"){
+              res.status(500).send("You are broke");
+              return;
+            }
+          }
+          })
+          res.status(200).send(reservation._id);
+        });
+      }
       });
       // find the desired flightSeats
       //make the seats busy
       reserveFlightSeats(reservation.departureFlightId,reservation.departureSeats);
       reserveFlightSeats(reservation.returnFlightId,reservation.returnSeats);
+      console.log(reservation.username);
+      const email = (await User.findOne({userName:reservation.username})).email;
+      console.log("email"+email);
+      const reservationEmail = {
+        cabinClass: reservation.cabinClass,
+        departureSeats: reservation.departureSeats,
+        returnSeats: reservation.returnSeats,
+        departureDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).departureDate,
+        departureDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).arrivalDate,
+        returnDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).departureDate,
+        returnDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalDate,
+        departureTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).departureAirportTerminal,
+        departureTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).arrivalAirportTerminal,
+        returnTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).departureAirportTerminal,
+        returnTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalAirportTerminal
+      }
+      confirmPaymentMail(email,reservation.totalPrice,reservationEmail,"pay",0);
   }
   catch(err){
+    unreserveSeats(reservation.departureFlightId,reservation.departureSeats);
+    unreserveSeats(reservation.returnFlightId,reservation.returnSeats);
     console.log(err);
   }
   },
@@ -458,10 +757,10 @@ module.exports = {
       console.log(err);
     }
   },
-  readFlightSeats: async function (_id,res){
+  readFlightSeats: async function (_id, reservedSeats ,res){
     try{
       var flightSeats = [];
-      console.log(mongoose.Types.ObjectId(_id));
+      // console.log(mongoose.Types.ObjectId(_id));
       var ecoSeats = await FlightSeats.find({flightId:mongoose.Types.ObjectId(_id)}).select('ecoSeats').exec();
         //res.status(200).send(flightSeats);
       console.log(ecoSeats[0]['ecoSeats']);
@@ -482,7 +781,9 @@ module.exports = {
         var seatObject = {
           id : businessSeats[0]['businessSeats'][i]['id'],
           number:  businessSeats[0]['businessSeats'][i]['id'],
-          isReserved : businessSeats[0]['businessSeats'][i]['isReserved']
+          isReserved : reservedSeats.includes(businessSeats[0]['businessSeats'][i]['id'] ) ? false : businessSeats[0]['businessSeats'][i]['isReserved'],
+          isSelected : reservedSeats.includes(businessSeats[0]['businessSeats'][i]['id'] ) ? true : false
+
         }
         row.push(seatObject);
       }
@@ -507,13 +808,15 @@ module.exports = {
         var seatObject = {
           id : ecoSeats[0]['ecoSeats'][i]['id'],
           number : ecoSeats[0]['ecoSeats'][i]['id'],
-          isReserved : ecoSeats[0]['ecoSeats'][i]['isReserved']
+          isReserved : reservedSeats.includes(ecoSeats[0]['ecoSeats'][i]['id']) ? false : ecoSeats[0]['ecoSeats'][i]['isReserved'],
+          isSelected : reservedSeats.includes(ecoSeats[0]['ecoSeats'][i]['id']) ? true : false
         }
         row.push(seatObject);
       }
       if(row.length !=0){
         flightSeats.push(row);row = [];
       }
+      console.log(reservedSeats);
       res.status(200).send({index: index , flightSeats: flightSeats});
     }
     catch(err){
@@ -534,7 +837,236 @@ module.exports = {
         console.log(err);
       }
     },
+    updateReservation: async function(_id,update,res){
+      try{
+        const db = client.db("AirlineDB");
+        const col = db.collection("reservations");
+        const oldReservation = await Reservation.findOne({_id: mongoose.Types.ObjectId(_id)});
+        // console.log( oldReservation.departureSeats );
+        // console.log( oldReservation );
+        const oldDepartureSeats = oldReservation.departureSeats;
+        const oldReturnSeats = oldReservation.returnSeats;
+        const oldTotalPrice = oldReservation.totalPrice;
+        var newTotalPrice = oldTotalPrice;
+        // console.log(newTotalPrice);
+        const returnFlightId = (update.returnFlightId=="" || !update.returnFlightId)? oldReservation.returnFlightId:update.returnFlightId;
+        const departureFlightId = (update.departureFlightId=="" || !update.departureFlightId) ? oldReservation.departureFlightId:update.departureFlightId;
+        if(update.departureSeats != "" && update.departureSeats){
+          unreserveSeats(oldReservation.departureFlightId,oldDepartureSeats);
+          reserveFlightSeats(departureFlightId,update.departureSeats);
+          const oldPrice = (oldReservation.cabinClass=="economic") ? 
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).economicSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).businessSeatPrice;
+          var newPrice;
+          if(update.cabinClass=="economic"){
+            newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).economicSeatPrice;
+          }
+          else{
+            if(update.cabinClass == "business"){
+              newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice;
+            }
+            else{
+              if(oldReservation.cabinClass=="economic"){
+                newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).economicSeatPrice;
+              }
+              else{
+                newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice;
+              }
+
+            }
+          }
+          console.log(newPrice);
+          newTotalPrice = newTotalPrice + update.departureSeats.length*newPrice - oldDepartureSeats.length*oldPrice;
+          console.log(newTotalPrice);
+        }
+        if(update.returnSeats != "" && update.returnSeats){
+          unreserveSeats(oldReservation.returnFlightId,oldReturnSeats);
+          reserveFlightSeats(returnFlightId,update.returnSeats);
+          const oldPrice = (oldReservation.cabinClass=="economic") ? 
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.returnFlightId)})).economicSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.returnFlightId)})).businessSeatPrice;
+          if(update.cabinClass=="economic"){
+            newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).economicSeatPrice;
+          }
+          else{
+            if(update.cabinClass == "business"){
+              newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).businessSeatPrice;
+            }
+            else{
+              if(oldReservation.cabinClass=="economic"){
+                newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).economicSeatPrice;
+              }
+              else{
+                newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).businessSeatPrice;
+              }
+
+            }
+          }
+          console.log(newPrice);
+          newTotalPrice = newTotalPrice + update.returnSeats.length*newPrice - oldReturnSeats.length*oldPrice;
+          console.log(newTotalPrice);
+        }
+        update["departureFlightId"] = departureFlightId;
+        update["returnFlightId"] = returnFlightId;
+        update["cabinClass"] = (update["cabinClass"]=="" || !update["cabinClass"])? oldReservation.cabinClass:update["cabinClass"];
+        update["returnSeats"] = (update["returnSeats"].length==0 || !update["returnSeats"])? oldReservation.returnSeats:update["returnSeats"];
+        update["departureSeats"] = (update["departureSeats"].length==0 || !update["departureSeats"])? oldReservation.departureSeats:update["departureSeats"];
+        update["totalPrice"] = newTotalPrice;
+        const difference = newTotalPrice - oldTotalPrice;
+        console.log(update);
+        const p = await col.updateOne({_id: mongoose.Types.ObjectId(_id)}, {$set: update},(err,result)=>{
+        if (err)
+          res.status(500).send(err);
+        // console.log(result);
+        res.status(200).send("reservation updated");});
+        // email
+        const email = (await User.findOne({userName:oldReservation.username})).email;
+        console.log("email"+email);
+        const reservationEmail = {
+        cabinClass: update["cabinClass"],
+        departureSeats: update.departureSeats,
+        returnSeats: update.returnSeats,
+        departureDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).departureDate,
+        departureDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).arrivalDate,
+        returnDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).departureDate,
+        returnDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).arrivalDate,
+        departureTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).departureAirportTerminal,
+        departureTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).arrivalAirportTerminal,
+        returnTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).departureAirportTerminal,
+        returnTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).arrivalAirportTerminal
+      }
+      if(difference<0){
+        confirmPaymentMail(email,newTotalPrice,reservationEmail,"refund",-difference);
+      }
+      else{
+        confirmPaymentMail(email,newTotalPrice,reservationEmail,"pay",0);
+      }
+      }
+      catch(err){
+        console.log(err);
+      }
+
+    },
+    createToken:async function(req,res){
+      Stripe._createToken(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Token Created Successfully",
+          "data": result
+        });
+      })
+    }
+ ,
+    //charge
+    createCharge:async function(req,res){
+      Stripe._createCharge(req.body,function(err,result){
+        if(err)
+          res.send(err);
+        else
+        res.send({
+          "message":"Charged Successfully",
+          "data": result
+        });
+      })
+    }
+    ,
+    getUpdateDiff: async function(_id,update,res){
+      try{
+        const db = client.db("AirlineDB");
+        const col = db.collection("reservations");
+        const oldReservation = await Reservation.findOne({_id: mongoose.Types.ObjectId(_id)});
+        const oldDepartureSeats = oldReservation.departureSeats;
+        const oldReturnSeats = oldReservation.returnSeats;
+        const oldTotalPrice = oldReservation.totalPrice;
+        var newTotalPrice = oldTotalPrice;
+        // console.log(newTotalPrice);
+        const returnFlightId = (update.returnFlightId=="" || !update.returnFlightId)? oldReservation.returnFlightId:update.returnFlightId;
+        const departureFlightId = (update.departureFlightId=="" || !update.departureFlightId) ? oldReservation.departureFlightId:update.departureFlightId;
+        if(update.departureSeats != "" && update.departureSeats){
+          // unreserveSeats(oldReservation.departureFlightId,oldDepartureSeats);
+          // reserveFlightSeats(departureFlightId,update.departureSeats);
+          const oldPrice = (oldReservation.cabinClass=="economic") ? 
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).economicSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).businessSeatPrice;
+          var newPrice;
+          if(update.cabinClass=="economic"){
+            newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).economicSeatPrice;
+          }
+          else{
+            if(update.cabinClass == "business"){
+              newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice;
+            }
+            else{
+              if(oldReservation.cabinClass=="economic"){
+                newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).economicSeatPrice;
+              }
+              else{
+                newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(departureFlightId)})).businessSeatPrice;
+              }
+
+            }
+          }
+          console.log(newPrice);
+          newTotalPrice = newTotalPrice + update.departureSeats.length*newPrice - oldDepartureSeats.length*oldPrice;
+          console.log(newTotalPrice);
+        }
+        if(update.returnSeats != "" && update.returnSeats){
+          // unreserveSeats(oldReservation.returnFlightId,oldReturnSeats);
+          // reserveFlightSeats(returnFlightId,update.returnSeats);
+          const oldPrice = (oldReservation.cabinClass=="economic") ? 
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).economicSeatPrice:
+          (await Flight.findOne({_id:mongoose.Types.ObjectId(oldReservation.departureFlightId)})).businessSeatPrice;
+          if(update.cabinClass=="economic"){
+            newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).economicSeatPrice;
+          }
+          else{
+            if(update.cabinClass == "business"){
+              newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).businessSeatPrice;
+            }
+            else{
+              if(oldReservation.cabinClass=="economic"){
+                newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).economicSeatPrice;
+              }
+              else{
+                newPrice = (await Flight.findOne({_id:mongoose.Types.ObjectId(returnFlightId)})).businessSeatPrice;
+              }
+
+            }
+          }
+          newTotalPrice = newTotalPrice + update.returnSeats.length*newPrice - oldReturnSeats.length*oldPrice;
+        }
+        const difference = newTotalPrice - oldTotalPrice;
+
+        res.status(200).send({difference: difference});
+      }
+      catch(err){
+        console.log(err);
+      }
+
+    },
     
+    emailReservation2:async function(reservationId,res){
+      const reservation = (await Reservation.findOne({_id:mongoose.Types.ObjectId(reservationId)}));
+        const email = (await User.findOne({userName:reservation.username})).email;
+        console.log("email"+email);
+        const reservationEmail = {
+        cabinClass: reservation["cabinClass"],
+        departureSeats: reservation.departureSeats,
+        returnSeats: reservation.returnSeats,
+        departureDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).departureDate,
+        departureDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).arrivalDate,
+        returnDate1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).departureDate,
+        returnDate2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalDate,
+        departureTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).departureAirportTerminal,
+        departureTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.departureFlightId)})).arrivalAirportTerminal,
+        returnTerminal1:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).departureAirportTerminal,
+        returnTerminal2:(await Flight.findOne({_id:mongoose.Types.ObjectId(reservation.returnFlightId)})).arrivalAirportTerminal
+      }
+      confirmPaymentMail(email,reservation.totalPrice,reservationEmail,"pay",0);
+      res.status(200).send("email sent");
+    }
     
 };
 function generateAccessToken(user){

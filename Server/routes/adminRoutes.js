@@ -8,9 +8,10 @@ const adminController = require('../controllers/adminController');
 
 router.route('/login')
 .post((req,res)=>{
-    const result = adminController.authenticate(req,res);
+    const result = adminController.login(req,res);
     // res.status(200).send(result);
 });
+
 
 router.route('/createFlight')
 .post((req,res)=>{

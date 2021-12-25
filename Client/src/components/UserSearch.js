@@ -30,7 +30,6 @@ const UserSearch = () => {
 const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
 const [firstVisit , setFirstVisit] = React.useState(false);
 const [successfulSearch , setSuccessfulSearch] = React.useState(false);
-
 const [Class, setClass] = React.useState('economic');
 const [departureAirportTerminal, setDepartureAirportTerminal] = React.useState('');
 const [arrivalAirportTerminal, setArrivalAirportTerminal] = React.useState('');
@@ -39,6 +38,8 @@ const [childrenCount, setChildrenCount] = React.useState(0);
 const [departureDate, setDepartureDate] = React.useState(new Date());
 const [returnDate, setReturnDate] = React.useState(new Date());
 const [flights , setFlights] = React.useState();
+const [isGuest , setIsGuest] = React.useState(false);
+const [noFlight , setNoFlight] = React.useState(false);
 
 const handleChangeOfDeparture = (newValue) => {
   setDepartureDate(newValue);
@@ -73,11 +74,14 @@ const handleSubmit = async (event) => {
     returnDate:returnDate
   }
   console.log(flight);
-
-  await axios.post('http://localhost:8000/user/readReservation' , flight)
+  if(localStorage.getItem("username")!=null){ 
+    await axios.post('http://localhost:8000/user/readReservation' , flight)
         .then((result) => {
           console.log(result.data);
           setFlights(result.data);
+          if(result.data.length==0)localStorage.setItem("noFlight",true);
+          else localStorage.setItem("noFlight",false);
+          console.log(localStorage.getItem("noFlight"));
           setSuccessfulSearch(true);
           setNotify({
             isOpen: true,
@@ -92,9 +96,15 @@ const handleSubmit = async (event) => {
             type: 'error'
         })
       });
-
-      
-
+    }
+    else{
+      setNotify({
+        isOpen: true,
+        message: 'You need to login in first',
+        type: 'warning'
+    });
+    window.setTimeout( () => {setIsGuest(true)}, 3000);
+    }
 };
 
 
@@ -260,7 +270,14 @@ const handleSubmit = async (event) => {
             <Redirect
             to={{
             pathname: "/test5",
-            state: { flights : flights , Class: Class, maxNumber: ( parseInt(childrenCount) + parseInt(adultsCount) ) }
+            state: { flights : flights ,departure: departureAirportTerminal , arrival:arrivalAirportTerminal  , Class: Class, maxNumber: ( parseInt(childrenCount) + parseInt(adultsCount) ),noFlight:noFlight }
+          }}
+        /> : <></>
+            }
+            { isGuest ?
+            <Redirect
+            to={{
+            pathname: "/login",
           }}
         /> : <></>
             }

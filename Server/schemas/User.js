@@ -21,15 +21,15 @@ const userschema=new schema({
     },
     gender:{
         type:String,
-        required:true
+        //required:true
     },
     country:{
         type:String,
-        required:true
+        //required:true
     },
     telephoneNumber:{
         type:String,
-        required:true
+        //required:true
     },
     email:{
         type:String,
@@ -41,7 +41,7 @@ const userschema=new schema({
     },
     dateOfBirth:{
         type:Date,
-        required:true
+        //required:true
     },
     
 },{timestamps:true})

@@ -15,7 +15,7 @@ import SaveIcon from '@mui/icons-material/Save';
 
 const TravellerSensitiveData = (props) => {
   const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState(props.email);
   const [oldPassword, setOldPassword] = React.useState('');
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
@@ -24,7 +24,7 @@ const TravellerSensitiveData = (props) => {
     event.preventDefault();
     var match = true ;
      const user = {
-      userName: "konar",
+      userName: localStorage.getItem('username'),
       password: oldPassword,
       update:{
         password: newPassword,
@@ -40,8 +40,8 @@ if ( match ){
     console.log(res.data);
     setNotify({
       isOpen: true,
-      message: res.data,
-      type: (res.data == 'incorrect username or password') ? 'warning' :'success'
+      message: res.data.message,
+      type: (res.data.message == "User updated") ? 'success' :'error'
   })
   }).catch(err => {
     console.log(err);

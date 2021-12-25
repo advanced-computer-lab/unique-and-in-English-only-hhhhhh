@@ -3,19 +3,69 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Divider } from '@mui/material';
+import { Divider, Fade, Modal , Backdrop } from '@mui/material';
 import AirplaneTicketRoundedIcon from '@mui/icons-material/AirplaneTicketRounded';
 import SendIcon from '@mui/icons-material/Send';
 import ConfirmDialog from './ConfirmDialog'
 import Notification from './Notification'
+import SeatParent from './SeatParent';
 import axios from 'axios';
+import { Box } from '@mui/system';
+import EditLargeReservation from './EditReservations/EditLargeReservation'
+import EditSmallReservation from './EditReservations/EditSmallReservation'
+import CreditCard from './CreditCard/CreditCard'
+import GeneralEditReservation from './EditReservations/GeneralEditReservation'
+import { Typography , Button, Alert } from '@mui/material'
 
 
 const UserFlightCard = (props) => {
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
+    const [ openSeats , setOpenSeats ]= React.useState(false);
+    const [ openEditFlight , setOpenEditFlight ]= React.useState(false);
+    const [selected , setSelected ]= React.useState(props.seats);
+    const [chosenCabine , setChosenCabine ] = React.useState( props.cabinClass);
+    const [ triggerEditSeats , setTriggerEditSeats ] = React.useState(false)
+    const [ creditTrigger , setCreditTrigger] = React.useState(false);
+    const [ cardNumber,setCardNumber] = React.useState("");
+    const [ expMonth,setExpMonth] = React.useState("");
+    const [ expYear,setExpYear] = React.useState("");
+    const [ cvv,setCvv] = React.useState("");
+    const [message, setMessage] = React.useState("");
+    const [severity,setSeverity] = React.useState("");
+    const [error, setError] = React.useState(false);
+    const [ alert , setAlert ] = React.useState( false );
+    const [ isCompelet , setIsCompelet ] = React.useState( false );
+
+
+    const style = {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: "80%",
+      maxHeight: 'calc(100vh - 100px)',
+      height: "auto",
+      bgcolor: '#fff',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 2,
+      overflowY: 'auto',
+    
+    };
+
+    React.useEffect( () => {
+      // setSelected(props.seats.equals(selected) ? selected  );
+      // setChosenCabine(props.cabinClass);
+      console.log(selected);
+    } , [selected] );
+
+    const setConfirm = () =>{
+      
+    }
 
     const handleCancel = () =>{
         setConfirmDialog({
@@ -25,6 +75,76 @@ const UserFlightCard = (props) => {
             onConfirm: () => { cancelReservation() }
         })
     };
+    const editReservation = async(arr) =>{
+      if(cardNumber.length!=16 || expMonth == "" || expYear == "" || cvv.length!=3){
+        setError(true);
+        if(cvv.length!=3)setMessage("cvv must be 3 digits");
+        if(expYear == "")setMessage("expiry year is required");
+        if(expMonth == "")setMessage("expiry month is required");
+        if(cardNumber.length!=16)setMessage("Card number must be 16 digits");
+        setSeverity('error');
+    }
+    else{
+      console.log("changed seats : " + selected);
+      const update = {
+        _id: props.reservationId ,
+        update: {
+            departureFlightId: "" ,
+            departureSeats: props.type == "Departure Flight"? arr : "" ,
+            cabinClass: "",
+            returnFlightId: "",
+            returnSeats: props.type == "Departure Flight"? "" : arr,
+        }
+    }
+
+    await axios.post( 'http://localhost:8000/user/updateReservation' , update).then( res => {
+      console.log(res);
+      alert("reservation edited");
+      props.reload("val");
+      setAlert(true);
+      setMessage("Successful Reservation update, You will be Redirected to the Home Page in 5 seconds!");
+      setSeverity('success');
+    }).catch( err => {
+      //alert("reservation edited failed");
+      setError(true);
+      setMessage("error connecting to the server");
+      setSeverity("error");
+    });
+  }
+
+    //props.reload("val");
+     
+
+  };
+  const sendEmail = async () =>{
+
+    const reservation = {
+      reservationId : props.reservationId 
+    }
+    await axios.post( 'http://localhost:8000/user/emailreservation' , reservation).then( res => {
+      console.log(res);
+      setNotify({
+        isOpen: true,
+        message: 'Email Sent ',
+        type: 'success'
+    });
+    }).catch( err => {
+      setNotify({
+        isOpen: true,
+        message: 'Error with Sending E-mail ',
+        type: 'error'
+    });
+    });
+};
+
+const test2 = () => {
+  setOpenEditFlight( true );
+  setIsCompelet(false);
+}
+const handleClose = () =>{
+setOpenEditFlight(false);
+};
+
     const cancelReservation = async() => {
         setConfirmDialog({
             ...confirmDialog,
@@ -38,6 +158,7 @@ const UserFlightCard = (props) => {
                 message: 'Deleted Successfully',
                 type: 'success'
             });
+            props.reload("val");
              }).catch(err => {
               setNotify({
                 isOpen: true,
@@ -139,13 +260,17 @@ const UserFlightCard = (props) => {
             </Typography>
             </div>
             </div>
-          </CardContent>
-          
-          <CardActions className="flex justify-between mr-2 mb-2">
-          <Typography  variant="caption" color="text.secondary">
+            <Typography  variant="caption" color="text.secondary">
           { (props.cabinClass === 'business')? "2*32KG" : "1*23KG" }
             </Typography>
+          </CardContent>
+          
+          <CardActions className="flex justify-between mx-2 mb-2">
+          
+            
             <Button sx={{borderRadius: 5}} variant="contained" color="error" size="small" onClick={handleCancel}>Cancel Booking</Button>
+            <Button sx={{borderRadius: 5}} variant="contained" color="info" size="small" onClick={ sendEmail }>Send Me E-Mail</Button>
+            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={ test2 }>Edit The Flight</Button>
           </CardActions>
         </Card>
 
@@ -158,6 +283,84 @@ const UserFlightCard = (props) => {
                 notify={notify}
                 setNotify={setNotify}
             />
+
+          {  openSeats? <SeatParent
+        open={openSeats}
+        maxNumber = { 100000 }
+        close={ (boolean ) => {  setOpenSeats(boolean) } }
+        toBeChanged = {selected}
+        sendSeats = { setSelected }
+        startEdit = { arr => {editReservation(arr)} } 
+        flightNumber = { props._id }
+        Class = { chosenCabine } 
+        /> : <></>}
+
+<Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className="modal"
+        {...props}
+        open={ openEditFlight }
+        onClose= {handleClose}
+
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 1000,
+        }}
+      >
+         <Fade in={openEditFlight}>
+         <Box sx={style}>
+           <GeneralEditReservation
+           // for small reservation " Seats "
+           seats = { props.seats }
+           cabinClass = { props.cabinClass}
+           type = { props.type }
+           _id = { props._id }
+           reservationId = { props.reservationId }
+
+          // for Large reservation " Whole flight "
+           reload = { (val) => props.reload(val)}
+           openwind = { creditTrigger }
+           reservationId = { props.reservationId }
+           //_id = {props._id}
+           departure = {props.departureAirportTerminal}
+           return = {props.arrivalAirportTerminal}
+           departureDate={props.travelDate}
+           returnDate={props.returnDate}
+           //cabinClass = {props.cabinClass}
+           //type = {props.type}
+           showCredit = {(boolean) => setCreditTrigger( boolean) }
+           isComp = { (boolean) => {setIsCompelet(boolean)}}
+           />
+{
+  creditTrigger ? 
+ 
+              <CreditCard  
+              setCardNumber={setCardNumber}
+              setCvv={setCvv}
+              setExpMonth={setExpMonth}
+              setExpYear={setExpYear}
+              /> : <></>
+}
+{
+            alert || error? 
+            <div className=" flex justify-center mt-5">
+            <Alert sx severity={severity}>{message}</Alert>
+            </div>
+             :
+        <></>
+        }
+
+
+         </Box>
+    </Fade>
+    </Modal>
+
+
+
+
+
         </div>
       );
 }
