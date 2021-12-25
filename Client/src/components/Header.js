@@ -154,13 +154,6 @@ else{
         }
         
         
-        <MenuItem onClick={event =>  window.location.href='/signup'}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        
         <MenuItem onClick={event =>  {
           localStorage.removeItem("username");
           localStorage.removeItem("user token");
