@@ -91,12 +91,6 @@ if ( diff != ''){
           }).catch( err => {
             alert("I failed to have Diff");
           });
-          
-
-
-           
-        
-        
         };
     React.useEffect( () => {
         setOpenSeats( props.openwind );
