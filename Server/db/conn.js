@@ -693,8 +693,8 @@ signUp:async function(user,res){
         var seatObject = {
           id : businessSeats[0]['businessSeats'][i]['id'],
           number:  businessSeats[0]['businessSeats'][i]['id'],
-          isReserved : reservedSeats.includes(businessSeats[0]['businessSeats'][i]['id'] + "") ? false : businessSeats[0]['businessSeats'][i]['isReserved'],
-          isSelected : reservedSeats.includes(businessSeats[0]['businessSeats'][i]['id'] + "") ? true : false
+          isReserved : reservedSeats.includes(businessSeats[0]['businessSeats'][i]['id'] ) ? false : businessSeats[0]['businessSeats'][i]['isReserved'],
+          isSelected : reservedSeats.includes(businessSeats[0]['businessSeats'][i]['id'] ) ? true : false
 
         }
         row.push(seatObject);
@@ -758,7 +758,8 @@ signUp:async function(user,res){
         const oldReturnSeats = oldReservation.returnSeats;
         const oldTotalPrice = oldReservation.totalPrice;
         var newTotalPrice = oldTotalPrice;
-        // console.log(newTotalPrice);
+         console.log("This is The Update "  +JSON.stringify(update)
+         );
         const returnFlightId = (update.returnFlightId=="" || !update.returnFlightId)? oldReservation.returnFlightId:update.returnFlightId;
         const departureFlightId = (update.departureFlightId=="" || !update.departureFlightId) ? oldReservation.departureFlightId:update.departureFlightId;
         // console.log("departureFlight ID: "+ departureFlightId);

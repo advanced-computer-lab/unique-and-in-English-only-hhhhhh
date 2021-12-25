@@ -21,12 +21,6 @@ import axios from 'axios';
 const UserSearchFlight = (props) => {
   const [open , setOpen] = React.useState( false );
   const [ seats , setSeats] = React.useState('');
-  
- 
-  
-
-  
-
 
   const durationTime = () => {
     const diffTime = Math.abs( new Date((props.arrivalDate)).getTime() - new Date((props.departureDate)).getTime() );
@@ -119,7 +113,8 @@ const UserSearchFlight = (props) => {
         close={ (boolean ) => {  setOpen(boolean);} }
         sendSeats = { (selected) => { handleReservation(selected); console.log(selected); } } 
         flightNumber = { props._id }
-        Class = { props.Class } 
+        Class = { props.Class }
+         
         />
 
         </>

@@ -27,7 +27,7 @@ const style = {
 
 
 // props is flight_id and class Flight
-  const SeatParent = (props) => {
+  const GeneralSeats = (props) => {
   const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
   const [ reRun , setReRun ] = React.useState(true);
   const [selected, setSelected] = React.useState( props.toBeChanged==null ? [] : props.toBeChanged.map((item) => {item = parseInt(item); return item;}) )
@@ -72,7 +72,6 @@ const style = {
     });
         console.log(selected);
         props.sendSeats( props.toBeChanged == null? selected.toString() : selected );
-        if( props.startEdit != null)
         props.startEdit(selected);        
         setIndex(0);
         setSelected([]);
@@ -87,26 +86,6 @@ const style = {
   // ( props.Class === 'business' )? seats.slice(0,index) : seats.slice(index+1 , seats.length)
   return (
     <>
-        
-        <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className="modal"
-        {...props}
-        onClose= { ()=> {
-          setIndex(0);
-          setSelected([]);
-          setReRun( !reRun);
-          setReachedMax(false);
-          props.close(false );
-           }}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 1000,
-        }}
-      >
-         <Fade in={props.open}>
          <Box sx={style}>
     <div className="w-1/2">
         <div className="w-full flex justify-center my-16">
@@ -129,8 +108,6 @@ const style = {
       </div>
     </div>
     </Box>
-    </Fade>
-    </Modal>
     <Notification
                 notify={notify}
                 setNotify={setNotify}
@@ -139,5 +116,5 @@ const style = {
   );
 }
 
-export default SeatParent
+export default GeneralSeats
 

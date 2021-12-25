@@ -15,7 +15,6 @@ import EditFlight from './components/EditFlight';
 import Combine from './components/Combine';
 import Profile from './components/Profile/Profile';
 import AdminProfile from './components/AdminProfile/Profile';
-
 import UserFlightCard from './components/UserFlightCard';
 import UserSeachFlight from './components/UserSearchFlight'
 import Seat from './components/Seat';
@@ -26,6 +25,7 @@ import Ticket from './components/Ticket';
 import ReservationSummaryParent from './components/ReservationSummaryParent';
 import AdminLogin from './components/AdminLogin';
 import Progress_Bar from './components/ProgressBar/Progress_Bar';
+import EditLargeReservation from './components/EditReservations/EditLargeReservation';
 
 
 
@@ -44,7 +44,7 @@ function App(props) {
 </Route>
 
 
-{localStorage.getItem('type')=="Admin"?
+{   localStorage.getItem('type')=="Admin"?
 <>
 <Route path="/createFlight">
   <CreateFlight />
@@ -66,9 +66,6 @@ function App(props) {
   <Profile />
 </Route>
 <Route path="/test1" render={(props) => <ReservationSummaryParent {...props}/>}/> 
-<Route path="/test2">
-   <Ticket></Ticket>
-</Route>
 <Route path="/test5" render={(props) => <UserSearchResult {...props}/>}/>
 <Route path="/test4">
   <SeatParent />
@@ -76,6 +73,9 @@ function App(props) {
 </>
 :
 <>
+<Route path="/lol">
+<EditLargeReservation />
+</Route>
 <Route path="/login">
   <Login/>
 </Route>
@@ -84,6 +84,9 @@ function App(props) {
 </Route>
 <Route path="/signup">
   <SignUp2 />
+</Route>
+<Route path="/*">
+  <Error />
 </Route>
 
 </>

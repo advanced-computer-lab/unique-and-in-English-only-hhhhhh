@@ -30,7 +30,6 @@ const UserSearch = () => {
 const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
 const [firstVisit , setFirstVisit] = React.useState(false);
 const [successfulSearch , setSuccessfulSearch] = React.useState(false);
-
 const [Class, setClass] = React.useState('economic');
 const [departureAirportTerminal, setDepartureAirportTerminal] = React.useState('');
 const [arrivalAirportTerminal, setArrivalAirportTerminal] = React.useState('');

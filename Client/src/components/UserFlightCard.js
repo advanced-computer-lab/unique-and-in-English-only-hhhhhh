@@ -5,29 +5,56 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Divider } from '@mui/material';
+import { Divider, Fade, Modal , Backdrop } from '@mui/material';
 import AirplaneTicketRoundedIcon from '@mui/icons-material/AirplaneTicketRounded';
 import SendIcon from '@mui/icons-material/Send';
 import ConfirmDialog from './ConfirmDialog'
 import Notification from './Notification'
 import SeatParent from './SeatParent';
 import axios from 'axios';
+import { Box } from '@mui/system';
+import EditLargeReservation from './EditReservations/EditLargeReservation'
+import CreditCard from './CreditCard/CreditCard'
 
 
 const UserFlightCard = (props) => {
     const [confirmDialog, setConfirmDialog] = React.useState({ isOpen: false, title: '', subTitle: '' });
     const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' });
     const [ openSeats , setOpenSeats ]= React.useState(false);
+    const [ openEditFlight , setOpenEditFlight ]= React.useState(false);
     const [selected , setSelected ]= React.useState(props.seats);
     const [chosenCabine , setChosenCabine ] = React.useState( props.cabinClass);
     const [ triggerEditSeats , setTriggerEditSeats ] = React.useState(false)
+    const [ creditTrigger , setCreditTrigger] = React.useState(false);
+    const [ cardNumber,setCardNumber] = React.useState("");
+    const [ expMonth,setExpMonth] = React.useState("");
+    const [ expYear,setExpYear] = React.useState("");
+    const [ cvv,setCvv] = React.useState("");
+
+    const style = {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: "80%",
+      maxHeight: 'calc(100vh - 100px)',
+      height: "auto",
+      bgcolor: '#fff',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 2,
+      overflowY: 'auto',
+    
+    };
 
     React.useEffect( () => {
-      setSelected(props.seats);
-      setChosenCabine(props.cabinClass);
+      // setSelected(props.seats.equals(selected) ? selected  );
+      // setChosenCabine(props.cabinClass);
       console.log(selected);
-      console.log(chosenCabine);
-    } , [props.seats , props.cabinClass] );
+    } , [selected] );
 
     const handleCancel = () =>{
         setConfirmDialog({
@@ -37,16 +64,16 @@ const UserFlightCard = (props) => {
             onConfirm: () => { cancelReservation() }
         })
     };
-    const editReservation = async() =>{
-      console.log(selected);
+    const editReservation = async(arr) =>{
+      console.log("changed seats : " + selected);
       const update = {
         _id: props.reservationId ,
         update: {
             departureFlightId: "" ,
-            departureSeats: selected ,
+            departureSeats: props.type == "Departure Flight"? arr : "" ,
             cabinClass: "",
             returnFlightId: "",
-            returnSeats: "",
+            returnSeats: props.type == "Departure Flight"? "" : arr,
         }
     }
 
@@ -65,6 +92,13 @@ const UserFlightCard = (props) => {
   };
   const test1 = async() =>{
     setOpenSeats(true);
+};
+
+const test2 = () => {
+  setOpenEditFlight( true );
+}
+const handleClose = () =>{
+setOpenEditFlight(false);
 };
 
     const cancelReservation = async() => {
@@ -192,7 +226,7 @@ const UserFlightCard = (props) => {
             
             <Button sx={{borderRadius: 5}} variant="contained" color="error" size="small" onClick={handleCancel}>Cancel Booking</Button>
             <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={ test1 }>Edit The Flight</Button>
-            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={test1}>test</Button>
+            <Button sx={{borderRadius: 5}} variant="contained" color="success" size="small" onClick={test2}>test</Button>
           </CardActions>
         </Card>
 
@@ -209,12 +243,62 @@ const UserFlightCard = (props) => {
           {  openSeats? <SeatParent
         open={openSeats}
         maxNumber = { 100000 }
-        close={ (boolean ) => {  setOpenSeats(boolean); editReservation();} }
+        close={ (boolean ) => {  setOpenSeats(boolean) } }
         toBeChanged = {selected}
-        sendSeats = { setSelected } 
+        sendSeats = { setSelected }
+        startEdit = { arr => {editReservation(arr)} } 
         flightNumber = { props._id }
         Class = { chosenCabine } 
         /> : <></>}
+
+<Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className="modal"
+        {...props}
+        open={openEditFlight}
+        onClose= {handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 1000,
+        }}
+      >
+         <Fade in={openEditFlight}>
+         <Box sx={style}>
+          <EditLargeReservation
+          reservationId = { props.reservationId }
+          _id = {props._id}
+          departure = {props.departureAirportTerminal}
+          return = {props.arrivalAirportTerminal}
+          departureDate={props.travelDate}
+          returnDate={props.returnDate}
+          cabinClass = {props.cabinClass}
+          type = {props.type}
+          showCredit = {(boolean) => setCreditTrigger( boolean) }
+           />
+{
+  creditTrigger ? 
+ 
+              <CreditCard  
+              setCardNumber={setCardNumber}
+              setCvv={setCvv}
+              setExpMonth={setExpMonth}
+              setExpYear={setExpYear}
+              /> : <></>
+}
+
+        
+
+
+         </Box>
+    </Fade>
+    </Modal>
+
+
+
+
+
         </div>
       );
 }

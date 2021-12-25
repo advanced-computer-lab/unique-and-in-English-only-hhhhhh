@@ -46,6 +46,8 @@ export default class App extends React.Component {
                       reservationId = {this.props.reservationId}
                       type = "Departure Flight"
                       reload = { (val) => this.handleReload(val) }
+                      travelDate = { this.props.departureFlight.departureDate }
+                      returnDate = { this.props.returnFlight.departureDate }
                     />
                 </div>
                 <div className="flex justify-center mb-3">
@@ -76,6 +78,8 @@ export default class App extends React.Component {
                     reservationId = {this.props.reservationId}
                     type = "Return Flight"
                     reload = { (val) => this.handleReload(val) }
+                    travelDate = { this.props.departureFlight.departureDate }
+                    returnDate = { this.props.returnFlight.departureDate }
                      />
                 </div>
                 <div className="flex justify-center mb-3">

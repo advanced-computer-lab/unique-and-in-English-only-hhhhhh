@@ -34,6 +34,10 @@ const CreditCard = (props) => {
   return (
     <>
       {/* <div className="rccs__card backcolor"> */}
+      <div className="flex justify-center mt-5  ">
+          <div className="flex justify-center w-3/6 bg-blue-100 pb-16 pl-16 rounded-full">
+
+
 
       <div clasName="rccs__card rccs__card--unknown">
         <Cards
@@ -165,6 +169,9 @@ const CreditCard = (props) => {
         
         
       </form>
+
+      </div>
+      </div>
     </>
   );
 };
