@@ -19,6 +19,9 @@ import { Alert } from '@mui/material';
 import App from '../App';
 import { Redirect } from 'react-router';
 import { render } from 'react-dom';
+import FacebookLogin from './FacebookLogin';
+
+         
 
 
 
@@ -103,13 +106,6 @@ if ( logged == true ) {
 
   return (
     window.location.href='/'
-
-    // <div>
-    // <App isLogged={true} userName={username}/>
-    // <Link href="/" variant="body2">
-    //               Go Back To Home Page
-    //   </Link>
-    //   </div>
 )
 }
 else {
@@ -172,6 +168,7 @@ else {
             >
               Log In
             </Button>
+            <FacebookLogin/>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="/signup" variant="body2">
