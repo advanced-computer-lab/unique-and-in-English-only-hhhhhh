@@ -25,7 +25,7 @@ const GeneralEditReservation = (props) => {
     const [severity,setSeverity] = React.useState("");
     const [error, setError] = React.useState(false);
     const [ alert2 , setAlert2 ] = React.useState( false );
-    const [ diff , setDiff ] = React.useState(0);
+    const [ diff , setDiff ] = React.useState('');
     const [ credit , setCredit ] = React.useState(false);
 
     const pay = async() => {
@@ -52,15 +52,36 @@ const GeneralEditReservation = (props) => {
       setMessage("error connecting to the server");
       setSeverity("error");
     });
-    setCredit(false);
   } 
     }
 
-    React.useEffect( () => {
+    React.useEffect( async() => {
       if ( isCompelet ){
         editReservation();
       }
-    })
+
+if ( diff != ''){
+  if ( diff > 0 ){
+        setCredit(true);
+        }
+        else{
+          await axios.post( 'http://localhost:8000/user/updateReservation' , update).then( res => {
+          console.log(res);
+          props.reload("val");
+          setAlert2(true);
+          setMessage("Successful Reservation update !");
+          setSeverity('success');
+        }).catch( err => {
+            console.log( "failed ")
+          
+          setError(true);
+          setMessage("error connecting to the server");
+          setSeverity("error");
+        });
+        }
+}
+      
+    } , [isCompelet , diff])
     const editReservation = async() =>{
           console.log( update );
           await axios.post( 'http://localhost:8000/user/getUpdateDiff' , update).then( res => {
@@ -70,26 +91,7 @@ const GeneralEditReservation = (props) => {
           }).catch( err => {
             alert("I failed to have Diff");
           });
-          if ( diff > 0 ){
-            setCredit(true);
-          pay()
-          }
-          else{
-            await axios.post( 'http://localhost:8000/user/updateReservation' , update).then( res => {
-            console.log(res);
-            alert("reservation edited");
-            props.reload("val");
-            setAlert2(true);
-            setMessage("Successful Reservation update !");
-            setSeverity('success');
-          }).catch( err => {
-              console.log( "failed ")
-            alert("reservation edited failed");
-            setError(true);
-            setMessage("error connecting to the server");
-            setSeverity("error");
-          });
-          }
+          
 
 
            
@@ -126,6 +128,7 @@ const GeneralEditReservation = (props) => {
               {credit ? <div className='flex justify-center my-16 mr-16'>
                 <Button 
                 variant="contained"
+                disabled = { alert2 }
                 color="success"
                 sx={{ marginX: 3}} 
                 onClick={ pay }>
