@@ -527,26 +527,39 @@ signUp:async function(user,res){
     try{
       const db = client.db("AirlineDB");
       const col = db.collection("users");
+      console.log(userName);
       User.findOne({userName:userName})
       .then(dbUser => {
-        if(!dbUser){
+        if(!dbUser){ 
           return res.json({
-            message:"Invalid Username or Password"
+            message:"Invalid Username"
           })
         }
         bcrypt.compare(password,dbUser.password)
         .then(async isCorrect =>{
           if(isCorrect){
             if(update.$set.password!=""){
-              update.$set.password = bcrypt.hash(update.$set.password,10);
+              console.log(update);
+              update.$set.password = await bcrypt.hash(update.$set.password,10);
+              console.log(update);
+              await col.updateOne({"userName": userName}, update,(err,result)=>{
+                  console.log(err);
+      
+                  console.log(result);
+                  res.status(200).send({message: "User updated"});
+                });
           }
-          const p = await col.updateOne({"userName": userName}, update,(err,result)=>{
-            console.log(err);
-
-            console.log(result);
-            res.status(200).send("User updated");
-          })
-          // res.send("ok");
+          else{
+        
+            console.log(update);
+            await col.updateOne({"userName": userName}, {$set:{email: update.$set.email} },(err,result)=>{
+                console.log(err);
+    
+                console.log(result);
+                res.status(200).send({message: "User updated"});
+              });
+          }
+          
         }else{
            return res.json({
              message:"Invalid Username or Password"
